@@ -14,13 +14,18 @@ describe('static site build', () => {
   it('builds the project index and project details from content', () => {
     expect(existsSync('dist/projects/index.html')).toBe(true);
     expect(existsSync('dist/projects/field-notes/index.html')).toBe(true);
+    expect(existsSync('dist/images/projects/field-notes.png')).toBe(true);
 
     const projects = readFileSync('dist/projects/index.html', 'utf8');
+    const project = readFileSync('dist/projects/field-notes/index.html', 'utf8');
     expect(projects).toContain('许汝林个人博客');
     expect(projects).toContain('data-project-filter');
     expect(projects).toContain('data-project-category="网站产品"');
     expect(projects).toContain('https://github.com/xrlnewman/field-notes');
     expect(projects).toContain('/images/projects/field-notes.png');
+    expect(project).toContain('project-showcase');
+    expect(project).toContain('/images/projects/field-notes.png');
+    expect(project).toContain('GitHub 源码');
   });
 
   it('builds article details and tag indexes', () => {
