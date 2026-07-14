@@ -5,18 +5,19 @@ interface Props {
   description?: string;
   href?: string;
   linkLabel?: string;
+  level?: 'h1' | 'h2';
 }
 
-const { eyebrow, title, description, href, linkLabel = '查看全部' } = Astro.props;
+const { eyebrow, title, description, href, linkLabel = '查看全部', level = 'h2' } = Astro.props;
 ---
 
 <header class="section-heading">
-  <div>
+  <div class="section-heading__copy">
     <p class="eyebrow">{eyebrow}</p>
-    <h2>{title}</h2>
+    {level === 'h1' ? <h1>{title}</h1> : <h2>{title}</h2>}
     {description && <p class="section-description">{description}</p>}
   </div>
-  {href && <a href={href}>{linkLabel} <span aria-hidden="true">→</span></a>}
+  {href && <a class="section-heading__link" href={href}>{linkLabel} <span aria-hidden="true">→</span></a>}
 </header>
 
 <style>
@@ -28,9 +29,14 @@ const { eyebrow, title, description, href, linkLabel = '查看全部' } = Astro.
     margin-bottom: 30px;
   }
 
+  .section-heading__copy {
+    min-width: 0;
+  }
+
+  h1,
   h2 {
     margin: 0;
-    font-size: clamp(2rem, 5vw, 3.6rem);
+    font-size: clamp(2rem, 4.8vw, 3.5rem);
     letter-spacing: -0.055em;
     line-height: 1.06;
   }
@@ -41,11 +47,24 @@ const { eyebrow, title, description, href, linkLabel = '查看全部' } = Astro.
     color: var(--muted);
   }
 
-  a {
+  .section-heading__link {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    gap: 8px;
     flex: none;
-    color: var(--accent-strong);
+    padding: 8px 14px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--ink);
+    background: var(--surface);
     font-weight: 650;
     text-decoration: none;
+  }
+
+  .section-heading__link:hover {
+    color: var(--accent-strong);
+    border-color: var(--accent);
   }
 
   @media (max-width: 620px) {

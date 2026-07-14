@@ -1,0 +1,12 @@
+{
+  "name": "field-notes",
+  "pages_build_output_dir": "dist",
+  "compatibility_date": "2026-07-14",
+  "d1_databases": [
+    {
+      "binding": "COMMENTS_DB",
+      "database_name": "field-notes-comments",
+      "database_id": "829416f4-cf47-4c76-9ac3-75680a9a16fa"
+    }
+  ]
+}

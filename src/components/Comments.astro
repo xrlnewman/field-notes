@@ -1,0 +1,918 @@
+---
+interface Props {
+  resource: `article:${string}` | `project:${string}` | 'guestbook:global';
+  title?: string;
+}
+
+const { resource, title = '评论与回复' } = Astro.props;
+---
+
+<section
+  class="comments"
+  aria-labelledby="comments-title"
+  data-comments-root
+  data-comment-resource={resource}
+>
+  <header class="comments-header">
+    <p class="eyebrow">公开交流</p>
+    <h2 id="comments-title">{title}</h2>
+    <p>无需登录即可参与，留言会公开展示，请勿填写个人隐私信息。</p>
+  </header>
+
+  <form class="comment-form comment-form--main" data-comment-form>
+    <div class="form-field">
+      <label for={`comment-author-${resource}`}>昵称</label>
+      <input
+        id={`comment-author-${resource}`}
+        name="authorName"
+        type="text"
+        autocomplete="nickname"
+        required
+      />
+    </div>
+    <div class="form-field">
+      <label for={`comment-content-${resource}`}>留言内容</label>
+      <textarea
+        id={`comment-content-${resource}`}
+        name="content"
+        rows="5"
+        required
+      ></textarea>
+      <small>2–1000 个字符</small>
+    </div>
+    <div class="website-field" aria-hidden="true">
+      <label>网站<input name="website" type="text" tabindex="-1" autocomplete="off" /></label>
+    </div>
+    <div class="form-actions">
+      <button class="submit-button" type="submit">发布留言</button>
+      <p class="form-message" data-comment-form-error role="status" aria-live="polite"></p>
+    </div>
+  </form>
+
+  <div class="comment-list" data-comment-list aria-live="polite" aria-busy="true">
+    <p class="comments-state">正在加载留言…</p>
+  </div>
+
+  <div class="comment-pagination" data-comment-pagination hidden>
+    <button class="load-more-button" type="button" data-comment-load-more>加载更多留言</button>
+    <p class="form-message" data-comment-load-more-error role="status" aria-live="polite"></p>
+  </div>
+
+  <template data-comment-template>
+    <article class="comment-card">
+      <header class="comment-meta">
+        <strong data-comment-author></strong>
+        <time data-comment-time></time>
+      </header>
+      <p class="comment-content" data-comment-content></p>
+      <button class="reply-button" type="button" data-comment-reply aria-expanded="false">回复</button>
+      <div class="reply-list" data-comment-replies></div>
+      <div data-comment-reply-host></div>
+    </article>
+  </template>
+
+  <template data-comment-reply-template>
+    <article class="reply-card">
+      <header class="comment-meta">
+        <strong data-comment-author></strong>
+        <time data-comment-time></time>
+      </header>
+      <p class="comment-content" data-comment-content></p>
+    </article>
+  </template>
+
+  <template data-comment-reply-form-template>
+    <form class="comment-form comment-form--reply" data-comment-form data-comment-reply-form>
+      <p class="reply-heading">回复这条留言</p>
+      <div class="form-field">
+        <label>昵称
+          <input name="authorName" type="text" autocomplete="nickname" required />
+        </label>
+      </div>
+      <div class="form-field">
+        <label>回复内容
+          <textarea name="content" rows="4" required></textarea>
+        </label>
+        <small>2–1000 个字符</small>
+      </div>
+      <div class="website-field" aria-hidden="true">
+        <label>网站<input name="website" type="text" tabindex="-1" autocomplete="off" /></label>
+      </div>
+      <div class="form-actions">
+        <button class="submit-button" type="submit">发布回复</button>
+        <button class="cancel-button" type="button" data-comment-cancel>取消</button>
+        <p class="form-message" data-comment-form-error role="status" aria-live="polite"></p>
+      </div>
+    </form>
+  </template>
+</section>
+
+<script>
+  import {
+    createCommentUiState,
+    createReplyDraftStore,
+    validateCommentDraft,
+  } from '../lib/comment-ui-state';
+  import { createCommentPaginationController } from '../lib/comment-pagination';
+
+  type CommentItem = {
+    id: string;
+    authorName: string;
+    content: string;
+    createdAt: string;
+  };
+
+  type CommentThread = CommentItem & {
+    replies: CommentItem[];
+  };
+
+  type ReplyDraft = {
+    parentId: string;
+    authorName: string;
+    content: string;
+  };
+
+  type ApiPayload = {
+    ok?: boolean;
+    data?: { comments?: unknown; nextCursor?: unknown };
+    error?: { message?: unknown };
+  };
+
+  const authorStorageKey = 'field-notes-comment-author';
+  const dateFormatter = new Intl.DateTimeFormat('zh-CN', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+
+  const isRecord = (value: unknown): value is Record<string, unknown> => (
+    typeof value === 'object' && value !== null && !Array.isArray(value)
+  );
+
+  const isCommentItem = (value: unknown): value is CommentItem => (
+    isRecord(value)
+    && typeof value.id === 'string'
+    && typeof value.authorName === 'string'
+    && typeof value.content === 'string'
+    && typeof value.createdAt === 'string'
+  );
+
+  const isCommentThread = (value: unknown): value is CommentThread => (
+    isCommentItem(value)
+    && 'replies' in value
+    && Array.isArray(value.replies)
+    && value.replies.every(isCommentItem)
+  );
+
+  const readPayload = async (response: Response): Promise<ApiPayload> => {
+    try {
+      const payload: unknown = await response.json();
+      return isRecord(payload) ? payload as ApiPayload : {};
+    } catch {
+      return {};
+    }
+  };
+
+  const apiError = (payload: ApiPayload, fallback: string) => (
+    typeof payload.error?.message === 'string' && payload.error.message.trim()
+      ? payload.error.message
+      : fallback
+  );
+
+  const savedAuthor = () => {
+    try {
+      return localStorage.getItem(authorStorageKey)?.trim() ?? '';
+    } catch {
+      return '';
+    }
+  };
+
+  const saveAuthor = (authorName: string) => {
+    try {
+      localStorage.setItem(authorStorageKey, authorName);
+    } catch {
+      // 浏览器禁用本地存储时，评论功能仍可继续使用。
+    }
+  };
+
+  const formatDate = (value: string) => {
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? '时间未知' : dateFormatter.format(date);
+  };
+
+  const cloneTemplate = <T extends HTMLElement>(template: HTMLTemplateElement): T => {
+    const element = template.content.firstElementChild?.cloneNode(true);
+    if (!(element instanceof HTMLElement)) {
+      throw new Error('评论模板不可用');
+    }
+    return element as T;
+  };
+
+  document.querySelectorAll<HTMLElement>('[data-comments-root]').forEach((root) => {
+    const resource = root.dataset.commentResource;
+    const list = root.querySelector<HTMLElement>('[data-comment-list]');
+    const mainForm = root.querySelector<HTMLFormElement>('.comment-form--main');
+    const commentTemplate = root.querySelector<HTMLTemplateElement>('[data-comment-template]');
+    const replyTemplate = root.querySelector<HTMLTemplateElement>('[data-comment-reply-template]');
+    const replyFormTemplate = root.querySelector<HTMLTemplateElement>('[data-comment-reply-form-template]');
+    const pagination = root.querySelector<HTMLElement>('[data-comment-pagination]');
+    const loadMoreButton = root.querySelector<HTMLButtonElement>('[data-comment-load-more]');
+    const loadMoreError = root.querySelector<HTMLElement>('[data-comment-load-more-error]');
+
+    if (
+      !resource
+      || !list
+      || !mainForm
+      || !commentTemplate
+      || !replyTemplate
+      || !replyFormTemplate
+      || !pagination
+      || !loadMoreButton
+      || !loadMoreError
+    ) {
+      return;
+    }
+
+    const commentResource: string = resource;
+    const commentList: HTMLElement = list;
+    const commentPagination: HTMLElement = pagination;
+    const nextPageButton: HTMLButtonElement = loadMoreButton;
+    const nextPageError: HTMLElement = loadMoreError;
+    const uiState = createCommentUiState();
+    const replyDraftStore = createReplyDraftStore<ReplyDraft>();
+    const loadedParentIds = new Set<string>();
+    const replyTargets = new Map<string, { button: HTMLButtonElement; host: HTMLElement }>();
+    const requestVersion = {
+      nextLoad: () => uiState.nextLoad(),
+      isCurrentLoad: (loadVersion: number) => uiState.isCurrentLoad(loadVersion),
+    };
+    const paginationController = createCommentPaginationController<CommentThread, ReplyDraft>({
+      requestVersion,
+      replyDraftStore,
+      getReplyDraftParentId: (draft) => draft.parentId,
+      async loadPage(cursor) {
+        const url = new URL('/api/comments', window.location.origin);
+        url.searchParams.set('resource', commentResource);
+        if (cursor) {
+          url.searchParams.set('cursor', cursor);
+        }
+        const response = await fetch(url, {
+          credentials: 'same-origin',
+          headers: { accept: 'application/json' },
+        });
+        const payload = await readPayload(response);
+        const comments = payload.data?.comments;
+        const receivedNextCursor = payload.data?.nextCursor;
+        if (
+          !response.ok
+          || payload.ok !== true
+          || !Array.isArray(comments)
+          || !comments.every(isCommentThread)
+          || (receivedNextCursor !== null && typeof receivedNextCursor !== 'string')
+        ) {
+          throw new Error(apiError(payload, '暂时无法加载留言，请稍后再试。'));
+        }
+        return { items: comments, nextCursor: receivedNextCursor };
+      },
+    });
+
+    const setRootButtonsDisabled = (disabled: boolean) => {
+      const { isLoading } = paginationController.snapshot();
+      root.querySelectorAll<HTMLButtonElement>('button').forEach((button) => {
+        button.disabled = disabled || (button === nextPageButton && isLoading);
+      });
+    };
+
+    const renderLoadMoreState = () => {
+      const state = paginationController.snapshot();
+      commentPagination.hidden = state.nextCursor === null;
+      nextPageButton.textContent = state.isLoading ? '正在加载…' : '加载更多留言';
+      nextPageButton.disabled = state.isLoading || uiState.isSubmissionLocked();
+    };
+
+    const renderLoadMoreError = (message: string) => {
+      nextPageError.textContent = message;
+      renderLoadMoreState();
+    };
+
+    const makeState = (message: string) => {
+      const state = document.createElement('p');
+      state.className = 'comments-state';
+      state.textContent = message;
+      return state;
+    };
+
+    const fillAuthor = (form: HTMLFormElement, fallback = '') => {
+      const input = form.elements.namedItem('authorName');
+      if (input instanceof HTMLInputElement && !input.value) {
+        input.value = savedAuthor() || fallback;
+      }
+    };
+
+    const renderItem = (item: CommentItem, template: HTMLTemplateElement) => {
+      const card = cloneTemplate<HTMLElement>(template);
+      const author = card.querySelector<HTMLElement>('[data-comment-author]');
+      const content = card.querySelector<HTMLElement>('[data-comment-content]');
+      const time = card.querySelector<HTMLTimeElement>('[data-comment-time]');
+
+      if (!author || !content || !time) {
+        throw new Error('评论模板字段不完整');
+      }
+
+      author.textContent = item.authorName;
+      content.textContent = item.content;
+      time.dateTime = item.createdAt;
+      time.textContent = formatDate(item.createdAt);
+      return card;
+    };
+
+    const captureReplyDraft = (): ReplyDraft | null => {
+      const form = root.querySelector<HTMLFormElement>('[data-comment-reply-form]');
+      const parentId = form?.dataset.commentParentId;
+      const authorInput = form?.elements.namedItem('authorName');
+      const contentInput = form?.elements.namedItem('content');
+      if (
+        !parentId
+        || !(authorInput instanceof HTMLInputElement)
+        || !(contentInput instanceof HTMLTextAreaElement)
+      ) {
+        return null;
+      }
+
+      return {
+        parentId,
+        authorName: authorInput.value,
+        content: contentInput.value,
+      };
+    };
+
+    const closeReplyForm = (force = false): boolean => {
+      if (uiState.isSubmissionLocked() && !force) {
+        return false;
+      }
+      root.querySelector<HTMLFormElement>('[data-comment-reply-form]')?.remove();
+      root.querySelectorAll<HTMLButtonElement>('[data-comment-reply]').forEach((button) => {
+        button.setAttribute('aria-expanded', 'false');
+      });
+      return true;
+    };
+
+    const bindForm = (form: HTMLFormElement, parentId?: string) => {
+      const authorField = form.elements.namedItem('authorName');
+      const contentField = form.elements.namedItem('content');
+      [authorField, contentField].forEach((field) => {
+        if (field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement) {
+          field.addEventListener('input', () => field.setCustomValidity(''));
+        }
+      });
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const authorInput = form.elements.namedItem('authorName');
+        const contentInput = form.elements.namedItem('content');
+        const websiteInput = form.elements.namedItem('website');
+        const submitButton = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+        const message = form.querySelector<HTMLElement>('[data-comment-form-error]');
+
+        if (
+          !(authorInput instanceof HTMLInputElement)
+          || !(contentInput instanceof HTMLTextAreaElement)
+          || !(websiteInput instanceof HTMLInputElement)
+          || !submitButton
+          || !message
+        ) {
+          return;
+        }
+
+        if (parentId && !loadedParentIds.has(parentId)) {
+          message.textContent = '回复目标已失效，请重新加载留言后再试。';
+          return;
+        }
+
+        const validation = validateCommentDraft({
+          authorName: authorInput.value,
+          content: contentInput.value,
+        });
+        authorInput.setCustomValidity(validation.ok ? '' : validation.errors.authorName ?? '');
+        contentInput.setCustomValidity(validation.ok ? '' : validation.errors.content ?? '');
+        if (!validation.ok) {
+          (validation.errors.authorName ? authorInput : contentInput).reportValidity();
+          return;
+        }
+
+        if (!uiState.tryBeginSubmission()) {
+          message.textContent = '另一条留言正在发布，请稍候。';
+          return;
+        }
+
+        const { authorName, content } = validation.data;
+        const originalLabel = submitButton.textContent ?? '发布';
+        message.textContent = '';
+        setRootButtonsDisabled(true);
+        submitButton.textContent = '正在发布…';
+
+        try {
+          const response = await fetch('/api/comments', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({
+              resource: commentResource,
+              authorName,
+              content,
+              website: websiteInput.value,
+              ...(parentId ? { parentId } : {}),
+            }),
+          });
+          const payload = await readPayload(response);
+          if (!response.ok || payload.ok !== true) {
+            throw new Error(apiError(payload, '发布失败，请稍后再试。'));
+          }
+
+          saveAuthor(authorName);
+          form.reset();
+          fillAuthor(form, authorName);
+          message.textContent = '留言已发布。';
+          const refreshed = await loadComments({ preserveReplyDraft: parentId === undefined, reset: true });
+          if (!refreshed && form.isConnected) {
+            message.textContent = '留言已发布，但列表刷新失败，请重新加载。';
+          }
+        } catch (error) {
+          const detail = error instanceof Error && error.message ? error.message : '发布失败，请稍后再试。';
+          message.textContent = detail.startsWith('发布失败') ? detail : `发布失败：${detail}`;
+        } finally {
+          uiState.finishSubmission();
+          setRootButtonsDisabled(false);
+          submitButton.textContent = originalLabel;
+        }
+      });
+    };
+
+    const openReplyForm = (
+      button: HTMLButtonElement,
+      host: HTMLElement,
+      parentId: string,
+      options: { draft?: ReplyDraft; focus?: boolean; force?: boolean } = {},
+    ) => {
+      const wasExpanded = button.getAttribute('aria-expanded') === 'true';
+      if (!closeReplyForm(options.force)) {
+        return;
+      }
+      if (!options.force) {
+        replyDraftStore.clear();
+      }
+      if (wasExpanded) {
+        if (options.focus !== false) {
+          button.focus();
+        }
+        return;
+      }
+
+      if (!loadedParentIds.has(parentId)) {
+        return;
+      }
+
+      const form = cloneTemplate<HTMLFormElement>(replyFormTemplate);
+      form.dataset.commentParentId = parentId;
+      const hasSavedAuthor = savedAuthor().length > 0;
+      const mainAuthor = mainForm.elements.namedItem('authorName');
+      fillAuthor(form, mainAuthor instanceof HTMLInputElement ? mainAuthor.value : '');
+      if (options.draft) {
+        const authorInput = form.elements.namedItem('authorName');
+        const contentInput = form.elements.namedItem('content');
+        if (authorInput instanceof HTMLInputElement && contentInput instanceof HTMLTextAreaElement) {
+          authorInput.value = options.draft.authorName;
+          contentInput.value = options.draft.content;
+        }
+      }
+      bindForm(form, parentId);
+      form.querySelector<HTMLButtonElement>('[data-comment-cancel]')?.addEventListener('click', () => {
+        if (closeReplyForm()) {
+          replyDraftStore.clear();
+          button.focus();
+        }
+      });
+      host.append(form);
+      button.setAttribute('aria-expanded', 'true');
+      setRootButtonsDisabled(uiState.isSubmissionLocked());
+      if (options.focus !== false) {
+        const focusTarget = hasSavedAuthor
+          ? form.querySelector<HTMLTextAreaElement>('textarea')
+          : form.querySelector<HTMLInputElement>('input[name="authorName"]');
+        focusTarget?.focus();
+      }
+    };
+
+    const restoreReplyDraft = (draft: ReplyDraft): boolean => {
+      if (!loadedParentIds.has(draft.parentId)) {
+        return false;
+      }
+      const target = replyTargets.get(draft.parentId);
+      if (!target) {
+        return false;
+      }
+      openReplyForm(target.button, target.host, draft.parentId, {
+        draft,
+        focus: false,
+        force: true,
+      });
+      return true;
+    };
+
+    const restorePendingReplyDraft = () => {
+      const replyDraft = paginationController.getRestorableReplyDraft();
+      if (!replyDraft) {
+        return;
+      }
+      if (restoreReplyDraft(replyDraft)) {
+        replyDraftStore.clear();
+      }
+    };
+
+    const renderThread = (thread: CommentThread): HTMLElement => {
+      loadedParentIds.add(thread.id);
+      const card = renderItem(thread, commentTemplate);
+      const replyButton = card.querySelector<HTMLButtonElement>('[data-comment-reply]');
+      const replyList = card.querySelector<HTMLElement>('[data-comment-replies]');
+      const replyHost = card.querySelector<HTMLElement>('[data-comment-reply-host]');
+      if (!replyButton || !replyList || !replyHost) {
+        throw new Error('评论回复模板不完整');
+      }
+
+      thread.replies.forEach((reply) => {
+        replyList.append(renderItem(reply, replyTemplate));
+      });
+      replyTargets.set(thread.id, { button: replyButton, host: replyHost });
+      replyButton.addEventListener('click', () => openReplyForm(replyButton, replyHost, thread.id));
+      return card;
+    };
+
+    const renderComments = (threads: CommentThread[]) => {
+      loadedParentIds.clear();
+      replyTargets.clear();
+      if (threads.length === 0) {
+        commentList.replaceChildren(makeState('成为第一个留言的人'));
+        return;
+      }
+
+      const fragment = document.createDocumentFragment();
+      threads.forEach((thread) => fragment.append(renderThread(thread)));
+      commentList.replaceChildren(fragment);
+    };
+
+    const appendComments = (threads: CommentThread[]) => {
+      const fragment = document.createDocumentFragment();
+      threads.forEach((thread) => {
+        if (!loadedParentIds.has(thread.id)) {
+          fragment.append(renderThread(thread));
+        }
+      });
+      commentList.append(fragment);
+    };
+
+    const renderLoadError = (message: string) => {
+      loadedParentIds.clear();
+      replyTargets.clear();
+      const state = document.createElement('div');
+      state.className = 'comments-state comments-state--error';
+      const text = document.createElement('p');
+      text.textContent = message;
+      const retry = document.createElement('button');
+      retry.type = 'button';
+      retry.textContent = '重新加载';
+      retry.addEventListener('click', () => void loadComments({ reset: true }));
+      state.append(text, retry);
+      commentList.replaceChildren(state);
+    };
+
+    async function loadComments(
+      {
+        preserveReplyDraft = true,
+        reset = true,
+      }: { preserveReplyDraft?: boolean; reset?: boolean } = {},
+    ): Promise<boolean> {
+      if (reset) {
+        if (preserveReplyDraft) {
+          const replyDraft = captureReplyDraft();
+          if (replyDraft) {
+            replyDraftStore.remember(replyDraft);
+          }
+        } else {
+          replyDraftStore.clear();
+        }
+        closeReplyForm(true);
+        commentList.replaceChildren(makeState('正在加载留言…'));
+      }
+
+      const pendingLoad = reset
+        ? paginationController.loadFirstPage()
+        : paginationController.loadMore();
+      nextPageError.textContent = '';
+      commentList.setAttribute('aria-busy', String(paginationController.snapshot().isLoading));
+      renderLoadMoreState();
+
+      try {
+        const outcome = await pendingLoad;
+        if (outcome.status === 'stale' || outcome.status === 'noop') {
+          return true;
+        }
+        if (outcome.status === 'failed') {
+          if (outcome.mode === 'reset') {
+            renderLoadError(outcome.error);
+          } else {
+            renderLoadMoreError(outcome.error);
+          }
+          return false;
+        }
+
+        if (outcome.mode === 'reset') {
+          renderComments(outcome.items);
+        } else {
+          appendComments(outcome.addedItems);
+        }
+        restorePendingReplyDraft();
+        return true;
+      } catch (error) {
+        const detail = error instanceof Error && error.message
+          ? error.message
+          : '暂时无法加载留言，请稍后再试。';
+        if (reset) {
+          renderLoadError(detail);
+        } else {
+          renderLoadMoreError(detail);
+        }
+        return false;
+      } finally {
+        commentList.setAttribute('aria-busy', String(paginationController.snapshot().isLoading));
+        renderLoadMoreState();
+        setRootButtonsDisabled(uiState.isSubmissionLocked());
+      }
+    }
+
+    nextPageButton.addEventListener('click', () => {
+      void loadComments({ reset: false });
+    });
+    fillAuthor(mainForm);
+    bindForm(mainForm);
+    void loadComments({ preserveReplyDraft: false, reset: true });
+  });
+</script>
+
+<style>
+  .comments {
+    min-width: 0;
+    padding-top: 48px;
+    border-top: 1px solid var(--border);
+  }
+
+  .comments-header h2 {
+    margin: 0;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    letter-spacing: -0.055em;
+  }
+
+  .comments-header > p:last-child {
+    max-width: 620px;
+    margin: 12px 0 0;
+    color: var(--muted);
+  }
+
+  .comment-form {
+    position: relative;
+    display: grid;
+    gap: 18px;
+    min-width: 0;
+    margin-top: 30px;
+    padding: 22px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface-soft);
+  }
+
+  .comment-form--reply {
+    margin-top: 18px;
+    padding: 18px;
+  }
+
+  .reply-heading {
+    margin: 0;
+    font-weight: 700;
+  }
+
+  .form-field,
+  .form-field label {
+    display: grid;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .form-field > label,
+  .form-field label {
+    font-weight: 650;
+  }
+
+  .form-field input,
+  .form-field textarea {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    box-sizing: border-box;
+    padding: 11px 13px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--ink);
+    background: var(--surface);
+    font: inherit;
+  }
+
+  .form-field textarea {
+    resize: vertical;
+    line-height: 1.6;
+  }
+
+  .form-field small {
+    color: var(--muted);
+  }
+
+  .form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 14px;
+  }
+
+  .submit-button,
+  .cancel-button,
+  .reply-button,
+  .load-more-button,
+  .comments :global(.comments-state--error button) {
+    min-height: 44px;
+    padding: 10px 17px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--ink);
+    background: var(--surface);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .submit-button {
+    border-color: var(--ink);
+    color: var(--canvas);
+    background: var(--ink);
+  }
+
+  .reply-button {
+    margin-top: 14px;
+    padding-inline: 15px;
+    color: var(--accent-strong);
+  }
+
+  .comment-pagination {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-top: 20px;
+  }
+
+  .comment-pagination[hidden] {
+    display: none;
+  }
+
+  .load-more-button {
+    color: var(--accent-strong);
+  }
+
+  .submit-button:disabled,
+  .load-more-button:disabled {
+    cursor: wait;
+    opacity: 0.62;
+  }
+
+  .form-field input:focus-visible,
+  .form-field textarea:focus-visible,
+  .submit-button:focus-visible,
+  .cancel-button:focus-visible,
+  .reply-button:focus-visible,
+  .load-more-button:focus-visible,
+  .comments :global(.comments-state--error button:focus-visible) {
+    outline: 3px solid color-mix(in srgb, var(--accent) 58%, transparent);
+    outline-offset: 2px;
+  }
+
+  .form-message {
+    flex: 1 1 220px;
+    margin: 0;
+    color: var(--muted);
+  }
+
+  .website-field {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .comment-list {
+    display: grid;
+    gap: 18px;
+    min-width: 0;
+    margin-top: 34px;
+  }
+
+  .comments :global(.comments-state) {
+    margin: 0;
+    padding: 22px;
+    border: 1px dashed var(--border);
+    border-radius: var(--radius-md);
+    color: var(--muted);
+    background: var(--surface-soft);
+  }
+
+  .comments :global(.comments-state--error p) {
+    margin: 0 0 14px;
+  }
+
+  .comment-card {
+    min-width: 0;
+    padding: 22px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+  }
+
+  .comment-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px 16px;
+  }
+
+  .comment-meta [data-comment-author] {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .comment-meta time {
+    color: var(--muted);
+    font-family: 'Geist Mono', ui-monospace, monospace;
+    font-size: 0.73rem;
+  }
+
+  .comment-content {
+    margin: 12px 0 0;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+    line-height: 1.72;
+  }
+
+  .reply-list {
+    display: grid;
+    gap: 12px;
+    margin-top: 18px;
+    padding-left: 18px;
+    border-left: 2px solid var(--border);
+  }
+
+  .reply-list:empty {
+    display: none;
+  }
+
+  .reply-card {
+    min-width: 0;
+    padding: 16px;
+    border-radius: var(--radius-sm);
+    background: var(--surface-soft);
+  }
+
+  @media (max-width: 640px) {
+    .comment-form,
+    .comment-card {
+      padding: 17px;
+    }
+
+    .form-actions {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    .form-actions > button {
+      width: 100%;
+    }
+
+    .form-message {
+      flex-basis: auto;
+    }
+
+    .reply-list {
+      padding-left: 12px;
+    }
+  }
+</style>

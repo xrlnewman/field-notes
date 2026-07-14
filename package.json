@@ -11,7 +11,7 @@
     "build": "astro build && pagefind --site dist",
     "preview": "astro preview",
     "check": "astro check",
-    "test": "vitest run tests/content.test.ts tests/giscus.test.ts tests/brand.test.ts tests/projects.test.ts",
+    "test": "vitest run tests/content.test.ts tests/brand.test.ts tests/projects.test.ts tests/comments.test.ts tests/comment-ui-state.test.ts tests/comments-api.test.ts",
     "test:build": "npm run build && vitest run tests/build-smoke.test.ts",
     "verify": "npm test && npm run check && npm run test:build"
   },

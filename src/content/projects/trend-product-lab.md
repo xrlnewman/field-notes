@@ -3,7 +3,7 @@ title: 趋势产品实验室
 description: 把互联网热点拆解为可验证的产品机会和短视频内容钩子。
 publishedAt: 2026-07-05
 status: active
-category: 网站产品
+category: AI 自动化
 tech: [趋势分析, 产品设计, 短视频]
 featured: true
 draft: true

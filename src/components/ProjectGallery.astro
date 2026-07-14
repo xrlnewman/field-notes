@@ -1,7 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 
-import { getProjectCategories } from '../lib/projects';
+import { getProjectCategoryStats } from '../lib/projects';
 import ProjectCard from './ProjectCard.astro';
 
 interface Props {
@@ -9,19 +9,24 @@ interface Props {
 }
 
 const { projects } = Astro.props;
-const categories = getProjectCategories(projects);
+const filters = [
+  { category: '全部' as const, count: projects.length },
+  ...getProjectCategoryStats(projects),
+];
 ---
 
 <section class="project-gallery-shell" aria-label="项目作品筛选">
   <div class="project-filters" role="group" aria-label="按项目类型筛选">
-    {categories.map((category) => (
+    {filters.map(({ category, count }) => (
       <button
         type="button"
         data-project-filter={category}
+        data-project-filter-count={count}
         aria-pressed={category === '全部' ? 'true' : 'false'}
         aria-controls="project-gallery"
       >
-        {category}
+        <span>{category}</span>
+        <span class="project-filter__count" aria-label={`${count} 个项目`}>{count}</span>
       </button>
     ))}
   </div>
@@ -45,23 +50,36 @@ const categories = getProjectCategories(projects);
 </section>
 
 <script>
+  import { getProjectCategoryUrl, parseProjectCategory } from '../lib/projects';
+
   const gallery = document.querySelector<HTMLElement>('[data-project-gallery]');
   const buttons = document.querySelectorAll<HTMLButtonElement>('[data-project-filter]');
   const empty = document.querySelector<HTMLElement>('[data-project-empty]');
 
+  const applyFilter = (filter: string) => {
+    let visible = 0;
+
+    buttons.forEach((button) => {
+      button.setAttribute('aria-pressed', String(button.dataset.projectFilter === filter));
+    });
+    gallery?.querySelectorAll<HTMLElement>('[data-project-category]').forEach((card) => {
+      const matches = filter === '全部' || card.dataset.projectCategory === filter;
+      card.hidden = !matches;
+      if (matches) visible += 1;
+    });
+
+    if (empty) empty.hidden = visible > 0;
+  };
+
+  const initialFilter = parseProjectCategory(new URLSearchParams(window.location.search).get('category'));
+  applyFilter(initialFilter);
+
   buttons.forEach((button) => {
     button.addEventListener('click', () => {
-      const filter = button.dataset.projectFilter ?? '全部';
-      let visible = 0;
+      const filter = parseProjectCategory(button.dataset.projectFilter ?? null);
 
-      buttons.forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
-      gallery?.querySelectorAll<HTMLElement>('[data-project-category]').forEach((card) => {
-        const matches = filter === '全部' || card.dataset.projectCategory === filter;
-        card.hidden = !matches;
-        if (matches) visible += 1;
-      });
-
-      if (empty) empty.hidden = visible > 0;
+      applyFilter(filter);
+      window.history.replaceState({}, '', getProjectCategoryUrl(window.location.href, filter));
     });
   });
 </script>
@@ -77,7 +95,10 @@ const categories = getProjectCategories(projects);
   }
 
   .project-filters button {
-    min-height: 42px;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    min-height: 44px;
     flex: none;
     padding: 9px 16px;
     border: 1px solid var(--border);
@@ -90,11 +111,28 @@ const categories = getProjectCategories(projects);
     cursor: pointer;
   }
 
+  .project-filter__count {
+    min-width: 1.5rem;
+    padding: 1px 6px;
+    border-radius: 999px;
+    color: var(--muted);
+    background: var(--surface-soft);
+    font-family: 'Geist Mono', ui-monospace, monospace;
+    font-size: 0.72rem;
+    text-align: center;
+  }
+
   .project-filters button:hover,
   .project-filters button[aria-pressed='true'] {
     color: var(--canvas);
     border-color: var(--ink);
     background: var(--ink);
+  }
+
+  .project-filters button:hover .project-filter__count,
+  .project-filters button[aria-pressed='true'] .project-filter__count {
+    color: var(--ink);
+    background: var(--canvas);
   }
 
   .project-filters button:focus-visible {

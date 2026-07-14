@@ -11,7 +11,10 @@ const isActive = (href: string) => href === '/' ? currentPath === '/' : currentP
   <div class="container header-inner">
     <a class="brand" href="/" aria-label={`${siteConfig.name} 首页`}>
       <span class="brand-mark" aria-hidden="true">{siteConfig.brandMark}</span>
-      <span>{siteConfig.name}</span>
+      <span class="brand-copy">
+        <strong>{siteConfig.author.name}</strong>
+        <small>产品工程工作室</small>
+      </span>
     </a>
 
     <nav id="site-nav" class="site-nav" aria-label="主导航">
@@ -45,8 +48,8 @@ const isActive = (href: string) => href === '/' ? currentPath === '/' : currentP
     z-index: 30;
     top: 0;
     height: var(--header-height);
-    border-bottom: 1px solid color-mix(in srgb, var(--border) 75%, transparent);
-    background: color-mix(in srgb, var(--canvas) 88%, transparent);
+    border-bottom: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
+    background: color-mix(in srgb, var(--canvas) 90%, transparent);
     backdrop-filter: blur(16px);
   }
 
@@ -61,9 +64,7 @@ const isActive = (href: string) => href === '/' ? currentPath === '/' : currentP
   .brand {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    font-weight: 700;
-    letter-spacing: -0.025em;
+    gap: 11px;
     text-decoration: none;
   }
 
@@ -73,14 +74,33 @@ const isActive = (href: string) => href === '/' ? currentPath === '/' : currentP
 
   .brand-mark {
     display: grid;
-    width: 30px;
-    height: 30px;
+    width: 34px;
+    height: 34px;
     place-items: center;
-    border-radius: 9px;
-    color: var(--canvas);
-    background: var(--ink);
+    border-radius: 10px;
+    color: var(--accent-ink);
+    background: var(--accent);
+    box-shadow: 0 6px 18px color-mix(in srgb, var(--accent) 24%, transparent);
     font-family: 'Geist Mono', ui-monospace, monospace;
-    font-size: 0.83rem;
+    font-size: 0.88rem;
+  }
+
+  .brand-copy {
+    display: grid;
+    line-height: 1.12;
+  }
+
+  .brand-copy strong {
+    font-size: 0.93rem;
+    letter-spacing: -0.025em;
+  }
+
+  .brand-copy small {
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 0.64rem;
+    font-weight: 650;
+    letter-spacing: 0.08em;
   }
 
   .site-nav {
@@ -90,7 +110,10 @@ const isActive = (href: string) => href === '/' ? currentPath === '/' : currentP
   }
 
   .site-nav a {
-    padding: 7px 10px;
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    padding: 8px 11px;
     border-radius: 8px;
     color: var(--muted);
     font-size: 0.9rem;
@@ -101,7 +124,7 @@ const isActive = (href: string) => href === '/' ? currentPath === '/' : currentP
   .site-nav a:hover,
   .site-nav a[aria-current='page'] {
     color: var(--ink);
-    background: var(--surface-soft);
+    background: color-mix(in srgb, var(--surface-soft) 78%, transparent);
   }
 
   .site-nav .search-link {
@@ -146,6 +169,12 @@ const isActive = (href: string) => href === '/' ? currentPath === '/' : currentP
 
     .site-nav .search-link {
       margin: 6px 0 0;
+    }
+  }
+
+  @media (max-width: 390px) {
+    .brand-copy small {
+      display: none;
     }
   }
 </style>

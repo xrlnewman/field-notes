@@ -8,3 +8,5 @@ dist/
 .superpowers/
 .codegraph/
 .worktrees/
+.wrangler/
+.dev.vars

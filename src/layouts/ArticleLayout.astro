@@ -3,6 +3,7 @@ import type { MarkdownHeading } from 'astro';
 import type { CollectionEntry } from 'astro:content';
 
 import ArticleNav from '../components/ArticleNav.astro';
+import Comments from '../components/Comments.astro';
 import ContentCard from '../components/ContentCard.astro';
 import ProseEnhancements from '../components/ProseEnhancements.astro';
 import TableOfContents from '../components/TableOfContents.astro';
@@ -64,7 +65,7 @@ const readingTime = estimateReadingTime(article.body ?? '');
       </section>
     )}
 
-    <div class="container comments-slot"><slot name="comments" /></div>
+    <div class="container comments-slot"><Comments resource={`article:${article.id}`} /></div>
     <ProseEnhancements />
   </article>
 </BaseLayout>

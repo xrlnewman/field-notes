@@ -1,4 +1,4 @@
-export const projectCategories = ['开发工具', '数据工具', 'AI 应用', '网站产品', '业务系统'] as const;
+export const projectCategories = ['网站产品', '业务系统', '开发工具', '数据与搜索', 'AI 自动化'] as const;
 
 export type ProjectCategory = typeof projectCategories[number];
 export type ProjectCategoryFilter = '全部' | ProjectCategory;
@@ -8,6 +8,40 @@ export function getProjectCategories<T extends { data: { category: ProjectCatego
 ): ProjectCategoryFilter[] {
   const present = new Set(projects.map((project) => project.data.category));
   return ['全部', ...projectCategories.filter((category) => present.has(category))];
+}
+
+export function getProjectCategoryStats<T extends { data: { category: ProjectCategory } }>(
+  projects: readonly T[],
+): Array<{ category: ProjectCategory; count: number }> {
+  return projectCategories.map((category) => ({
+    category,
+    count: projects.filter((project) => project.data.category === category).length,
+  }));
+}
+
+export function parseProjectCategory(value: string | null): ProjectCategoryFilter {
+  return projectCategories.includes(value as ProjectCategory)
+    ? value as ProjectCategory
+    : '全部';
+}
+
+export function getProjectCategoryHref(category: ProjectCategory): string {
+  return `/projects/?category=${encodeURIComponent(category)}`;
+}
+
+export function getProjectCategoryUrl(
+  currentUrl: string,
+  filter: ProjectCategoryFilter,
+): string {
+  const url = new URL(currentUrl);
+
+  if (filter === '全部') {
+    url.searchParams.delete('category');
+  } else {
+    url.searchParams.set('category', filter);
+  }
+
+  return url.toString();
 }
 
 export function matchesProjectCategory(
