@@ -54,6 +54,10 @@ const statusLabels = {
     transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
   }
 
+  .project-card[hidden] {
+    display: none;
+  }
+
   .project-card:hover {
     border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
     box-shadow: var(--shadow);

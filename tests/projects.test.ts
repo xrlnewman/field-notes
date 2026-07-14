@@ -123,4 +123,10 @@ describe('project category helpers', () => {
 
     expect(gallery).toMatch(/\.project-filters button \{[^}]*min-height: 44px;/);
   });
+
+  it('keeps filtered project cards visually hidden despite their flex layout', () => {
+    const card = readFileSync('src/components/ProjectCard.astro', 'utf8');
+
+    expect(card).toMatch(/\.project-card\[hidden\] \{[^}]*display: none;/);
+  });
 });
