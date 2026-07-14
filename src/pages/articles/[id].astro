@@ -1,6 +1,7 @@
 ---
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 
+import GiscusComments from '../../components/GiscusComments.astro';
 import { isVisibleEntry, sortByPublishedAt } from '../../lib/content';
 import ArticleLayout from '../../layouts/ArticleLayout.astro';
 
@@ -33,5 +34,5 @@ const { Content, headings } = await render(article);
 
 <ArticleLayout article={article} headings={headings} previous={previous} next={next} related={related}>
   <Content />
+  <GiscusComments slot="comments" mapping="pathname" />
 </ArticleLayout>
-

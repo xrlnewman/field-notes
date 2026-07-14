@@ -1,6 +1,7 @@
 ---
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 
+import GiscusComments from '../../components/GiscusComments.astro';
 import { isVisibleEntry } from '../../lib/content';
 import ProjectLayout from '../../layouts/ProjectLayout.astro';
 
@@ -19,5 +20,5 @@ const { Content } = await render(project);
 
 <ProjectLayout project={project}>
   <Content />
+  <GiscusComments slot="comments" mapping="pathname" />
 </ProjectLayout>
-
