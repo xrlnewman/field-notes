@@ -1,9 +1,12 @@
 ---
-title: Field Notes
+title: 许汝林个人博客
 description: 一个没有服务器和数据库、可以免费长期运行的个人博客。
 publishedAt: 2026-07-13
 status: active
+category: 网站产品
 tech: [Astro, TypeScript, Pagefind, Giscus]
+cover: /images/projects/field-notes.png
+repoUrl: https://github.com/xrlnewman/field-notes
 featured: true
 draft: false
 ---
