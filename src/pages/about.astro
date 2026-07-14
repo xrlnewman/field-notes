@@ -1,0 +1,57 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { siteConfig } from '../config/site';
+---
+
+<BaseLayout title="关于" description="关于这个博客、作者和公开构建方式。">
+  <div class="container about-page" data-pagefind-body>
+    <header>
+      <p class="eyebrow">ABOUT FIELD NOTES</p>
+      <h1>一个持续更新的个人实验场。</h1>
+      <p>{siteConfig.author.bio}</p>
+    </header>
+
+    <div class="about-grid">
+      <section>
+        <span>01</span>
+        <h2>为什么建这个站</h2>
+        <p>社交平台适合获得即时反馈，但内容会被时间线快速淹没。这里用来保存完整的项目过程、技术判断和失败复盘。</p>
+      </section>
+      <section>
+        <span>02</span>
+        <h2>主要写什么</h2>
+        <p>独立产品、工程实践、开发工具，以及如何把互联网趋势变成真正可验证的产品机会。</p>
+      </section>
+      <section>
+        <span>03</span>
+        <h2>网站如何运行</h2>
+        <p>正文由 Astro 静态生成，搜索使用 Pagefind，评论保存在 GitHub Discussions，页面部署在 Cloudflare Pages。</p>
+      </section>
+    </div>
+
+    <aside class="about-note">
+      <p class="eyebrow">OPEN CONVERSATION</p>
+      <h2>有想法，可以直接留言。</h2>
+      <p>欢迎讨论文章、分享项目，或者指出这里写错的地方。</p>
+      <a class="button button--primary" href="/guestbook/">前往留言板 →</a>
+    </aside>
+  </div>
+</BaseLayout>
+
+<style>
+  .about-page { padding-block: clamp(72px, 10vw, 130px) 120px; }
+  header { max-width: 900px; }
+  header h1 { margin: 0; font-size: clamp(3.4rem, 9vw, 7.4rem); letter-spacing: -0.075em; line-height: 0.97; }
+  header > p:last-child { max-width: 620px; margin: 28px 0 0; color: var(--muted); font-size: 1.2rem; }
+  .about-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 90px; }
+  .about-grid section { padding: 24px; border-top: 1px solid var(--border); }
+  .about-grid span { color: var(--accent-strong); font-family: 'Geist Mono', ui-monospace, monospace; font-size: 0.72rem; }
+  .about-grid h2 { margin: 44px 0 12px; font-size: 1.35rem; }
+  .about-grid p { margin: 0; color: var(--muted); }
+  .about-note { margin-top: 100px; padding: clamp(28px, 7vw, 74px); border-radius: var(--radius-lg); color: var(--canvas); background: var(--ink); }
+  .about-note h2 { max-width: 700px; margin: 0; font-size: clamp(2.4rem, 6vw, 5rem); letter-spacing: -0.06em; line-height: 1; }
+  .about-note > p:not(.eyebrow) { color: color-mix(in srgb, var(--canvas) 70%, transparent); }
+  .about-note .button { margin-top: 22px; color: var(--ink); background: var(--canvas); }
+  @media (max-width: 780px) { .about-grid { grid-template-columns: 1fr; } }
+</style>
+

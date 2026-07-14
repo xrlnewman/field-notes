@@ -1,0 +1,185 @@
+<section class="search-panel" aria-labelledby="search-title">
+  <div class="search-box">
+    <label id="search-title" for="site-search">搜索项目和文章</label>
+    <div class="search-input-row">
+      <input
+        id="site-search"
+        type="search"
+        inputmode="search"
+        autocomplete="off"
+        placeholder="例如：Worktree、Redis、产品……"
+        aria-describedby="search-status"
+        data-search-input
+      />
+      <button type="button" data-search-clear hidden>清除</button>
+    </div>
+    <p id="search-status" class="search-status" aria-live="polite" data-search-status>
+      输入关键词，搜索索引会在需要时加载。
+    </p>
+  </div>
+  <ol class="search-results" data-search-results></ol>
+  <noscript><p class="search-fallback">搜索需要启用 JavaScript。你仍然可以直接浏览文章和项目列表。</p></noscript>
+</section>
+
+<script>
+  interface PagefindData {
+    url: string;
+    excerpt: string;
+    meta: { title?: string; type?: string };
+  }
+
+  interface PagefindResult {
+    data(): Promise<PagefindData>;
+  }
+
+  interface PagefindApi {
+    init(): Promise<void>;
+    search(query: string): Promise<{ results: PagefindResult[] }>;
+  }
+
+  const input = document.querySelector<HTMLInputElement>('[data-search-input]');
+  const clearButton = document.querySelector<HTMLButtonElement>('[data-search-clear]');
+  const status = document.querySelector<HTMLElement>('[data-search-status]');
+  const results = document.querySelector<HTMLOListElement>('[data-search-results]');
+  let pagefindPromise: Promise<PagefindApi> | undefined;
+  let timer: number | undefined;
+
+  const setStatus = (message: string) => {
+    if (status) status.textContent = message;
+  };
+
+  const loadPagefind = async (): Promise<PagefindApi> => {
+    if (!pagefindPromise) {
+      pagefindPromise = (async () => {
+        const modulePath = '/pagefind/pagefind.js';
+        const pagefind = await import(/* @vite-ignore */ modulePath) as PagefindApi;
+        await pagefind.init();
+        return pagefind;
+      })();
+    }
+    return pagefindPromise;
+  };
+
+  const renderResults = (items: PagefindData[]) => {
+    if (!results) return;
+    results.replaceChildren();
+    items.forEach((item) => {
+      const entry = document.createElement('li');
+      const link = document.createElement('a');
+      const type = document.createElement('span');
+      const title = document.createElement('strong');
+      const excerpt = document.createElement('p');
+
+      link.href = item.url;
+      type.className = 'result-type';
+      type.textContent = item.url.includes('/projects/') ? '项目' : item.url.includes('/articles/') ? '文章' : '页面';
+      title.textContent = item.meta.title ?? item.url;
+      excerpt.innerHTML = item.excerpt;
+      link.append(type, title, excerpt);
+      entry.append(link);
+      results.append(entry);
+    });
+  };
+
+  const performSearch = async () => {
+    const query = input?.value.trim() ?? '';
+    if (clearButton) clearButton.hidden = query.length === 0;
+    if (!query) {
+      results?.replaceChildren();
+      setStatus('输入关键词，搜索索引会在需要时加载。');
+      return;
+    }
+
+    setStatus('正在搜索……');
+    try {
+      const pagefind = await loadPagefind();
+      const response = await pagefind.search(query);
+      const data = await Promise.all(response.results.slice(0, 20).map((result) => result.data()));
+      renderResults(data);
+      setStatus(data.length ? `找到 ${data.length} 条结果。` : `没有找到与“${query}”相关的内容。`);
+    } catch {
+      results?.replaceChildren();
+      setStatus('搜索索引暂时不可用。本地开发时请先运行生产构建，再使用预览命令。');
+    }
+  };
+
+  input?.addEventListener('focus', () => { void loadPagefind().catch(() => undefined); }, { once: true });
+  input?.addEventListener('input', () => {
+    window.clearTimeout(timer);
+    timer = window.setTimeout(() => { void performSearch(); }, 180);
+  });
+  input?.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      input.value = '';
+      void performSearch();
+    }
+  });
+  clearButton?.addEventListener('click', () => {
+    if (!input) return;
+    input.value = '';
+    input.focus();
+    void performSearch();
+  });
+</script>
+
+<style>
+  .search-panel { max-width: 860px; margin-inline: auto; }
+
+  .search-box {
+    padding: clamp(22px, 4vw, 34px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+
+  label { display: block; margin-bottom: 14px; font-size: 1.15rem; font-weight: 700; }
+
+  .search-input-row { position: relative; }
+
+  input {
+    width: 100%;
+    height: 58px;
+    padding: 0 84px 0 18px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--ink);
+    background: var(--canvas);
+    font-size: 1rem;
+  }
+
+  input:focus { border-color: var(--accent); outline: 3px solid color-mix(in srgb, var(--accent) 20%, transparent); }
+
+  button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    height: 38px;
+    padding: 0 12px;
+    border: 0;
+    border-radius: 8px;
+    color: var(--muted);
+    background: var(--surface-soft);
+    cursor: pointer;
+  }
+
+  .search-status { min-height: 1.5em; margin: 12px 0 0; color: var(--muted); font-size: 0.82rem; }
+  .search-results { display: grid; gap: 12px; margin: 26px 0 0; padding: 0; list-style: none; }
+
+  .search-results :global(a) {
+    display: block;
+    padding: 22px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    text-decoration: none;
+  }
+
+  .search-results :global(a:hover) { color: var(--ink); border-color: var(--accent); }
+  .search-results :global(.result-type) { display: block; margin-bottom: 7px; color: var(--accent-strong); font-family: 'Geist Mono', ui-monospace, monospace; font-size: 0.7rem; }
+  .search-results :global(strong) { font-size: 1.22rem; }
+  .search-results :global(p) { margin: 8px 0 0; color: var(--muted); }
+  .search-results :global(mark) { color: var(--ink); background: color-mix(in srgb, var(--accent) 28%, transparent); }
+  .search-fallback { color: var(--muted); }
+</style>
+

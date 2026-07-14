@@ -26,4 +26,12 @@ describe('static site build', () => {
     const article = readFileSync('dist/articles/redisearch-result-set/index.html', 'utf8');
     expect(article).toContain('文章目录');
   });
+
+  it('builds search, feeds, sitemap, and about outputs', () => {
+    expect(existsSync('dist/search/index.html')).toBe(true);
+    expect(existsSync('dist/about/index.html')).toBe(true);
+    expect(existsSync('dist/rss.xml')).toBe(true);
+    expect(existsSync('dist/sitemap-index.xml')).toBe(true);
+    expect(existsSync('dist/pagefind/pagefind.js')).toBe(true);
+  });
 });
