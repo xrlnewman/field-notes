@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 
 import ContentCard from '../components/ContentCard.astro';
+import ProjectCard from '../components/ProjectCard.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { siteConfig } from '../config/site';
@@ -19,8 +20,8 @@ const articles = sortByPublishedAt(
   <div class="container">
     <section class="hero">
       <div>
-        <p class="eyebrow">BUILD · LEARN · SHARE</p>
-        <h1>做有用的东西，写真实的过程。</h1>
+        <p class="eyebrow">PRODUCT ENGINEER · BUILDER · WRITER</p>
+        <h1>把复杂业务，做成真正可用的产品。</h1>
         <p class="hero__intro">{siteConfig.description}</p>
         <div class="button-row">
           <a class="button button--primary" href="/projects/">查看项目 <span aria-hidden="true">→</span></a>
@@ -28,25 +29,30 @@ const articles = sortByPublishedAt(
         </div>
       </div>
       <aside class="hero__panel" aria-label="当前状态">
-        <span class="status">持续构建中</span>
+        <span class="status">7 年持续交付</span>
         <h2>当前关注</h2>
-        <p>把互联网趋势转化为能真正使用的产品，并记录从判断、开发到发布的完整过程。</p>
+        <p>把工程经验转化为可复用的产品、工具和文章，持续记录从需求判断到上线交付的完整过程。</p>
       </aside>
     </section>
 
     <section class="home-section" data-pagefind-ignore>
-      <SectionHeading eyebrow="FEATURED PROJECTS" title="正在做的项目" href="/projects/" />
+      <SectionHeading
+        eyebrow="SELECTED PROJECTS"
+        title="项目作品"
+        description="每个公开项目都经过源码整理和安全检查，可以查看实现过程与 GitHub 仓库。"
+        href="/projects/"
+      />
       <div class="home-grid home-grid--projects">
-        {projects.slice(0, 3).map((project, index) => (
-          <ContentCard
-            type="project"
+        {projects.slice(0, 6).map((project) => (
+          <ProjectCard
             href={`/projects/${project.id}/`}
             title={project.data.title}
             description={project.data.description}
-            publishedAt={project.data.publishedAt}
-            meta={project.data.status === 'active' ? '持续迭代' : '查看复盘'}
-            tags={project.data.tech}
-            featured={index === 0}
+            cover={project.data.cover!}
+            category={project.data.category}
+            status={project.data.status}
+            tech={project.data.tech}
+            repoUrl={project.data.repoUrl!}
           />
         ))}
       </div>
@@ -80,18 +86,25 @@ const articles = sortByPublishedAt(
     padding-bottom: 120px;
   }
 
+  .hero {
+    padding-block: clamp(64px, 8vw, 104px) clamp(52px, 7vw, 78px);
+  }
+
   .home-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 18px;
   }
 
-  .home-grid--projects :global(.content-card:first-child) {
-    grid-column: span 2;
+  .home-grid--projects {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  @media (max-width: 960px) {
+    .home-grid--projects { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
 
   @media (max-width: 760px) {
     .home-grid { grid-template-columns: 1fr; }
-    .home-grid--projects :global(.content-card:first-child) { grid-column: auto; }
   }
 </style>

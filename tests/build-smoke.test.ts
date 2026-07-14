@@ -31,6 +31,18 @@ describe('static site build', () => {
     expect(article).toContain('文章目录');
   });
 
+  it('publishes the product engineer story with projects before articles', () => {
+    const home = readFileSync('dist/index.html', 'utf8');
+    const about = readFileSync('dist/about/index.html', 'utf8');
+
+    expect(home).toContain('把复杂业务，做成真正可用的产品。');
+    expect(home.indexOf('项目作品')).toBeLessThan(home.indexOf('最近写下的内容'));
+    expect(about).toContain('我不只写代码，也负责让产品落地。');
+    expect(about).toContain('7 年');
+    expect(about).toContain('PHP/Laravel');
+    expect(home).not.toContain('Field Notes');
+  });
+
   it('builds search, feeds, sitemap, and about outputs', () => {
     expect(existsSync('dist/search/index.html')).toBe(true);
     expect(existsSync('dist/about/index.html')).toBe(true);
