@@ -6,7 +6,7 @@ status: completed
 category: 数据与搜索
 tech: [Electron, SheetJS, JavaScript]
 cover: /images/projects/excel-analyzer.png
-repoUrl: https://github.com/xrlnewman/field-notes/tree/main/showcase/excel-analyzer
+repoUrl: https://github.com/xrlnewman/excel-analyzer
 featured: false
 draft: false
 ---

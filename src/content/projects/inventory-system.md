@@ -6,7 +6,7 @@ status: completed
 category: 业务系统
 tech: [Laravel 12, PHP 8.3, MySQL, Redis]
 cover: /images/projects/inventory-system.svg
-repoUrl: https://github.com/xrlnewman/field-notes/tree/main/showcase/inventory-system
+repoUrl: https://github.com/xrlnewman/inventory-system
 featured: true
 draft: false
 ---

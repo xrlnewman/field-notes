@@ -6,7 +6,7 @@ status: completed
 category: 数据与搜索
 tech: [Electron, WebView, SheetJS]
 cover: /images/projects/web-scraper.png
-repoUrl: https://github.com/xrlnewman/field-notes/tree/main/showcase/web-scraper
+repoUrl: https://github.com/xrlnewman/web-scraper
 featured: false
 draft: false
 ---

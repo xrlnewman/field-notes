@@ -6,7 +6,7 @@ status: completed
 category: 开发工具
 tech: [Electron, JavaScript, SheetJS, PDF.js]
 cover: /images/projects/toolkit-box.png
-repoUrl: https://github.com/xrlnewman/field-notes/tree/main/showcase/toolkit-box
+repoUrl: https://github.com/xrlnewman/toolkit-box
 featured: true
 draft: false
 ---

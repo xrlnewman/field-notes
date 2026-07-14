@@ -60,7 +60,7 @@ describe('static site build', () => {
       const detail = readFileSync(detailPath, 'utf8');
       expect(projects).toContain(title);
       expect(detail).toContain(`/images/projects/${slug}.${coverExtension}`);
-      expect(detail).toContain(`https://github.com/xrlnewman/field-notes/tree/main/showcase/${slug}`);
+      expect(detail).toContain(`https://github.com/xrlnewman/${slug}`);
     }
   });
 

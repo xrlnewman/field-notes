@@ -6,7 +6,7 @@ status: completed
 category: 业务系统
 tech: [Electron, MySQL, Chart.js]
 cover: /images/projects/bi-report.png
-repoUrl: https://github.com/xrlnewman/field-notes/tree/main/showcase/bi-report
+repoUrl: https://github.com/xrlnewman/bi-report
 featured: false
 draft: false
 ---

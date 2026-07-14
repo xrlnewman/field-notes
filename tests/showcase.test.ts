@@ -85,7 +85,7 @@ const databaseExtensions = new Set([
   '.sqlite-journal', '.sqlite3-wal', '.sqlite3-shm', '.sqlite3-journal',
 ]);
 
-const repositoryDirectoryUrl = 'https://github.com/xrlnewman/field-notes/tree/main/showcase';
+const repositoryOwnerUrl = 'https://github.com/xrlnewman';
 
 interface SourceEntry {
   path: string;
@@ -211,6 +211,12 @@ describe('showcase publishing contract', () => {
     expect.soft(existsSync(contentPath), contentPath).toBe(true);
   });
 
+  it.each(expectedShowcaseProjects)('$slug 链接到同名的独立公开仓库', ({ slug }) => {
+    const frontmatter = readFrontmatter(`src/content/projects/${slug}.md`);
+
+    expect(frontmatter.repoUrl).toBe(`${repositoryOwnerUrl}/${slug}`);
+  });
+
   it('项目元数据与发布约束保持精确映射', () => {
     for (const { slug } of expectedShowcaseProjects) {
       const contentPath = `src/content/projects/${slug}.md`;
@@ -229,7 +235,6 @@ describe('showcase publishing contract', () => {
       expect(frontmatter.publishedAt).toBe(publishing.publishedAt);
       expect(frontmatter.status).toBe('completed');
       expect(frontmatter.cover).toBe(publishing.cover);
-      expect(frontmatter.repoUrl).toBe(`${repositoryDirectoryUrl}/${slug}`);
       expect(frontmatter.featured).toBe(publishing.featured);
       expect(frontmatter.draft).toBe(false);
     }

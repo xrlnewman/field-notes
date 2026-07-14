@@ -6,7 +6,7 @@ status: completed
 category: 开发工具
 tech: [Electron, Node.js, Chart.js]
 cover: /images/projects/api-bench.png
-repoUrl: https://github.com/xrlnewman/field-notes/tree/main/showcase/api-bench
+repoUrl: https://github.com/xrlnewman/api-bench
 featured: false
 draft: false
 ---

@@ -6,7 +6,7 @@ status: completed
 category: AI 自动化
 tech: [Electron, Tesseract.js, SheetJS]
 cover: /images/projects/invoice-ocr.png
-repoUrl: https://github.com/xrlnewman/field-notes/tree/main/showcase/invoice-ocr
+repoUrl: https://github.com/xrlnewman/invoice-ocr
 featured: true
 draft: false
 ---

@@ -6,7 +6,7 @@ status: completed
 category: 数据与搜索
 tech: [Electron, MySQL, PostgreSQL]
 cover: /images/projects/db-snapshot-diff.png
-repoUrl: https://github.com/xrlnewman/field-notes/tree/main/showcase/db-snapshot-diff
+repoUrl: https://github.com/xrlnewman/db-snapshot-diff
 featured: false
 draft: false
 ---
