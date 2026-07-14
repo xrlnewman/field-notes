@@ -4,6 +4,7 @@ import {
   estimateReadingTime,
   isVisibleEntry,
   sortByPublishedAt,
+  toTagSlug,
 } from '../src/lib/content';
 
 describe('content helpers', () => {
@@ -31,5 +32,11 @@ describe('content helpers', () => {
     expect(isVisibleEntry({ data: { draft: true } }, true)).toBe(false);
     expect(isVisibleEntry({ data: { draft: true } }, false)).toBe(true);
     expect(isVisibleEntry({ data: { draft: false } }, true)).toBe(true);
+  });
+
+  it('creates stable lower-case tag paths without discarding Chinese', () => {
+    expect(toTagSlug('Git Worktree')).toBe('git-worktree');
+    expect(toTagSlug('工程实践')).toBe('工程实践');
+    expect(toTagSlug('API / 设计')).toBe('api-设计');
   });
 });

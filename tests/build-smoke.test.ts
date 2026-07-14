@@ -18,4 +18,12 @@ describe('static site build', () => {
     const projects = readFileSync('dist/projects/index.html', 'utf8');
     expect(projects).toContain('Field Notes');
   });
+
+  it('builds article details and tag indexes', () => {
+    expect(existsSync('dist/articles/redisearch-result-set/index.html')).toBe(true);
+    expect(existsSync('dist/tags/git/index.html')).toBe(true);
+
+    const article = readFileSync('dist/articles/redisearch-result-set/index.html', 'utf8');
+    expect(article).toContain('文章目录');
+  });
 });

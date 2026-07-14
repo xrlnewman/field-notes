@@ -1,0 +1,45 @@
+---
+import { getCollection } from 'astro:content';
+
+import ContentCard from '../../components/ContentCard.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import { estimateReadingTime, isVisibleEntry, sortByPublishedAt } from '../../lib/content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const articles = sortByPublishedAt(
+  (await getCollection('articles')).filter((entry) => isVisibleEntry(entry, import.meta.env.PROD)),
+);
+---
+
+<BaseLayout title="文章" description="关于开发、产品和互联网实验的长期记录。">
+  <div class="container page-shell" data-pagefind-body>
+    <SectionHeading
+      eyebrow="WRITING INDEX"
+      title="文章与实践记录"
+      description="写清楚为什么这样做，也保留没有成功的方法。"
+      href="/search/"
+      linkLabel="搜索文章"
+    />
+
+    <div class="article-list">
+      {articles.map((article) => (
+        <ContentCard
+          type="article"
+          href={`/articles/${article.id}/`}
+          title={article.data.title}
+          description={article.data.description}
+          publishedAt={article.data.publishedAt}
+          meta={`${estimateReadingTime(article.body ?? '')} 分钟阅读`}
+          tags={article.data.tags}
+        />
+      ))}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .page-shell { padding-block: clamp(72px, 10vw, 124px) 110px; }
+  .article-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+  @media (max-width: 760px) { .article-list { grid-template-columns: 1fr; } }
+</style>
+

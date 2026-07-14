@@ -1,4 +1,6 @@
 ---
+import { toTagSlug } from '../lib/content';
+
 interface Props {
   tags: readonly string[];
   linked?: boolean;
@@ -10,7 +12,7 @@ const { tags, linked = false } = Astro.props;
 <ul class="tag-list" aria-label="标签">
   {tags.map((tag) => (
     <li>
-      {linked ? <a href={`/tags/${encodeURIComponent(tag.toLowerCase())}/`}>{tag}</a> : <span>{tag}</span>}
+      {linked ? <a href={`/tags/${toTagSlug(tag)}/`}>{tag}</a> : <span>{tag}</span>}
     </li>
   ))}
 </ul>
@@ -43,4 +45,3 @@ const { tags, linked = false } = Astro.props;
     background: var(--accent-soft);
   }
 </style>
-

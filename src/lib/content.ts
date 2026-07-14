@@ -27,3 +27,14 @@ export function sortByPublishedAt<T extends DatedEntry>(entries: readonly T[]): 
 export function isVisibleEntry<T extends DraftEntry>(entry: T, isProduction: boolean): boolean {
   return !isProduction || !entry.data.draft;
 }
+
+export function toTagSlug(tag: string): string {
+  return tag
+    .normalize('NFKC')
+    .trim()
+    .toLocaleLowerCase('zh-CN')
+    .replace(/[\\/?#]+/g, ' ')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+}

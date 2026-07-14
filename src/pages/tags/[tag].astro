@@ -1,0 +1,52 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+import ContentCard from '../../components/ContentCard.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import { isVisibleEntry, sortByPublishedAt, toTagSlug } from '../../lib/content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+interface Props {
+  label: string;
+  articles: CollectionEntry<'articles'>[];
+}
+
+export async function getStaticPaths() {
+  const articles = sortByPublishedAt(
+    (await getCollection('articles')).filter((entry) => isVisibleEntry(entry, import.meta.env.PROD)),
+  );
+  const tags = new Map<string, string>();
+  articles.forEach((article) => article.data.tags.forEach((tag) => tags.set(toTagSlug(tag), tag)));
+
+  return [...tags.entries()].map(([tag, label]) => ({
+    params: { tag },
+    props: { label, articles: articles.filter((article) => article.data.tags.some((item) => toTagSlug(item) === tag)) },
+  }));
+}
+
+const { label, articles } = Astro.props;
+---
+
+<BaseLayout title={`标签：${label}`} description={`所有与 ${label} 相关的文章。`}>
+  <div class="container tag-page" data-pagefind-body>
+    <SectionHeading eyebrow="TOPIC" title={`# ${label}`} description={`共 ${articles.length} 篇文章`} />
+    <div class="tag-grid">
+      {articles.map((article) => (
+        <ContentCard
+          type="article"
+          href={`/articles/${article.id}/`}
+          title={article.data.title}
+          description={article.data.description}
+          publishedAt={article.data.publishedAt}
+          tags={article.data.tags}
+        />
+      ))}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .tag-page { padding-block: clamp(72px, 10vw, 124px) 110px; }
+  .tag-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+  @media (max-width: 760px) { .tag-grid { grid-template-columns: 1fr; } }
+</style>
