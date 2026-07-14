@@ -1,14 +1,18 @@
 export const siteConfig = {
-  name: 'Field Notes',
-  brand: 'Y / Field Notes',
-  title: 'Field Notes · 项目与技术文章',
-  description: '做有用的东西，写真实的过程。这里记录项目、技术文章与持续更新的个人实验。',
+  name: '许汝林个人博客',
+  brand: '许汝林 / PRODUCT ENGINEER',
+  brandMark: '许',
+  title: '许汝林个人博客｜产品型全栈工程师',
+  description: '许汝林，27 岁，拥有 7 年开发经验的产品型全栈工程师。专注把复杂业务转化为稳定、易用、可持续迭代的产品。',
   author: {
-    name: 'Y',
-    bio: '独立开发者，关注产品、工程实践与互联网趋势。',
+    name: '许汝林',
+    role: '产品型全栈工程师',
+    age: 27,
+    experienceYears: 7,
+    bio: '我是一名拥有 7 年开发经验的产品型全栈工程师，能从需求梳理、系统设计、前后端开发一路做到部署交付与持续迭代。',
   },
   social: {
-    github: '',
+    github: 'https://github.com/xrlnewman',
     email: '',
   },
   nav: [
