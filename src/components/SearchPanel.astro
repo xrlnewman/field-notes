@@ -21,38 +21,22 @@
   <noscript><p class="search-fallback">搜索需要启用 JavaScript。你仍然可以直接浏览文章和项目列表。</p></noscript>
 </section>
 
-<script>
-  interface PagefindData {
-    url: string;
-    excerpt: string;
-    meta: { title?: string; type?: string };
-  }
+<script is:inline type="module">
+  const input = document.querySelector('[data-search-input]');
+  const clearButton = document.querySelector('[data-search-clear]');
+  const status = document.querySelector('[data-search-status]');
+  const results = document.querySelector('[data-search-results]');
+  let pagefindPromise;
+  let timer;
 
-  interface PagefindResult {
-    data(): Promise<PagefindData>;
-  }
-
-  interface PagefindApi {
-    init(): Promise<void>;
-    search(query: string): Promise<{ results: PagefindResult[] }>;
-  }
-
-  const input = document.querySelector<HTMLInputElement>('[data-search-input]');
-  const clearButton = document.querySelector<HTMLButtonElement>('[data-search-clear]');
-  const status = document.querySelector<HTMLElement>('[data-search-status]');
-  const results = document.querySelector<HTMLOListElement>('[data-search-results]');
-  let pagefindPromise: Promise<PagefindApi> | undefined;
-  let timer: number | undefined;
-
-  const setStatus = (message: string) => {
+  const setStatus = (message) => {
     if (status) status.textContent = message;
   };
 
-  const loadPagefind = async (): Promise<PagefindApi> => {
+  const loadPagefind = async () => {
     if (!pagefindPromise) {
       pagefindPromise = (async () => {
-        const modulePath = '/pagefind/pagefind.js';
-        const pagefind = await import(/* @vite-ignore */ modulePath) as PagefindApi;
+        const pagefind = await import('/pagefind/pagefind.js');
         await pagefind.init();
         return pagefind;
       })();
@@ -60,7 +44,7 @@
     return pagefindPromise;
   };
 
-  const renderResults = (items: PagefindData[]) => {
+  const renderResults = (items) => {
     if (!results) return;
     results.replaceChildren();
     items.forEach((item) => {
@@ -182,4 +166,3 @@
   .search-results :global(mark) { color: var(--ink); background: color-mix(in srgb, var(--accent) 28%, transparent); }
   .search-fallback { color: var(--muted); }
 </style>
-

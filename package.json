@@ -11,7 +11,9 @@
     "build": "astro build && pagefind --site dist",
     "preview": "astro preview",
     "check": "astro check",
-    "test": "vitest run"
+    "test": "vitest run tests/content.test.ts tests/giscus.test.ts",
+    "test:build": "npm run build && vitest run tests/build-smoke.test.ts",
+    "verify": "npm test && npm run check && npm run test:build"
   },
   "dependencies": {
     "@astrojs/mdx": "^7.0.3",

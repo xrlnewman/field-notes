@@ -33,6 +33,10 @@ describe('static site build', () => {
     expect(existsSync('dist/rss.xml')).toBe(true);
     expect(existsSync('dist/sitemap-index.xml')).toBe(true);
     expect(existsSync('dist/pagefind/pagefind.js')).toBe(true);
+
+    const search = readFileSync('dist/search/index.html', 'utf8');
+    expect(search).toContain("import('/pagefind/pagefind.js')");
+    expect(search).not.toContain('__VITE_PRELOAD__');
   });
 
   it('builds comment hosts and the fixed global guestbook mapping', () => {
@@ -44,5 +48,10 @@ describe('static site build', () => {
     expect(guestbook).toContain('global-guestbook');
     expect(article).toContain('data-giscus-host');
     expect(project).toContain('data-giscus-host');
+  });
+
+  it('publishes crawler and browser identity assets', () => {
+    expect(existsSync('dist/robots.txt')).toBe(true);
+    expect(existsSync('dist/favicon.svg')).toBe(true);
   });
 });
