@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8" /><title>API 压测</title><link rel="stylesheet" href="style.css" /></head>
+<body>
+  <h1>API 压测</h1>
+  <div class="subtitle">QPS / P99 / 错误率 / 实时趋势图</div>
+
+  <div class="card">
+    <div class="row">
+      <label>Method</label>
+      <select id="method"><option>GET</option><option>POST</option><option>PUT</option><option>DELETE</option><option>PATCH</option></select>
+      <label>URL</label>
+      <input id="url" type="text" placeholder="https://api.example.com/endpoint" style="flex:1" />
+    </div>
+    <div class="row">
+      <label>并发数</label>
+      <input id="concurrency" type="number" value="10" min="1" style="width:80px" />
+      <label>持续时间(秒)</label>
+      <input id="duration" type="number" value="30" min="1" style="width:80px" />
+      <label>目标 QPS</label>
+      <input id="rps" type="number" value="0" min="0" style="width:80px" />
+      <label>预热(秒)</label>
+      <input id="warmup" type="number" value="0" min="0" style="width:80px" />
+      <span class="muted">预热不计入指标</span>
+    </div>
+    <div class="row">
+      <label>压测模式</label>
+      <select id="bench-mode">
+        <option value="single">单接口（用上方 URL/headers/body）</option>
+        <option value="scenario">多步场景（链式，用下方 JSON）</option>
+      </select>
+      <button id="save-plan" class="secondary">保存计划</button>
+      <button id="load-plan" class="secondary">加载计划</button>
+    </div>
+    <div class="row" id="scenario-row" style="align-items:flex-start" hidden>
+      <label>场景 JSON</label>
+      <textarea id="scenario" rows="10" placeholder='[
+  {"name":"login","method":"POST","url":"https://api/login","body":"{\"u\":\"a\",\"p\":\"b\"}","capture":{"token":"$.token"}},
+  {"name":"profile","method":"GET","url":"https://api/profile","headers":{"Authorization":"Bearer {token}"}}
+]' style="flex:1;font-family:ui-monospace,Consolas,monospace;font-size:12px">[]</textarea>
+    </div>
+    <div class="row" style="align-items:flex-start">
+      <label>Headers (JSON)</label>
+      <textarea id="headers" rows="4" placeholder='{"Content-Type":"application/json","Authorization":"Bearer xxx"}' style="flex:1;font-family:ui-monospace,Consolas,monospace;font-size:12px">{}</textarea>
+    </div>
+    <div class="row" style="align-items:flex-start">
+      <label>Body</label>
+      <textarea id="body" rows="4" placeholder="（GET 留空）" style="flex:1;font-family:ui-monospace,Consolas,monospace;font-size:12px"></textarea>
+    </div>
+    <div class="toolbar">
+      <button id="start-btn">开始压测</button>
+      <button id="stop-btn" class="danger" disabled>停止</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>实时指标</h2>
+    <div class="kpis">
+      <div class="kpi"><div class="label">已发送</div><div class="value" id="k-sent">0</div></div>
+      <div class="kpi"><div class="label">成功</div><div class="value" id="k-ok" style="color:#16a34a">0</div></div>
+      <div class="kpi"><div class="label">失败</div><div class="value" id="k-fail" style="color:#dc2626">0</div></div>
+      <div class="kpi"><div class="label">QPS</div><div class="value" id="k-qps">0</div></div>
+      <div class="kpi"><div class="label">P50</div><div class="value" id="k-p50">0</div></div>
+      <div class="kpi"><div class="label">P95</div><div class="value" id="k-p95">0</div></div>
+      <div class="kpi"><div class="label">P99</div><div class="value" id="k-p99">0</div></div>
+      <div class="kpi"><div class="label">最大延迟</div><div class="value" id="k-max">0</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>延迟趋势</h2>
+    <canvas id="chart-lat" height="100"></canvas>
+  </div>
+
+  <div class="card">
+    <h2>状态码 / 错误</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div><h3 style="margin-top:0">状态码分布</h3><div class="table-wrap"><table id="tbl-status"><thead><tr><th>状态码</th><th>次数</th></tr></thead><tbody></tbody></table></div></div>
+      <div><h3 style="margin-top:0">错误类型</h3><div class="table-wrap"><table id="tbl-err"><thead><tr><th>错误</th><th>次数</th></tr></thead><tbody></tbody></table></div></div>
+    </div>
+  </div>
+
+  <div id="log" class="log" style="margin-top:14px">就绪</div>
+
+  <script src="../node_modules/chart.js/dist/chart.umd.js"></script>
+  <script src="app.js"></script>
+</body></html>

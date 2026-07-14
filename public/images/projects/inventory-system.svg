@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" role="img" aria-labelledby="title description">
+  <title id="title">进销存管理系统 API 系统架构</title>
+  <desc id="description">管理端、Laravel API、业务域与数据层的四层系统架构图。</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f5f0e7"/>
+      <stop offset="1" stop-color="#eee7dc"/>
+    </linearGradient>
+    <linearGradient id="api" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#b63b17"/>
+      <stop offset="1" stop-color="#8f2d10"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#442a20" flood-opacity="0.12"/>
+    </filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="9" refY="6" orient="auto">
+      <path d="M1 1 10 6 1 11Z" fill="#8c8377"/>
+    </marker>
+  </defs>
+
+  <rect width="1440" height="900" fill="url(#background)"/>
+  <circle cx="1340" cy="90" r="210" fill="#fde2d4" opacity="0.7"/>
+  <circle cx="90" cy="835" r="245" fill="#d9eeea" opacity="0.75"/>
+
+  <g font-family="Inter, PingFang SC, Microsoft YaHei, sans-serif">
+    <text x="88" y="84" fill="#b63b17" font-size="18" font-weight="700" letter-spacing="3">PROJECT ARCHITECTURE</text>
+    <text x="88" y="134" fill="#1f211d" font-size="42" font-weight="800">进销存管理系统 API</text>
+    <text x="88" y="172" fill="#6f6b62" font-size="20">围绕采购、销售与库存流转的 Laravel 服务端</text>
+
+    <g transform="translate(1168 62)">
+      <rect width="184" height="48" rx="24" fill="#fffaf3" stroke="#b63b17" stroke-width="2"/>
+      <circle cx="28" cy="24" r="7" fill="#b63b17"/>
+      <text x="50" y="31" fill="#8f2d10" font-size="18" font-weight="700">系统架构</text>
+    </g>
+
+    <g filter="url(#shadow)">
+      <g transform="translate(126 232)">
+        <rect width="1188" height="112" rx="22" fill="#fffaf3" stroke="#ddd4c7" stroke-width="2"/>
+        <rect width="188" height="112" rx="22" fill="#1f211d"/>
+        <text x="32" y="48" fill="#fffaf3" font-size="16" font-weight="700" letter-spacing="2">01 · CLIENT</text>
+        <text x="32" y="80" fill="#f6efe5" font-size="24" font-weight="800">管理端</text>
+        <text x="234" y="52" fill="#1f211d" font-size="28" font-weight="800">Vue / React 管理端</text>
+        <text x="234" y="84" fill="#6f6b62" font-size="18">运营配置 · 业务操作 · 报表查看</text>
+        <g transform="translate(992 31)" fill="none" stroke="#167c75" stroke-width="3">
+          <rect width="104" height="60" rx="8"/>
+          <path d="M14 46h76M40 60h24"/>
+        </g>
+      </g>
+
+      <g transform="translate(126 400)">
+        <rect width="1188" height="124" rx="22" fill="url(#api)"/>
+        <rect width="188" height="124" rx="22" fill="#8f2d10"/>
+        <text x="32" y="52" fill="#fde2d4" font-size="16" font-weight="700" letter-spacing="2">02 · API</text>
+        <text x="32" y="86" fill="#fffaf3" font-size="24" font-weight="800">应用层</text>
+        <text x="234" y="56" fill="#fffaf3" font-size="28" font-weight="800">Laravel 12 API + Sanctum + RBAC</text>
+        <text x="234" y="91" fill="#fde2d4" font-size="18">身份认证 · 权限控制 · 事务编排 · REST API</text>
+        <g transform="translate(1014 29)" fill="none" stroke="#fffaf3" stroke-width="3">
+          <path d="M34 5 68 18v25c0 25-16 40-34 48C16 83 0 68 0 43V18Z"/>
+          <path d="m20 44 10 10 20-22"/>
+        </g>
+      </g>
+
+      <g transform="translate(126 580)">
+        <rect width="1188" height="126" rx="22" fill="#fffaf3" stroke="#ddd4c7" stroke-width="2"/>
+        <rect width="188" height="126" rx="22" fill="#167c75"/>
+        <text x="32" y="52" fill="#d9eeea" font-size="16" font-weight="700" letter-spacing="2">03 · DOMAIN</text>
+        <text x="32" y="86" fill="#fffaf3" font-size="24" font-weight="800">业务域</text>
+        <g transform="translate(224 27)" font-size="19" font-weight="700" text-anchor="middle">
+          <g><rect width="118" height="46" rx="12" fill="#fde2d4"/><text x="59" y="30" fill="#8f2d10">采购</text></g>
+          <g transform="translate(132)"><rect width="118" height="46" rx="12" fill="#fde2d4"/><text x="59" y="30" fill="#8f2d10">销售</text></g>
+          <g transform="translate(264)"><rect width="118" height="46" rx="12" fill="#d9eeea"/><text x="59" y="30" fill="#0d615c">库存</text></g>
+          <g transform="translate(396)"><rect width="118" height="46" rx="12" fill="#d9eeea"/><text x="59" y="30" fill="#0d615c">调拨</text></g>
+          <g transform="translate(528)"><rect width="118" height="46" rx="12" fill="#eee7dc"/><text x="59" y="30" fill="#1f211d">盘点</text></g>
+          <g transform="translate(660)"><rect width="118" height="46" rx="12" fill="#eee7dc"/><text x="59" y="30" fill="#1f211d">报表</text></g>
+        </g>
+        <text x="224" y="100" fill="#6f6b62" font-size="17">订单服务 · 库存流水 · 仓库管理 · 统计查询</text>
+      </g>
+
+      <g transform="translate(126 762)">
+        <rect width="1188" height="96" rx="22" fill="#1f211d"/>
+        <rect width="188" height="96" rx="22" fill="#11130f"/>
+        <text x="32" y="42" fill="#b9b0a2" font-size="16" font-weight="700" letter-spacing="2">04 · DATA</text>
+        <text x="32" y="72" fill="#fffaf3" font-size="24" font-weight="800">数据层</text>
+        <text x="234" y="59" fill="#fffaf3" font-size="28" font-weight="800">MySQL 8 + Redis</text>
+        <text x="516" y="58" fill="#b9b0a2" font-size="18">业务数据持久化 · 缓存与队列能力</text>
+        <g transform="translate(1032 24)" fill="none" stroke="#63d8c2" stroke-width="3">
+          <ellipse cx="36" cy="10" rx="36" ry="10"/>
+          <path d="M0 10v38c0 6 16 11 36 11s36-5 36-11V10M0 29c0 6 16 11 36 11s36-5 36-11"/>
+        </g>
+      </g>
+    </g>
+
+    <g stroke="#8c8377" stroke-width="3" fill="none" marker-end="url(#arrow)">
+      <path d="M720 352v34"/>
+      <path d="M720 532v34"/>
+      <path d="M720 714v34"/>
+    </g>
+  </g>
+</svg>

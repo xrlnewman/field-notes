@@ -1,0 +1,21 @@
+{
+  "name": "invoice-ocr",
+  "version": "0.2.0",
+  "description": "发票/流水 OCR - 多正则候选 + 字段置信度 + 单元格手动纠错",
+  "main": "main.js",
+  "author": "xrlnewman",
+  "license": "MIT",
+  "scripts": { "start": "electron .", "build": "electron-builder --win --x64" },
+  "dependencies": {
+    "tesseract.js": "^5.1.1",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+  },
+  "devDependencies": { "electron": "^43.1.0", "electron-builder": "^26.15.3" },
+  "build": {
+    "appId": "com.xrlnewman.invoice-ocr",
+    "productName": "InvoiceOCR",
+    "files": ["main.js", "preload.js", "renderer/**/*", "node_modules/**/*"],
+    "win": { "target": [{ "target": "nsis", "arch": ["x64"] }] },
+    "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true, "perMachine": false, "createDesktopShortcut": true, "shortcutName": "InvoiceOCR" }
+  }
+}

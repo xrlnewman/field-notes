@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>PDF 批处理</title>
+  <link rel="stylesheet" href="../../common.css" />
+</head>
+<body>
+  <h1>PDF 批处理</h1>
+  <div class="subtitle">合并 / 拆分 / 提取页 / 加水印 / PDF→图片</div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="merge">合并</button>
+    <button class="tab" data-tab="split">拆分</button>
+    <button class="tab" data-tab="extract">提取页</button>
+    <button class="tab" data-tab="watermark">水印</button>
+    <button class="tab" data-tab="toimage">转图片</button>
+  </div>
+
+  <!-- 合并 -->
+  <section class="tab-panel active" data-panel="merge">
+    <div class="card">
+      <div class="toolbar">
+        <button id="m-add">添加 PDF</button>
+        <button id="m-clear" class="secondary">清空</button>
+        <button id="m-run">合并并保存</button>
+      </div>
+      <ul id="m-list" class="file-list"></ul>
+      <div class="muted" style="margin-top:8px">提示：列表顺序就是合并顺序，可拖拽调整</div>
+    </div>
+  </section>
+
+  <!-- 拆分 -->
+  <section class="tab-panel" data-panel="split">
+    <div class="card">
+      <div class="toolbar">
+        <button id="s-pick">选 PDF</button>
+        <span id="s-file" class="muted">未选择</span>
+      </div>
+      <div class="row">
+        <label>每 N 页一份</label>
+        <input id="s-step" type="number" min="1" value="1" style="width:100px" />
+        <button id="s-run">拆分</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 提取 -->
+  <section class="tab-panel" data-panel="extract">
+    <div class="card">
+      <div class="toolbar">
+        <button id="e-pick">选 PDF</button>
+        <span id="e-file" class="muted">未选择</span>
+      </div>
+      <div class="row">
+        <label>页范围</label>
+        <input id="e-range" type="text" placeholder="如 1-3,5,7-9" style="flex:1" />
+        <button id="e-run">提取</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 水印 -->
+  <section class="tab-panel" data-panel="watermark">
+    <div class="card">
+      <div class="toolbar">
+        <button id="w-pick">选 PDF（可多选）</button>
+        <span id="w-files" class="muted">未选择</span>
+      </div>
+      <div class="row">
+        <label>水印文字</label>
+        <input id="w-text" type="text" value="CONFIDENTIAL" />
+      </div>
+      <div class="row">
+        <label>字号</label>
+        <input id="w-size" type="number" value="60" style="width:80px" />
+        <label>透明度</label>
+        <input id="w-opacity" type="number" min="0" max="1" step="0.1" value="0.3" style="width:80px" />
+        <label>旋转角度</label>
+        <input id="w-rotate" type="number" value="45" style="width:80px" />
+        <button id="w-run">加水印</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 转图片 -->
+  <section class="tab-panel" data-panel="toimage">
+    <div class="card">
+      <div class="toolbar">
+        <button id="i-pick">选 PDF</button>
+        <span id="i-file" class="muted">未选择</span>
+      </div>
+      <div class="row">
+        <label>缩放倍数</label>
+        <input id="i-scale" type="number" min="0.5" max="4" step="0.5" value="2" style="width:80px" />
+        <label>格式</label>
+        <select id="i-format"><option value="png">PNG</option><option value="jpeg">JPEG</option></select>
+        <button id="i-run">导出图片</button>
+      </div>
+    </div>
+  </section>
+
+  <div id="log" class="log" style="margin-top:16px">就绪</div>
+
+  <script src="../../../node_modules/pdf-lib/dist/pdf-lib.min.js"></script>
+  <script src="../../../node_modules/pdfjs-dist/build/pdf.min.mjs" type="module"></script>
+  <script src="../../tool-api-bridge.js"></script>
+  <script src="tool.js" type="module"></script>
+</body>
+</html>

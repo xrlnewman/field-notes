@@ -1,0 +1,20 @@
+{
+  "name": "web-scraper",
+  "version": "0.2.0",
+  "description": "网页爬虫工作台 - webview + CSS 选择器 + 翻页 + 规则集持久化 + Cookies 导出",
+  "main": "main.js",
+  "author": "xrlnewman",
+  "license": "MIT",
+  "scripts": { "start": "electron .", "build": "electron-builder --win --x64" },
+  "dependencies": {
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+  },
+  "devDependencies": { "electron": "^43.1.0", "electron-builder": "^26.15.3" },
+  "build": {
+    "appId": "com.xrlnewman.web-scraper",
+    "productName": "WebScraper",
+    "files": ["main.js", "preload.js", "lib/**/*", "renderer/**/*", "node_modules/**/*"],
+    "win": { "target": [{ "target": "nsis", "arch": ["x64"] }] },
+    "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true, "perMachine": false, "createDesktopShortcut": true, "shortcutName": "WebScraper" }
+  }
+}

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>网页爬虫工作台</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body { display: grid; grid-template-columns: 60% 40%; grid-template-rows: auto 1fr; gap: 12px; height: 100vh; padding: 12px; }
+    .header { grid-column: 1/3; }
+    .browser-pane { display: flex; flex-direction: column; overflow: hidden; }
+    .rules-pane { display: flex; flex-direction: column; overflow: auto; }
+    webview { flex: 1; border: 1px solid #cbd5e1; border-radius: 6px; }
+    .url-bar { display: flex; gap: 6px; margin-bottom: 6px; }
+    .url-bar input { flex: 1; }
+    .field-row { display: grid; grid-template-columns: 1fr 2fr 1fr 1.2fr auto; gap: 6px; align-items: center; margin-bottom: 4px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1 style="margin:0">网页爬虫工作台</h1>
+    <div class="subtitle">CSS 选择器规则引擎</div>
+  </div>
+
+  <div class="browser-pane">
+    <div class="url-bar">
+      <input id="url" type="text" placeholder="https://example.com/list" value="https://news.ycombinator.com/" />
+      <button id="go">前往</button>
+      <button id="back" class="secondary">←</button>
+      <button id="fwd" class="secondary">→</button>
+    </div>
+    <webview id="web" src="about:blank"></webview>
+  </div>
+
+  <div class="rules-pane">
+    <div class="card">
+      <h2 style="margin-top:0">规则集</h2>
+      <div class="row">
+        <label>已保存</label>
+        <select id="ruleset-select" style="flex:1"><option value="">（无）</option></select>
+        <button id="ruleset-load" class="secondary">加载</button>
+        <button id="ruleset-delete" class="danger">删除</button>
+      </div>
+      <div class="row">
+        <label>保存名称</label>
+        <input id="ruleset-name" type="text" placeholder="如 hn-news" style="flex:1" />
+        <button id="ruleset-save">保存</button>
+        <button id="export-cookies" class="secondary">导出 Cookies</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 style="margin-top:0">规则</h2>
+      <div class="row"><label>List 选择器</label><input id="list-sel" type="text" placeholder="如 .item, tr.athing" style="flex:1" /></div>
+      <h3 style="margin:10px 0 4px">字段</h3>
+      <div id="fields">
+        <div class="field-row"><input class="f-name" placeholder="字段名" /><input class="f-sel" placeholder="选择器" /><select class="f-extract"><option value="text">text</option><option value="html">html</option><option value="href">href</option><option value="src">src</option><option value="attr">attr...</option></select><input class="f-attr" placeholder="属性名，如 data-id" hidden disabled /><button class="danger del-field">删</button></div>
+      </div>
+      <button id="add-field" class="secondary">+ 字段</button>
+
+      <h2>翻页</h2>
+      <div class="row">
+        <label>方式</label>
+        <select id="page-mode"><option value="none">不翻页（单页）</option><option value="next">点击"下一页"</option><option value="url">URL 模板</option></select>
+      </div>
+      <div class="row" id="next-sel-row" hidden><label>"下一页"选择器</label><input id="next-sel" type="text" placeholder="如 a.next, a[rel=next]" style="flex:1" /></div>
+      <div class="row" id="url-tpl-row" hidden><label>URL 模板（{n}=页码）</label><input id="url-tpl" type="text" placeholder="https://.../?page={n}" style="flex:1" /></div>
+      <div class="row"><label>最大页数</label><input id="max-pages" type="number" value="5" style="width:100px" /><label>每页间隔(ms)</label><input id="delay" type="number" value="1000" style="width:100px" /></div>
+
+      <div class="toolbar">
+        <button id="test-btn">试运行（当前页）</button>
+        <button id="run-btn">批量爬取</button>
+        <button id="export-btn" class="secondary" disabled>导出 Excel</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 style="margin-top:0">结果（<span id="result-count">0</span>）</h2>
+      <div class="table-wrap" style="max-height:280px"><table id="result-table"></table></div>
+    </div>
+
+    <div id="log" class="log" style="margin-top:8px">就绪</div>
+  </div>
+
+  <script src="../node_modules/xlsx/dist/xlsx.full.min.js"></script>
+  <script src="rule-fields.js"></script>
+  <script src="scrape-runtime.js"></script>
+  <script src="url-policy.js"></script>
+  <script src="app.js"></script>
+</body></html>

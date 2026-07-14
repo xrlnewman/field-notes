@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8" /><title>简易 BI</title><link rel="stylesheet" href="style.css" /></head>
+<body>
+  <h1>简易 BI 报表</h1>
+  <div class="subtitle">连 MySQL → 选表 → 选字段 → 出图表</div>
+
+  <div class="card">
+    <h2>数据库连接</h2>
+    <div class="row">
+      <label>Host</label><input id="host" type="text" value="127.0.0.1" />
+      <label>Port</label><input id="port" type="number" value="3306" style="width:90px" />
+      <label>User</label><input id="user" type="text" value="root" />
+      <label>Pass</label><input id="pass" type="password" />
+      <label>DB</label><input id="db" type="text" />
+      <button id="connect-btn">连接</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>查询配置</h2>
+    <div class="row">
+      <label>表</label><select id="table" style="min-width:200px"></select>
+      <label>X 字段</label><select id="x-col" style="min-width:160px"></select>
+      <label>Y 字段</label><select id="y-col" style="min-width:160px"></select>
+      <label>聚合</label>
+      <select id="agg">
+        <option value="sum">SUM</option><option value="count">COUNT</option>
+        <option value="avg">AVG</option><option value="max">MAX</option><option value="min">MIN</option>
+      </select>
+      <label>排序</label>
+      <select id="order"><option value="x">X 升序</option><option value="y">Y 降序</option></select>
+      <label>限制</label>
+      <input id="limit" type="number" value="50" min="1" max="1000" style="width:80px" />
+    </div>
+    <div class="row" style="align-items:flex-start">
+      <label>自定义 SQL（可选）</label>
+      <textarea id="custom-sql" rows="3" placeholder="留空则用上面的字段生成 SELECT" style="flex:1;font-family:ui-monospace,Consolas,monospace;font-size:12px"></textarea>
+    </div>
+    <div class="toolbar">
+      <button id="run-btn">运行查询</button>
+      <button id="export-png" class="secondary">导出 PNG</button>
+      <button id="export-xlsx" class="secondary">导出 Excel</button>
+      <button id="save-query" class="secondary">保存查询</button>
+      <select id="saved-queries" style="min-width:160px"><option value="">— 已保存查询 —</option></select>
+      <button id="load-query" class="secondary">加载</button>
+      <button id="add-to-dashboard">加入仪表盘</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>仪表盘（多图）</h2>
+    <div class="toolbar">
+      <button id="clear-dash" class="danger">清空</button>
+      <span id="dash-count" class="muted">0 个图表</span>
+    </div>
+    <div id="dashboard" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:14px;margin-top:10px"></div>
+  </div>
+
+  <div class="card">
+    <h2>图表</h2>
+    <div class="row">
+      <label>图表类型</label>
+      <select id="chart-type"><option value="bar">柱状图</option><option value="line">折线图</option><option value="pie">饼图</option><option value="scatter">散点图</option></select>
+    </div>
+    <canvas id="chart" height="120"></canvas>
+  </div>
+
+  <div class="card">
+    <h2>原始数据</h2>
+    <div class="table-wrap"><table id="data-table"></table></div>
+  </div>
+
+  <div id="log" class="log" style="margin-top:14px">就绪</div>
+
+  <script src="../node_modules/chart.js/dist/chart.umd.js"></script>
+  <script src="../node_modules/xlsx/dist/xlsx.full.min.js"></script>
+  <script src="app.js"></script>
+</body></html>

@@ -444,7 +444,7 @@ Expected: `http://127.0.0.1:4321/about/` 返回 200。
 
 ```powershell
 New-Item -ItemType Directory -Force -Path 'public/images/projects' | Out-Null
-& 'C:\Program Files\Google\Chrome\Application\chrome.exe' --headless --disable-gpu --hide-scrollbars --window-size=1440,900 --screenshot='E:\project\field-notes\.worktrees\personal-brand\public\images\projects\field-notes.png' 'http://127.0.0.1:4321/about/'
+& '<chrome-executable>' --headless --disable-gpu --hide-scrollbars --window-size=1440,900 --screenshot='<workspace>/field-notes/public/images/projects/field-notes.png' 'http://127.0.0.1:4321/about/'
 ```
 
 Expected: 生成 1440×900 的真实博客页面截图，不使用用户参考图或第三方商城素材。

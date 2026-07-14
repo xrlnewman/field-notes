@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>日志分析器</title>
+  <link rel="stylesheet" href="../../common.css" />
+</head>
+<body>
+  <h1>日志分析器</h1>
+  <div class="subtitle">解析 .log → 级别统计 / 趋势图 / Top 错误 / Top IP / Top URL</div>
+
+  <div class="card">
+    <div class="toolbar">
+      <button id="pick-btn">选 .log 文件</button>
+      <span id="file-name" class="muted">未选择</span>
+    </div>
+    <div class="row">
+      <label>时间格式</label>
+      <select id="time-fmt">
+        <option value="auto">自动识别</option>
+        <option value="iso">ISO: 2024-01-02T15:04:05</option>
+        <option value="cn">中式: 2024-01-02 15:04:05</option>
+        <option value="apache">Apache: [02/Jan/2024:15:04:05 +0800]</option>
+      </select>
+      <label>聚合粒度</label>
+      <select id="bucket">
+        <option value="1m">分钟</option>
+        <option value="5m">5 分钟</option>
+        <option value="1h" selected>小时</option>
+        <option value="1d">天</option>
+      </select>
+      <button id="analyze-btn">开始分析</button>
+    </div>
+  </div>
+
+  <section id="result" hidden>
+    <div class="card">
+      <h2>整体概览</h2>
+      <div class="kpis">
+        <div class="kpi"><div class="label">总行数</div><div class="value" id="k-total">0</div></div>
+        <div class="kpi"><div class="label">ERROR</div><div class="value" id="k-error" style="color:#dc2626">0</div></div>
+        <div class="kpi"><div class="label">WARN</div><div class="value" id="k-warn" style="color:#d97706">0</div></div>
+        <div class="kpi"><div class="label">INFO</div><div class="value" id="k-info" style="color:#0284c7">0</div></div>
+        <div class="kpi"><div class="label">时间跨度</div><div class="value" id="k-span" style="font-size:13px">-</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>时间趋势（按级别）</h2>
+      <canvas id="chart-trend" height="120"></canvas>
+    </div>
+
+    <div class="card">
+      <h2>Top 错误消息</h2>
+      <div class="table-wrap"><table id="top-error"><thead><tr><th>错误消息（归一化）</th><th>次数</th></tr></thead><tbody></tbody></table></div>
+    </div>
+
+    <div class="card">
+      <h2>Top IP</h2>
+      <div class="table-wrap"><table id="top-ip"><thead><tr><th>IP</th><th>次数</th></tr></thead><tbody></tbody></table></div>
+    </div>
+
+    <div class="card">
+      <h2>Top URL / Path</h2>
+      <div class="table-wrap"><table id="top-url"><thead><tr><th>URL</th><th>次数</th></tr></thead><tbody></tbody></table></div>
+    </div>
+  </section>
+
+  <div id="log" class="log" style="margin-top:14px">就绪</div>
+
+  <script src="../../../node_modules/chart.js/dist/chart.umd.js"></script>
+  <script src="../../tool-api-bridge.js"></script>
+  <script src="tool.js"></script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+/* shared styles for tool pages (loaded inside iframe) */
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; font-family: -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif; background: #f8fafc; color: #0f172a; }
+body { padding: 20px 28px; }
+
+h1 { margin: 0 0 4px; font-size: 22px; }
+h2 { margin: 24px 0 10px; font-size: 16px; color: #334155; }
+.subtitle { color: #64748b; font-size: 13px; margin-bottom: 16px; }
+
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; }
+button, .btn {
+  background: #3b82f6; color: #fff; border: 0; padding: 8px 14px;
+  border-radius: 6px; font-size: 13px; cursor: pointer;
+}
+button:hover, .btn:hover { background: #2563eb; }
+button.secondary { background: #e2e8f0; color: #334155; }
+button.secondary:hover { background: #cbd5e1; }
+button.danger { background: #ef4444; }
+button.danger:hover { background: #dc2626; }
+button:disabled { background: #94a3b8; cursor: not-allowed; }
+
+input, select, textarea {
+  padding: 7px 10px; border-radius: 6px; border: 1px solid #cbd5e1;
+  font-size: 13px; background: #fff; color: #0f172a; font-family: inherit;
+}
+input:focus, select:focus, textarea:focus { outline: 2px solid #3b82f6; outline-offset: -1px; border-color: #3b82f6; }
+label { font-size: 13px; color: #334155; }
+
+.drop-zone {
+  margin: 12px 0; padding: 32px 20px;
+  border: 2px dashed #94a3b8; border-radius: 10px;
+  text-align: center; color: #64748b; background: #fff;
+  transition: all 0.15s;
+}
+.drop-zone.dragover { border-color: #3b82f6; background: #eff6ff; color: #1d4ed8; }
+
+.card { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px 20px; margin-bottom: 14px; }
+
+.file-list { list-style: none; padding: 0; margin: 0; max-height: 240px; overflow: auto; border: 1px solid #e2e8f0; border-radius: 6px; background: #fff; }
+.file-list li {
+  display: flex; align-items: center; gap: 8px; padding: 6px 10px;
+  border-bottom: 1px solid #f1f5f9; font-size: 13px;
+}
+.file-list li:last-child { border-bottom: 0; }
+.file-list .name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.file-list .size { color: #64748b; font-size: 11px; min-width: 60px; text-align: right; }
+.file-list .actions { display: flex; gap: 4px; }
+.file-list button { padding: 2px 8px; font-size: 11px; }
+
+.log {
+  background: #0f172a; color: #cbd5e1; padding: 10px 14px; border-radius: 6px;
+  font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size: 12px;
+  max-height: 200px; overflow: auto; white-space: pre-wrap;
+}
+.log .err { color: #f87171; }
+.log .ok { color: #86efac; }
+.log .info { color: #93c5fd; }
+
+table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+th, td { padding: 6px 10px; border-bottom: 1px solid #e2e8f0; text-align: left; white-space: nowrap; }
+th { background: #f1f5f9; font-weight: 600; color: #334155; position: sticky; top: 0; }
+.table-wrap { max-height: 320px; overflow: auto; border: 1px solid #e2e8f0; border-radius: 6px; background: #fff; }
+
+.tabs { display: flex; gap: 4px; margin-bottom: 12px; border-bottom: 1px solid #e2e8f0; }
+.tab { padding: 8px 16px; cursor: pointer; border: 0; background: transparent; color: #64748b; font-size: 13px; border-bottom: 2px solid transparent; }
+.tab.active { color: #3b82f6; border-bottom-color: #3b82f6; font-weight: 600; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+.row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; }
+.row label { min-width: 80px; }
+.row input[type=text], .row input[type=number] { flex: 1; min-width: 200px; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+.kpi { background: #f1f5f9; border-radius: 6px; padding: 10px 14px; }
+.kpi .label { font-size: 11px; color: #64748b; }
+.kpi .value { font-size: 20px; font-weight: 600; color: #0f172a; }
+
+.muted { color: #94a3b8; font-size: 12px; }
+.tag { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 11px; background: #dbeafe; color: #1d4ed8; }

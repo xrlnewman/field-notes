@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8" /><title>数据库快照对比</title><link rel="stylesheet" href="style.css" /></head>
+<body>
+  <h1>数据库快照对比</h1>
+  <div class="subtitle">MySQL / PostgreSQL 结构 + 数据采样 diff</div>
+
+  <div class="card">
+    <h2>连接配置</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+      <div>
+        <h3 style="margin-top:0">A 库</h3>
+        <div class="row"><label>类型</label><select id="a-type"><option value="mysql">MySQL</option><option value="postgres">PostgreSQL</option></select></div>
+        <div class="row"><label>Host</label><input id="a-host" type="text" value="127.0.0.1" style="flex:1" /></div>
+        <div class="row"><label>Port</label><input id="a-port" type="number" value="3306" style="width:120px" /></div>
+        <div class="row"><label>User</label><input id="a-user" type="text" value="root" style="flex:1" /></div>
+        <div class="row"><label>Pass</label><input id="a-pass" type="password" style="flex:1" /></div>
+        <div class="row"><label>DB</label><input id="a-db" type="text" style="flex:1" /></div>
+        <button id="a-test" class="secondary">测试连接</button>
+      </div>
+      <div>
+        <h3 style="margin-top:0">B 库</h3>
+        <div class="row"><label>类型</label><select id="b-type"><option value="mysql">MySQL</option><option value="postgres">PostgreSQL</option></select></div>
+        <div class="row"><label>Host</label><input id="b-host" type="text" value="127.0.0.1" style="flex:1" /></div>
+        <div class="row"><label>Port</label><input id="b-port" type="number" value="3306" style="width:120px" /></div>
+        <div class="row"><label>User</label><input id="b-user" type="text" value="root" style="flex:1" /></div>
+        <div class="row"><label>Pass</label><input id="b-pass" type="password" style="flex:1" /></div>
+        <div class="row"><label>DB</label><input id="b-db" type="text" style="flex:1" /></div>
+        <button id="b-test" class="secondary">测试连接</button>
+      </div>
+    </div>
+    <div class="row" style="margin-top:14px">
+      <label>对比模式</label>
+      <select id="mode">
+        <option value="schema">仅结构</option>
+        <option value="both" selected>结构 + 数据采样</option>
+      </select>
+      <label>采样行数</label>
+      <input id="sample-size" type="number" value="100" min="0" max="1000" style="width:80px" />
+      <button id="run-btn">开始对比</button>
+      <button id="save-cfg" class="secondary">保存配置</button>
+    </div>
+  </div>
+
+  <section id="result" hidden>
+    <div class="card">
+      <h2>结构对比</h2>
+      <div class="kpis">
+        <div class="kpi"><div class="label">A 表数</div><div class="value" id="k-a-tables">0</div></div>
+        <div class="kpi"><div class="label">B 表数</div><div class="value" id="k-b-tables">0</div></div>
+        <div class="kpi"><div class="label">仅 A 有</div><div class="value" id="k-only-a" style="color:#dc2626">0</div></div>
+        <div class="kpi"><div class="label">仅 B 有</div><div class="value" id="k-only-b" style="color:#d97706">0</div></div>
+        <div class="kpi"><div class="label">结构有差异</div><div class="value" id="k-changed" style="color:#0284c7">0</div></div>
+      </div>
+      <div class="table-wrap" style="margin-top:14px">
+        <table id="schema-diff"><thead><tr><th>表名</th><th>状态</th><th>详情</th></tr></thead><tbody></tbody></table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>数据采样对比</h2>
+      <div class="table-wrap">
+        <table id="data-diff"><thead><tr><th>表名</th><th>A 行数</th><th>B 行数</th><th>差异</th></tr></thead><tbody></tbody></table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>迁移 SQL（A → B）</h2>
+      <div class="toolbar">
+        <button id="gen-migration">生成迁移 SQL</button>
+        <button id="copy-migration" class="secondary">复制</button>
+        <button id="save-migration" class="secondary">保存到文件</button>
+        <span class="muted">把 A 库结构同步到 B 库的 DDL（CREATE TABLE / ALTER TABLE / DROP TABLE）</span>
+      </div>
+      <textarea id="migration-sql" rows="14" readonly style="width:100%;font-family:ui-monospace,Consolas,monospace;font-size:12px;margin-top:8px"></textarea>
+    </div>
+  </section>
+
+  <div id="log" class="log" style="margin-top:14px">就绪</div>
+  <script src="app.js"></script>
+</body></html>

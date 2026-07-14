@@ -1,6 +1,29 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { extname, join } from 'node:path';
 
 import { describe, expect, it } from 'vitest';
+
+const showcaseProjects = [
+  { slug: 'toolkit-box', title: 'ToolkitBox' },
+  { slug: 'api-bench', title: 'API Bench' },
+  { slug: 'db-snapshot-diff', title: 'DB Snapshot Diff' },
+  { slug: 'web-scraper', title: 'Web Scraper' },
+  { slug: 'bi-report', title: 'BI Report' },
+  { slug: 'inventory-system', title: 'Inventory System' },
+  { slug: 'invoice-ocr', title: 'Invoice OCR' },
+  { slug: 'excel-analyzer', title: 'Excel Analyzer' },
+] as const;
+
+function listHtmlFiles(root: string): string[] {
+  return readdirSync(root, { withFileTypes: true }).flatMap((entry) => {
+    const entryPath = join(root, entry.name);
+    if (entry.isDirectory()) {
+      return listHtmlFiles(entryPath);
+    }
+
+    return entry.isFile() && extname(entry.name) === '.html' ? [entryPath] : [];
+  });
+}
 
 describe('static site build', () => {
   it('builds the home and 404 pages with the theme initializer', () => {
@@ -28,6 +51,21 @@ describe('static site build', () => {
     expect(project).toContain('/images/projects/field-notes.png');
     expect(project).toContain('GitHub 源码');
     expect(project).toContain('https://field-notes-2fi.pages.dev');
+
+    for (const { slug, title } of showcaseProjects) {
+      const coverExtension = slug === 'inventory-system' ? 'svg' : 'png';
+      const detailPath = `dist/projects/${slug}/index.html`;
+
+      expect(existsSync(detailPath), detailPath).toBe(true);
+      const detail = readFileSync(detailPath, 'utf8');
+      expect(projects).toContain(title);
+      expect(detail).toContain(`/images/projects/${slug}.${coverExtension}`);
+      expect(detail).toContain(`https://github.com/xrlnewman/field-notes/tree/main/showcase/${slug}`);
+    }
+  });
+
+  it('builds the expected 24 HTML pages', () => {
+    expect(listHtmlFiles('dist')).toHaveLength(24);
   });
 
   it('builds article details and tag indexes', () => {
@@ -79,7 +117,7 @@ describe('static site build', () => {
     expect(home).toContain('data-project-category-grid');
     expect(home).toContain('公开项目');
     expect(home).not.toContain('PROJECT CATALOG');
-    expect(home).toMatch(/data-project-count="1"[^>]*>1<\/strong>[\s\S]*?公开项目/);
+    expect(home).toMatch(/data-project-count="9"[^>]*>9<\/strong>[\s\S]*?公开项目/);
     expect(home).toMatch(/<strong[^>]*>5<\/strong>[\s\S]*?项目分类/);
     expect(home).toMatch(/<strong[^>]*>7 年<\/strong>[\s\S]*?开发经验/);
     expect(projects).toContain('data-project-catalog');
@@ -87,6 +125,7 @@ describe('static site build', () => {
     expect(projects).toContain('数据与搜索');
     expect(projects).toContain('AI 自动化');
     expect(projects).toContain('<h1');
+    const categoryCounts = [1, 2, 2, 3, 1];
     categories.forEach((category, index) => {
       const href = `/projects/?category=${encodeURIComponent(category)}`;
       const linkStart = home.indexOf(`href="${href}"`);
@@ -94,16 +133,17 @@ describe('static site build', () => {
 
       expect(linkStart).toBeGreaterThan(-1);
       expect(categoryLink).toContain(category);
-      expect(categoryLink).toContain(`data-project-category-count="${index === 0 ? 1 : 0}"`);
+      expect(categoryLink).toContain(`data-project-category-count="${categoryCounts[index]}"`);
     });
 
     expect(projects.match(/data-project-filter=/g)).toHaveLength(6);
+    const filterCounts = [9, ...categoryCounts];
     ['全部', ...categories].forEach((category, index) => {
       const buttonStart = projects.indexOf(`data-project-filter="${category}"`);
       const filterButton = projects.slice(buttonStart, projects.indexOf('</button>', buttonStart));
 
       expect(buttonStart).toBeGreaterThan(-1);
-      expect(filterButton).toContain(`data-project-filter-count="${index <= 1 ? 1 : 0}"`);
+      expect(filterButton).toContain(`data-project-filter-count="${filterCounts[index]}"`);
     });
   });
 

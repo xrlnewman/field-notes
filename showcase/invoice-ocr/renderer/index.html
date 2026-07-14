@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8" /><title>发票 OCR</title><link rel="stylesheet" href="style.css" /></head>
+<body>
+  <h1>发票/流水 OCR</h1>
+  <div class="subtitle">tesseract.js 中文识别 + 正则提取关键字段</div>
+
+  <div class="card">
+    <div class="toolbar">
+      <button id="add-btn">添加图片</button>
+      <button id="clear-btn" class="secondary">清空</button>
+      <span id="count" class="muted">0 张</span>
+    </div>
+    <ul id="file-list" class="file-list"></ul>
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <label>OCR 语言</label>
+      <select id="lang">
+        <option value="chi_sim+eng" selected>中文简体 + 英文</option>
+        <option value="chi_sim">中文简体</option>
+        <option value="eng">英文</option>
+        <option value="chi_tra+eng">中文繁体 + 英文</option>
+      </select>
+      <span class="muted">首次使用会下载训练数据（~10MB/语言）</span>
+    </div>
+    <div class="toolbar">
+      <button id="run-btn">开始识别</button>
+      <button id="export-btn" class="secondary" disabled>导出 Excel</button>
+      <span id="progress" class="muted"></span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>识别结果（可点击单元格修改）</h2>
+    <div class="muted" style="margin-bottom:6px">每个字段单元格显示「值 + 置信度色块」：绿=高，黄=中，红=低；双击单元格手动编辑</div>
+    <div class="table-wrap">
+      <table id="result-table">
+        <thead><tr><th>文件</th><th>金额</th><th>日期</th><th>发票号</th><th>抬头</th><th>税号</th><th>归类</th><th>原文</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="log" class="log" style="margin-top:14px">就绪</div>
+
+  <script src="../node_modules/tesseract.js/dist/tesseract.min.js"></script>
+  <script src="../node_modules/xlsx/dist/xlsx.full.min.js"></script>
+  <script src="app.js"></script>
+</body></html>

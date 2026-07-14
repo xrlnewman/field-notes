@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>ToolkitBox</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo">📦</div>
+      <div class="name">ToolkitBox</div>
+    </div>
+    <nav id="nav" class="nav">
+      <button class="nav-item active" data-tool="pdf"><span>📄</span> PDF 批处理</button>
+      <button class="nav-item" data-tool="excel"><span>📊</span> Excel 批处理</button>
+      <button class="nav-item" data-tool="rename"><span>📝</span> 文件批量改名</button>
+      <button class="nav-item" data-tool="log"><span>📈</span> 日志分析器</button>
+    </nav>
+    <div class="footer">v0.1.0 · xrlnewman</div>
+  </aside>
+  <main id="workspace" class="workspace">
+    <iframe id="tool-frame" src="tools/pdf/tool.html"></iframe>
+  </main>
+  <script src="tool-api-host.js"></script>
+  <script src="shell.js"></script>
+</body>
+</html>

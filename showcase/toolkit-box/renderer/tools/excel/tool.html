@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>Excel 批处理</title>
+  <link rel="stylesheet" href="../../common.css" />
+</head>
+<body>
+  <h1>Excel 批处理</h1>
+  <div class="subtitle">两表 join 合并 / 找差异 / 单表按列拆分</div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="join">合并 (Join)</button>
+    <button class="tab" data-tab="diff">找差异</button>
+    <button class="tab" data-tab="split">拆分</button>
+  </div>
+
+  <!-- join -->
+  <section class="tab-panel active" data-panel="join">
+    <div class="card">
+      <div class="row"><label>左表</label><button id="j-pick-a">选 Excel</button><span id="j-file-a" class="muted">未选择</span></div>
+      <div class="row"><label>左 key 列</label><select id="j-key-a" style="min-width:200px"></select></div>
+      <div class="row"><label>右表</label><button id="j-pick-b">选 Excel</button><span id="j-file-b" class="muted">未选择</span></div>
+      <div class="row"><label>右 key 列</label><select id="j-key-b" style="min-width:200px"></select></div>
+      <div class="row">
+        <label>Join 类型</label>
+        <select id="j-type">
+          <option value="inner">inner（只保留两边都有）</option>
+          <option value="left">left（保留左表全部）</option>
+          <option value="outer">outer（两边全部）</option>
+        </select>
+        <button id="j-run">合并并导出</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- diff -->
+  <section class="tab-panel" data-panel="diff">
+    <div class="card">
+      <div class="row"><label>表 A</label><button id="d-pick-a">选 Excel</button><span id="d-file-a" class="muted">未选择</span></div>
+      <div class="row"><label>表 B</label><button id="d-pick-b">选 Excel</button><span id="d-file-b" class="muted">未选择</span></div>
+      <div class="row"><label>主键列（双方相同）</label><select id="d-key" style="min-width:200px"></select></div>
+      <div class="row"><button id="d-run">对比并导出（3 sheet）</button></div>
+      <div class="muted">输出包含三个 sheet：仅 A 有 / 仅 B 有 / 主键相同但其它字段有差异</div>
+    </div>
+  </section>
+
+  <!-- split -->
+  <section class="tab-panel" data-panel="split">
+    <div class="card">
+      <div class="row"><label>源表</label><button id="x-pick">选 Excel</button><span id="x-file" class="muted">未选择</span></div>
+      <div class="row"><label>按哪列分组</label><select id="x-key" style="min-width:200px"></select></div>
+      <div class="row">
+        <label>输出模式</label>
+        <select id="x-mode">
+          <option value="sheets">单文件多 sheet（每组一个 sheet）</option>
+          <option value="files">多文件（每组一个 .xlsx）</option>
+        </select>
+        <button id="x-run">拆分并导出</button>
+      </div>
+    </div>
+  </section>
+
+  <div id="log" class="log" style="margin-top:16px">就绪</div>
+
+  <script src="../../../node_modules/xlsx/dist/xlsx.full.min.js"></script>
+  <script src="../../tool-api-bridge.js"></script>
+  <script src="tool.js"></script>
+</body>
+</html>

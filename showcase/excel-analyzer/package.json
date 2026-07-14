@@ -1,0 +1,43 @@
+{
+  "name": "excel-analyzer",
+  "version": "0.1.0",
+  "description": "Excel data analyzer & chart generator (Electron)",
+  "main": "main.js",
+  "author": "you",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win --x64"
+  },
+  "dependencies": {
+    "chart.js": "^4.4.4",
+    "chartjs-chart-matrix": "^2.0.1",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+  },
+  "devDependencies": {
+    "electron": "^43.1.0",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "com.example.excel-analyzer",
+    "productName": "ExcelAnalyzer",
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer/**/*",
+      "node_modules/**/*"
+    ],
+    "win": {
+      "target": [
+        { "target": "nsis", "arch": ["x64"] }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "ExcelAnalyzer"
+    }
+  }
+}

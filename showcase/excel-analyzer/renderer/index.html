@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>Excel Analyzer</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Excel Analyzer</h1>
+    <div class="actions">
+      <button id="pick-btn">选择 Excel 文件</button>
+      <select id="sheet-select" hidden></select>
+      <span id="status" class="status"></span>
+    </div>
+  </header>
+
+  <section id="drop-zone" class="drop-zone">
+    <p>把 .xlsx / .xls / .csv 文件拖到这里，或点上方按钮选择</p>
+  </section>
+
+  <main id="report" hidden>
+    <section class="card">
+      <h2>数据概览</h2>
+      <div id="overview" class="overview"></div>
+      <h3>列概览</h3>
+      <div class="table-wrap"><table id="columns-table"></table></div>
+      <h3>数据预览（前 20 行）</h3>
+      <div class="table-wrap"><table id="preview-table"></table></div>
+    </section>
+
+    <section class="card">
+      <h2>自动图表</h2>
+      <div id="charts" class="charts-grid"></div>
+    </section>
+  </main>
+
+  <script src="../node_modules/xlsx/dist/xlsx.full.min.js"></script>
+  <script src="../node_modules/chart.js/dist/chart.umd.js"></script>
+  <script src="../node_modules/chartjs-chart-matrix/dist/chartjs-chart-matrix.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
