@@ -9,6 +9,7 @@ describe('static site build', () => {
 
     const home = readFileSync('dist/index.html', 'utf8');
     expect(home).toContain('data-theme-toggle');
+    expect(home).toContain('https://field-notes-2fi.pages.dev');
   });
 
   it('builds the project index and project details from content', () => {
@@ -26,6 +27,7 @@ describe('static site build', () => {
     expect(project).toContain('project-showcase');
     expect(project).toContain('/images/projects/field-notes.png');
     expect(project).toContain('GitHub 源码');
+    expect(project).toContain('https://field-notes-2fi.pages.dev');
   });
 
   it('builds article details and tag indexes', () => {
@@ -74,5 +76,8 @@ describe('static site build', () => {
   it('publishes crawler and browser identity assets', () => {
     expect(existsSync('dist/robots.txt')).toBe(true);
     expect(existsSync('dist/favicon.svg')).toBe(true);
+
+    const robots = readFileSync('dist/robots.txt', 'utf8');
+    expect(robots).toContain('https://field-notes-2fi.pages.dev/sitemap-index.xml');
   });
 });
