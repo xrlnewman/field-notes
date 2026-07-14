@@ -6,7 +6,7 @@
 
 **Architecture:** Astro generates every content route from typed Markdown collections at build time. Pagefind adds a static search index after Astro builds, while Giscus embeds GitHub Discussions for article/project comments and the fixed guestbook thread; no application server or database is used.
 
-**Tech Stack:** Astro 6, TypeScript strict mode, Astro Content Collections, native CSS, Pagefind, Giscus, Vitest, Astro Check, Cloudflare Pages.
+**Tech Stack:** Astro 7, TypeScript strict mode, Astro Content Collections, native CSS, Pagefind, Giscus, Vitest, Astro Check, Cloudflare Pages.
 
 ## Global Constraints
 
