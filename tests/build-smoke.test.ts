@@ -14,9 +14,18 @@ describe('static site build', () => {
   it('builds the project index and project details from content', () => {
     expect(existsSync('dist/projects/index.html')).toBe(true);
     expect(existsSync('dist/projects/field-notes/index.html')).toBe(true);
+    expect(existsSync('dist/images/projects/field-notes.png')).toBe(true);
 
     const projects = readFileSync('dist/projects/index.html', 'utf8');
-    expect(projects).toContain('Field Notes');
+    const project = readFileSync('dist/projects/field-notes/index.html', 'utf8');
+    expect(projects).toContain('许汝林个人博客');
+    expect(projects).toContain('data-project-filter');
+    expect(projects).toContain('data-project-category="网站产品"');
+    expect(projects).toContain('https://github.com/xrlnewman/field-notes');
+    expect(projects).toContain('/images/projects/field-notes.png');
+    expect(project).toContain('project-showcase');
+    expect(project).toContain('/images/projects/field-notes.png');
+    expect(project).toContain('GitHub 源码');
   });
 
   it('builds article details and tag indexes', () => {
@@ -25,6 +34,18 @@ describe('static site build', () => {
 
     const article = readFileSync('dist/articles/redisearch-result-set/index.html', 'utf8');
     expect(article).toContain('文章目录');
+  });
+
+  it('publishes the product engineer story with projects before articles', () => {
+    const home = readFileSync('dist/index.html', 'utf8');
+    const about = readFileSync('dist/about/index.html', 'utf8');
+
+    expect(home).toContain('把复杂业务，做成真正可用的产品。');
+    expect(home.indexOf('项目作品')).toBeLessThan(home.indexOf('最近写下的内容'));
+    expect(about).toContain('我不只写代码，也负责让产品落地。');
+    expect(about).toContain('7 年');
+    expect(about).toContain('PHP/Laravel');
+    expect(home).not.toContain('Field Notes');
   });
 
   it('builds search, feeds, sitemap, and about outputs', () => {

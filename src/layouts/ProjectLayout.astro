@@ -30,8 +30,13 @@ const statusLabels = { active: '持续迭代', completed: '已经完成', archiv
       {(data.demoUrl || data.repoUrl) && (
         <div class="button-row">
           {data.demoUrl && <a class="button button--primary" href={data.demoUrl} target="_blank" rel="noopener noreferrer">在线体验 ↗</a>}
-          {data.repoUrl && <a class="button" href={data.repoUrl} target="_blank" rel="noopener noreferrer">查看源码 ↗</a>}
+          {data.repoUrl && <a class="button" href={data.repoUrl} target="_blank" rel="noopener noreferrer">GitHub 源码 ↗</a>}
         </div>
+      )}
+      {data.cover && (
+        <figure class="project-showcase">
+          <img src={data.cover} alt={`${data.title} 界面截图`} width="1440" height="900" loading="eager" />
+        </figure>
       )}
     </header>
 
@@ -74,6 +79,23 @@ const statusLabels = { active: '持续迭代', completed: '已经完成', archiv
     grid-template-columns: repeat(3, 1fr);
     gap: 18px;
     margin: 64px 0 0;
+  }
+
+  .project-showcase {
+    overflow: hidden;
+    margin: 58px 0 0;
+    aspect-ratio: 16 / 10;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface-soft);
+    box-shadow: var(--shadow);
+  }
+
+  .project-showcase img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   .project-meta div {

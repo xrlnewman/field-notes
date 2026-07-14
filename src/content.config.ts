@@ -2,6 +2,8 @@ import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
+import { projectSchema } from './lib/project-schema';
+
 const baseFields = {
   title: z.string().min(1),
   description: z.string().min(1),
@@ -17,14 +19,6 @@ export const articleSchema = z.object({
   cover: z.string().optional(),
 });
 
-export const projectSchema = z.object({
-  ...baseFields,
-  status: z.enum(['active', 'completed', 'archived']),
-  tech: z.array(z.string().min(1)).default([]),
-  demoUrl: z.url().optional(),
-  repoUrl: z.url().optional(),
-});
-
 const articles = defineCollection({
   loader: glob({ base: './src/content/articles', pattern: '**/*.{md,mdx}' }),
   schema: articleSchema,
@@ -38,4 +32,5 @@ const projects = defineCollection({
 export const collections = { articles, projects };
 
 export type ArticleData = z.infer<typeof articleSchema>;
-export type ProjectData = z.infer<typeof projectSchema>;
+export { projectSchema } from './lib/project-schema';
+export type { ProjectData } from './lib/project-schema';
