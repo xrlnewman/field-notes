@@ -6,6 +6,7 @@ status: active
 category: 网站产品
 tech: [Astro, TypeScript, Pagefind, Giscus]
 cover: /images/projects/field-notes.png
+demoUrl: https://field-notes-2fi.pages.dev
 repoUrl: https://github.com/xrlnewman/field-notes
 featured: true
 draft: false
