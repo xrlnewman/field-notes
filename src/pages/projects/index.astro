@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 
-import ContentCard from '../../components/ContentCard.astro';
+import ProjectGallery from '../../components/ProjectGallery.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
 import { isVisibleEntry, sortByPublishedAt } from '../../lib/content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
@@ -11,28 +11,15 @@ const projects = sortByPublishedAt(
 );
 ---
 
-<BaseLayout title="项目" description="正在构建和已经完成的产品、工具与公开实验。">
+<BaseLayout title="项目作品" description="已经完成源码整理和安全检查的产品与工具，每个项目都可以查看实现过程和 GitHub 源码。">
   <div class="container page-shell" data-pagefind-body>
     <SectionHeading
       eyebrow="PROJECT INDEX"
-      title="项目与产品实验"
-      description="不只展示结果，也记录问题、实现路径和最后的取舍。"
+      title="项目作品"
+      description="这里展示已经完成源码整理和安全检查的产品与工具。每个项目都可以查看实现过程和 GitHub 源码。"
     />
 
-    <div class="content-grid">
-      {projects.map((project, index) => (
-        <ContentCard
-          type="project"
-          href={`/projects/${project.id}/`}
-          title={project.data.title}
-          description={project.data.description}
-          publishedAt={project.data.publishedAt}
-          meta={project.data.status === 'active' ? '持续迭代' : project.data.status === 'completed' ? '已经完成' : '已归档'}
-          tags={project.data.tech}
-          featured={index === 0}
-        />
-      ))}
-    </div>
+    <ProjectGallery projects={projects} />
   </div>
 </BaseLayout>
 
@@ -41,14 +28,5 @@ const projects = sortByPublishedAt(
     padding-block: clamp(72px, 10vw, 124px) 110px;
   }
 
-  .content-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px;
-  }
-
-  @media (max-width: 760px) {
-    .content-grid { grid-template-columns: 1fr; }
-  }
 </style>
 

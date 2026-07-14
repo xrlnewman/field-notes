@@ -16,7 +16,11 @@ describe('static site build', () => {
     expect(existsSync('dist/projects/field-notes/index.html')).toBe(true);
 
     const projects = readFileSync('dist/projects/index.html', 'utf8');
-    expect(projects).toContain('Field Notes');
+    expect(projects).toContain('许汝林个人博客');
+    expect(projects).toContain('data-project-filter');
+    expect(projects).toContain('data-project-category="网站产品"');
+    expect(projects).toContain('https://github.com/xrlnewman/field-notes');
+    expect(projects).toContain('/images/projects/field-notes.png');
   });
 
   it('builds article details and tag indexes', () => {
