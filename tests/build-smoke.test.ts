@@ -145,7 +145,7 @@ describe('static site build', () => {
   it('removes obsolete public comment service configuration from source', () => {
     const envExample = readFileSync('.env.example', 'utf8');
     const envTypes = readFileSync('src/env.d.ts', 'utf8');
-    const commentsSource = readFileSync('src/components/Comments.astro', 'utf8');
+    const commentsSource = readFileSync('src/components/Comments.astro', 'utf8').replace(/\r\n/g, '\n');
 
     expect(envExample).not.toContain('PUBLIC_GISCUS');
     expect(envTypes).not.toContain('PUBLIC_GISCUS');

@@ -4,6 +4,8 @@ import { describe, expect, it } from 'vitest';
 
 import { siteConfig } from '../src/config/site';
 
+const readText = (path: string) => readFileSync(path, 'utf8').replace(/\r\n/g, '\n');
+
 describe('personal brand configuration', () => {
   it('uses Xu Rulin identity and product engineer positioning', () => {
     expect(siteConfig.name).toBe('许汝林个人博客');
@@ -23,12 +25,12 @@ describe('personal brand configuration', () => {
   });
 
   it('uses the warm studio catalog visual contract', () => {
-    const globalStyles = readFileSync('src/styles/global.css', 'utf8');
-    const homePage = readFileSync('src/pages/index.astro', 'utf8');
-    const projectsPage = readFileSync('src/pages/projects/index.astro', 'utf8');
-    const projectCard = readFileSync('src/components/ProjectCard.astro', 'utf8');
-    const header = readFileSync('src/components/Header.astro', 'utf8');
-    const searchPanel = readFileSync('src/components/SearchPanel.astro', 'utf8');
+    const globalStyles = readText('src/styles/global.css');
+    const homePage = readText('src/pages/index.astro');
+    const projectsPage = readText('src/pages/projects/index.astro');
+    const projectCard = readText('src/components/ProjectCard.astro');
+    const header = readText('src/components/Header.astro');
+    const searchPanel = readText('src/components/SearchPanel.astro');
 
     expect(globalStyles).toContain('--canvas: #f5f0e7');
     expect(globalStyles).toContain('--accent: #b63b17');
