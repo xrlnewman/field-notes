@@ -10,4 +10,12 @@ describe('static site build', () => {
     const home = readFileSync('dist/index.html', 'utf8');
     expect(home).toContain('data-theme-toggle');
   });
+
+  it('builds the project index and project details from content', () => {
+    expect(existsSync('dist/projects/index.html')).toBe(true);
+    expect(existsSync('dist/projects/field-notes/index.html')).toBe(true);
+
+    const projects = readFileSync('dist/projects/index.html', 'utf8');
+    expect(projects).toContain('Field Notes');
+  });
 });

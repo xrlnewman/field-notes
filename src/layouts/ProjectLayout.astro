@@ -1,0 +1,167 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+import TagList from '../components/TagList.astro';
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+const { data } = project;
+const date = new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' }).format(data.publishedAt);
+const statusLabels = { active: '持续迭代', completed: '已经完成', archived: '已归档' } as const;
+---
+
+<BaseLayout title={data.title} description={data.description} type="article">
+  <article class="project-detail">
+    <header class="container project-hero">
+      <div>
+        <p class="eyebrow">PROJECT / {statusLabels[data.status]}</p>
+        <h1>{data.title}</h1>
+        <p class="project-description">{data.description}</p>
+      </div>
+      <dl class="project-meta">
+        <div><dt>发布日期</dt><dd><time datetime={data.publishedAt.toISOString()}>{date}</time></dd></div>
+        <div><dt>当前状态</dt><dd>{statusLabels[data.status]}</dd></div>
+        <div><dt>技术与方向</dt><dd><TagList tags={data.tech} /></dd></div>
+      </dl>
+      {(data.demoUrl || data.repoUrl) && (
+        <div class="button-row">
+          {data.demoUrl && <a class="button button--primary" href={data.demoUrl} target="_blank" rel="noopener noreferrer">在线体验 ↗</a>}
+          {data.repoUrl && <a class="button" href={data.repoUrl} target="_blank" rel="noopener noreferrer">查看源码 ↗</a>}
+        </div>
+      )}
+    </header>
+
+    <div class="container project-body-grid">
+      <div class="project-index" aria-hidden="true"><span>{project.id.slice(0, 2).toUpperCase()}</span></div>
+      <div class="prose" data-pagefind-body>
+        <slot />
+      </div>
+    </div>
+
+    <div class="container comments-slot">
+      <slot name="comments" />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .project-hero {
+    padding-block: clamp(72px, 10vw, 132px) 70px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .project-hero h1 {
+    max-width: 950px;
+    margin: 0;
+    font-size: clamp(3.5rem, 10vw, 8rem);
+    letter-spacing: -0.075em;
+    line-height: 0.95;
+  }
+
+  .project-description {
+    max-width: 720px;
+    margin: 26px 0 0;
+    color: var(--muted);
+    font-size: clamp(1.1rem, 2vw, 1.35rem);
+  }
+
+  .project-meta {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin: 64px 0 0;
+  }
+
+  .project-meta div {
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  dt {
+    color: var(--muted);
+    font-family: 'Geist Mono', ui-monospace, monospace;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+  }
+
+  dd {
+    margin: 8px 0 0;
+    font-weight: 620;
+  }
+
+  .project-body-grid {
+    display: grid;
+    grid-template-columns: 120px minmax(0, var(--prose));
+    gap: 60px;
+    justify-content: center;
+    padding-block: 80px 110px;
+  }
+
+  .project-index span {
+    position: sticky;
+    top: 110px;
+    display: grid;
+    width: 64px;
+    height: 64px;
+    place-items: center;
+    border-radius: 50%;
+    color: var(--canvas);
+    background: var(--ink);
+    font-family: 'Geist Mono', ui-monospace, monospace;
+    font-size: 0.76rem;
+  }
+
+  .prose {
+    min-width: 0;
+    font-size: 1.06rem;
+    line-height: 1.8;
+  }
+
+  .prose :global(h2) {
+    margin: 2.5em 0 0.7em;
+    font-size: 1.8rem;
+    letter-spacing: -0.035em;
+  }
+
+  .prose :global(h2:first-child) {
+    margin-top: 0;
+  }
+
+  .prose :global(p),
+  .prose :global(li) {
+    color: color-mix(in srgb, var(--ink) 86%, var(--muted));
+  }
+
+  .prose :global(pre) {
+    overflow: auto;
+    padding: 20px;
+    border-radius: var(--radius-md);
+    color: var(--code-ink);
+    background: var(--code);
+  }
+
+  .comments-slot {
+    max-width: var(--prose);
+    padding-bottom: 100px;
+  }
+
+  @media (max-width: 760px) {
+    .project-meta {
+      grid-template-columns: 1fr;
+    }
+
+    .project-body-grid {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+
+    .project-index {
+      display: none;
+    }
+  }
+</style>
+

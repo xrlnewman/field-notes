@@ -1,0 +1,145 @@
+---
+import TagList from './TagList.astro';
+
+interface Props {
+  type: 'article' | 'project';
+  href: string;
+  title: string;
+  description: string;
+  publishedAt: Date;
+  meta?: string;
+  tags?: readonly string[];
+  featured?: boolean;
+}
+
+const {
+  type,
+  href,
+  title,
+  description,
+  publishedAt,
+  meta,
+  tags = [],
+  featured = false,
+} = Astro.props;
+const label = type === 'project' ? 'PROJECT' : 'ARTICLE';
+const date = new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(publishedAt);
+---
+
+<article class:list={['content-card', { 'content-card--featured': featured }]}>
+  <a class="card-link" href={href} aria-label={`阅读：${title}`}><span></span></a>
+  <div class="card-topline">
+    <span>{label}</span>
+    <time datetime={publishedAt.toISOString()}>{date}</time>
+  </div>
+  <div class="card-main">
+    <h3>{title}</h3>
+    <p>{description}</p>
+  </div>
+  <div class="card-footer">
+    {tags.length > 0 && <TagList tags={tags} />}
+    <span class="card-meta">{meta ?? '阅读详情'} <span aria-hidden="true">↗</span></span>
+  </div>
+</article>
+
+<style>
+  .content-card {
+    position: relative;
+    display: flex;
+    min-height: 290px;
+    overflow: hidden;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+  }
+
+  .content-card:hover {
+    border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+    box-shadow: var(--shadow);
+    transform: translateY(-4px);
+  }
+
+  .content-card--featured {
+    color: var(--canvas);
+    border-color: var(--ink);
+    background: var(--ink);
+  }
+
+  .card-link {
+    position: absolute;
+    z-index: 2;
+    inset: 0;
+  }
+
+  .card-topline,
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+  }
+
+  .card-topline {
+    color: var(--muted);
+    font-family: 'Geist Mono', ui-monospace, monospace;
+    font-size: 0.7rem;
+    font-weight: 650;
+    letter-spacing: 0.07em;
+  }
+
+  .content-card--featured .card-topline,
+  .content-card--featured .card-meta,
+  .content-card--featured p {
+    color: color-mix(in srgb, var(--canvas) 69%, transparent);
+  }
+
+  .card-main {
+    margin-block: 48px 40px;
+  }
+
+  h3 {
+    margin: 0;
+    font-size: clamp(1.5rem, 3vw, 2.15rem);
+    letter-spacing: -0.045em;
+    line-height: 1.12;
+  }
+
+  p {
+    max-width: 600px;
+    margin: 14px 0 0;
+    color: var(--muted);
+  }
+
+  .card-footer {
+    align-items: flex-end;
+  }
+
+  .card-meta {
+    flex: none;
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+
+  .content-card :global(.tag-list) {
+    position: relative;
+    z-index: 3;
+  }
+
+  @media (max-width: 540px) {
+    .content-card {
+      min-height: 260px;
+      padding: 20px;
+    }
+
+    .card-footer {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+</style>
+

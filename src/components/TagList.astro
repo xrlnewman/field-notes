@@ -1,0 +1,46 @@
+---
+interface Props {
+  tags: readonly string[];
+  linked?: boolean;
+}
+
+const { tags, linked = false } = Astro.props;
+---
+
+<ul class="tag-list" aria-label="标签">
+  {tags.map((tag) => (
+    <li>
+      {linked ? <a href={`/tags/${encodeURIComponent(tag.toLowerCase())}/`}>{tag}</a> : <span>{tag}</span>}
+    </li>
+  ))}
+</ul>
+
+<style>
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .tag-list :global(a),
+  .tag-list :global(span) {
+    display: inline-flex;
+    padding: 4px 9px;
+    border-radius: 999px;
+    color: var(--muted);
+    background: var(--surface-soft);
+    font-family: 'Geist Mono', ui-monospace, monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .tag-list :global(a:hover) {
+    color: var(--accent-strong);
+    background: var(--accent-soft);
+  }
+</style>
+

@@ -1,6 +1,18 @@
 ---
+import { getCollection } from 'astro:content';
+
+import ContentCard from '../components/ContentCard.astro';
+import SectionHeading from '../components/SectionHeading.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { siteConfig } from '../config/site';
+import { isVisibleEntry, sortByPublishedAt } from '../lib/content';
+
+const projects = sortByPublishedAt(
+  (await getCollection('projects')).filter((entry) => isVisibleEntry(entry, import.meta.env.PROD)),
+);
+const articles = sortByPublishedAt(
+  (await getCollection('articles')).filter((entry) => isVisibleEntry(entry, import.meta.env.PROD)),
+);
 ---
 
 <BaseLayout title={siteConfig.title}>
@@ -22,23 +34,64 @@ import { siteConfig } from '../config/site';
       </aside>
     </section>
 
-    <section class="foundation-grid" aria-label="站点内容">
-      <article class="foundation-card">
-        <strong>01 / PROJECTS</strong>
-        <h2>项目与产品实验</h2>
-        <p>从问题、实现到复盘，保留真正有用的过程。</p>
-      </article>
-      <article class="foundation-card">
-        <strong>02 / WRITING</strong>
-        <h2>技术文章</h2>
-        <p>开发实践、工具选择和踩坑记录。</p>
-      </article>
-      <article class="foundation-card">
-        <strong>03 / GUESTBOOK</strong>
-        <h2>公开留言</h2>
-        <p>讨论想法、交换经验，也欢迎留下你的项目。</p>
-      </article>
+    <section class="home-section" data-pagefind-ignore>
+      <SectionHeading eyebrow="FEATURED PROJECTS" title="正在做的项目" href="/projects/" />
+      <div class="home-grid home-grid--projects">
+        {projects.slice(0, 3).map((project, index) => (
+          <ContentCard
+            type="project"
+            href={`/projects/${project.id}/`}
+            title={project.data.title}
+            description={project.data.description}
+            publishedAt={project.data.publishedAt}
+            meta={project.data.status === 'active' ? '持续迭代' : '查看复盘'}
+            tags={project.data.tech}
+            featured={index === 0}
+          />
+        ))}
+      </div>
+    </section>
+
+    <section class="home-section home-section--last" data-pagefind-ignore>
+      <SectionHeading eyebrow="LATEST WRITING" title="最近写下的内容" href="/articles/" />
+      <div class="home-grid">
+        {articles.slice(0, 4).map((article) => (
+          <ContentCard
+            type="article"
+            href={`/articles/${article.id}/`}
+            title={article.data.title}
+            description={article.data.description}
+            publishedAt={article.data.publishedAt}
+            tags={article.data.tags}
+          />
+        ))}
+      </div>
     </section>
   </div>
 </BaseLayout>
 
+<style>
+  .home-section {
+    padding-block: 88px;
+    border-top: 1px solid var(--border);
+  }
+
+  .home-section--last {
+    padding-bottom: 120px;
+  }
+
+  .home-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .home-grid--projects :global(.content-card:first-child) {
+    grid-column: span 2;
+  }
+
+  @media (max-width: 760px) {
+    .home-grid { grid-template-columns: 1fr; }
+    .home-grid--projects :global(.content-card:first-child) { grid-column: auto; }
+  }
+</style>
