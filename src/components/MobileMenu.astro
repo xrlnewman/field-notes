@@ -1,0 +1,73 @@
+<button
+  class="menu-toggle"
+  type="button"
+  aria-expanded="false"
+  aria-controls="site-nav"
+  aria-label="打开导航菜单"
+  data-menu-toggle
+>
+  <span></span><span></span>
+</button>
+
+<script>
+  const button = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const navigation = document.querySelector<HTMLElement>('#site-nav');
+
+  const closeMenu = () => {
+    button?.setAttribute('aria-expanded', 'false');
+    button?.setAttribute('aria-label', '打开导航菜单');
+    navigation?.classList.remove('is-open');
+  };
+
+  button?.addEventListener('click', () => {
+    const open = button.getAttribute('aria-expanded') === 'true';
+    button.setAttribute('aria-expanded', String(!open));
+    button.setAttribute('aria-label', open ? '打开导航菜单' : '关闭导航菜单');
+    navigation?.classList.toggle('is-open', !open);
+  });
+
+  navigation?.addEventListener('click', (event) => {
+    if ((event.target as HTMLElement).closest('a')) closeMenu();
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeMenu();
+  });
+</script>
+
+<style>
+  .menu-toggle {
+    display: none;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    color: var(--ink);
+    background: var(--surface);
+  }
+
+  .menu-toggle span {
+    display: block;
+    width: 17px;
+    height: 1.5px;
+    margin: 5px auto;
+    background: currentColor;
+    transition: transform 180ms ease;
+  }
+
+  .menu-toggle[aria-expanded='true'] span:first-child {
+    transform: translateY(3.25px) rotate(45deg);
+  }
+
+  .menu-toggle[aria-expanded='true'] span:last-child {
+    transform: translateY(-3.25px) rotate(-45deg);
+  }
+
+  @media (max-width: 760px) {
+    .menu-toggle {
+      display: block;
+    }
+  }
+</style>
+

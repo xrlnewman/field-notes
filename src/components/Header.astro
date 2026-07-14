@@ -1,0 +1,152 @@
+---
+import { siteConfig } from '../config/site';
+import MobileMenu from './MobileMenu.astro';
+import ThemeToggle from './ThemeToggle.astro';
+
+const currentPath = Astro.url.pathname;
+const isActive = (href: string) => href === '/' ? currentPath === '/' : currentPath.startsWith(href);
+---
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label={`${siteConfig.name} 首页`}>
+      <span class="brand-mark" aria-hidden="true">Y</span>
+      <span>{siteConfig.name}</span>
+    </a>
+
+    <nav id="site-nav" class="site-nav" aria-label="主导航">
+      {siteConfig.nav.map((item) => (
+        <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>{item.label}</a>
+      ))}
+      <a class="search-link" href="/search/">搜索 <kbd>/</kbd></a>
+    </nav>
+
+    <div class="header-actions">
+      <ThemeToggle />
+      <MobileMenu />
+    </div>
+  </div>
+</header>
+
+<script>
+  document.addEventListener('keydown', (event) => {
+    const target = event.target as HTMLElement;
+    const typing = ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName) || target.isContentEditable;
+    if (event.key === '/' && !typing) {
+      event.preventDefault();
+      window.location.href = '/search/';
+    }
+  });
+</script>
+
+<style>
+  .site-header {
+    position: sticky;
+    z-index: 30;
+    top: 0;
+    height: var(--header-height);
+    border-bottom: 1px solid color-mix(in srgb, var(--border) 75%, transparent);
+    background: color-mix(in srgb, var(--canvas) 88%, transparent);
+    backdrop-filter: blur(16px);
+  }
+
+  .header-inner {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    text-decoration: none;
+  }
+
+  .brand:hover {
+    color: var(--ink);
+  }
+
+  .brand-mark {
+    display: grid;
+    width: 30px;
+    height: 30px;
+    place-items: center;
+    border-radius: 9px;
+    color: var(--canvas);
+    background: var(--ink);
+    font-family: 'Geist Mono', ui-monospace, monospace;
+    font-size: 0.83rem;
+  }
+
+  .site-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .site-nav a {
+    padding: 7px 10px;
+    border-radius: 8px;
+    color: var(--muted);
+    font-size: 0.9rem;
+    font-weight: 560;
+    text-decoration: none;
+  }
+
+  .site-nav a:hover,
+  .site-nav a[aria-current='page'] {
+    color: var(--ink);
+    background: var(--surface-soft);
+  }
+
+  .site-nav .search-link {
+    margin-left: 10px;
+    border: 1px solid var(--border);
+  }
+
+  kbd {
+    color: var(--muted);
+    font-family: 'Geist Mono', ui-monospace, monospace;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  @media (max-width: 760px) {
+    .site-nav {
+      position: fixed;
+      top: calc(var(--header-height) + 8px);
+      right: 14px;
+      left: 14px;
+      display: none;
+      align-items: stretch;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .site-nav.is-open {
+      display: grid;
+    }
+
+    .site-nav a {
+      min-height: 44px;
+      padding: 10px 12px;
+    }
+
+    .site-nav .search-link {
+      margin: 6px 0 0;
+    }
+  }
+</style>
+

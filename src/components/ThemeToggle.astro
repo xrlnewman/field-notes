@@ -1,0 +1,49 @@
+<button class="theme-toggle" type="button" aria-label="切换深浅主题" data-theme-toggle>
+  <span aria-hidden="true" data-theme-icon>◐</span>
+</button>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]');
+
+  const updateLabels = (theme: 'light' | 'dark') => {
+    buttons.forEach((button) => {
+      button.setAttribute('aria-label', theme === 'dark' ? '切换到浅色主题' : '切换到深色主题');
+      const icon = button.querySelector<HTMLElement>('[data-theme-icon]');
+      if (icon) icon.textContent = theme === 'dark' ? '☀' : '☾';
+    });
+  };
+
+  const currentTheme = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+  updateLabels(currentTheme);
+
+  buttons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = next;
+      document.documentElement.style.colorScheme = next;
+      localStorage.setItem('theme', next);
+      updateLabels(next);
+      document.dispatchEvent(new CustomEvent('theme-change', { detail: { theme: next } }));
+    });
+  });
+</script>
+
+<style>
+  .theme-toggle {
+    display: grid;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    place-items: center;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    color: var(--ink);
+    background: var(--surface);
+    cursor: pointer;
+  }
+
+  .theme-toggle:hover {
+    border-color: var(--accent);
+  }
+</style>
+

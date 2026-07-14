@@ -1,0 +1,44 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { siteConfig } from '../config/site';
+---
+
+<BaseLayout title={siteConfig.title}>
+  <div class="container">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">BUILD · LEARN · SHARE</p>
+        <h1>做有用的东西，写真实的过程。</h1>
+        <p class="hero__intro">{siteConfig.description}</p>
+        <div class="button-row">
+          <a class="button button--primary" href="/projects/">查看项目 <span aria-hidden="true">→</span></a>
+          <a class="button" href="/articles/">阅读文章</a>
+        </div>
+      </div>
+      <aside class="hero__panel" aria-label="当前状态">
+        <span class="status">持续构建中</span>
+        <h2>当前关注</h2>
+        <p>把互联网趋势转化为能真正使用的产品，并记录从判断、开发到发布的完整过程。</p>
+      </aside>
+    </section>
+
+    <section class="foundation-grid" aria-label="站点内容">
+      <article class="foundation-card">
+        <strong>01 / PROJECTS</strong>
+        <h2>项目与产品实验</h2>
+        <p>从问题、实现到复盘，保留真正有用的过程。</p>
+      </article>
+      <article class="foundation-card">
+        <strong>02 / WRITING</strong>
+        <h2>技术文章</h2>
+        <p>开发实践、工具选择和踩坑记录。</p>
+      </article>
+      <article class="foundation-card">
+        <strong>03 / GUESTBOOK</strong>
+        <h2>公开留言</h2>
+        <p>讨论想法、交换经验，也欢迎留下你的项目。</p>
+      </article>
+    </section>
+  </div>
+</BaseLayout>
+
