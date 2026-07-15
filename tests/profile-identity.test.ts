@@ -36,6 +36,11 @@ describe('personal profile contract', () => {
     expect(homeSource).toContain('了解我');
   });
 
+  it('builds the home profile label from live profile and project data', () => {
+    expect(homeSource).toContain('aria-label={`${siteConfig.author.experienceYears} 年经验 · ${projects.length} 个网站产品`}');
+    expect(homeSource).not.toContain('aria-label="7 年经验 · 4 个网站产品"');
+  });
+
   it('removes unused tool screenshots', () => {
     for (const file of ['api-bench.png', 'bi-report.png', 'db-snapshot-diff.png', 'excel-analyzer.png', 'inventory-system.svg', 'invoice-ocr.png', 'toolkit-box.png', 'web-scraper.png']) {
       expect(existsSync(resolve(root, 'public/images/projects', file))).toBe(false);
