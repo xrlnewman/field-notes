@@ -83,7 +83,30 @@ function expectValidPng(path: string, label: string) {
   expect(bytes.readUInt32BE(20), `${label} height`).toBeGreaterThan(0);
 }
 
+function countOpeningTagsWithAttribute(html: string, tag: string, attribute: string): number {
+  const attributeValue = `(?:\\s*=\\s*(?:"[^"]*"|'[^']*'|[^\\s>]+))?`;
+  const openingTag = new RegExp(
+    `<${tag}\\b(?=[^>]*\\s${attribute}${attributeValue}(?=\\s|/?>))[^>]*>`,
+    'g',
+  );
+
+  return html.match(openingTag)?.length ?? 0;
+}
+
 describe('static site build', () => {
+  it('counts screenshot HTML elements without counting inline selector strings', () => {
+    const html = [
+      '<script>document.querySelectorAll("[data-screenshot-thumbnail]")</script>',
+      '<section data-project-screenshots></section>',
+      '<dialog data-screenshot-dialog></dialog>',
+      '<button data-screenshot-thumbnail></button>',
+    ].join('');
+
+    expect(countOpeningTagsWithAttribute(html, 'section', 'data-project-screenshots')).toBe(1);
+    expect(countOpeningTagsWithAttribute(html, 'dialog', 'data-screenshot-dialog')).toBe(1);
+    expect(countOpeningTagsWithAttribute(html, 'button', 'data-screenshot-thumbnail')).toBe(1);
+  });
+
   it('builds the home and 404 pages with three themes and the free promise', () => {
     expect(existsSync('dist/index.html')).toBe(true);
     expect(existsSync('dist/404.html')).toBe(true);
@@ -124,12 +147,14 @@ describe('static site build', () => {
       expect(projects).toContain(`/images/projects/${cover}`);
       expect(detail).toContain('project-showcase');
       expect(detail).toContain(`/images/projects/${cover}`);
-      expect(detail).toContain('data-project-screenshots');
-      expect(detail).toContain('data-screenshot-dialog');
-      expect(detail.match(/data-screenshot-thumbnail/g)?.length ?? 0).toBeGreaterThanOrEqual(4);
 
       const frontmatter = readProjectFrontmatter(slug);
       const screenshots = frontmatter.screenshots as Array<{ src: string }>;
+      expect(countOpeningTagsWithAttribute(detail, 'section', 'data-project-screenshots')).toBe(1);
+      expect(countOpeningTagsWithAttribute(detail, 'dialog', 'data-screenshot-dialog')).toBe(1);
+      expect(countOpeningTagsWithAttribute(detail, 'button', 'data-screenshot-thumbnail')).toBe(
+        screenshots.length,
+      );
       for (const screenshot of screenshots) {
         const screenshotPath = join('dist', screenshot.src.replace(/^\//, ''));
 

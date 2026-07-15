@@ -76,6 +76,7 @@ describe('editorial cosmic layout', () => {
     expect(mobile).toMatch(/\.project-screenshots \{[^}]*grid-template-columns: 1fr;/);
     expect(mobile).toMatch(/\.project-screenshots__thumbnails \{[^}]*grid-auto-flow: column;/);
     expect(mobile).toMatch(/\.project-screenshots__thumbnails \{[^}]*grid-auto-columns: minmax\(132px, 44vw\);/);
+    expect(mobile).toMatch(/\.project-screenshots__thumbnails \{[^}]*max-width: 100%;/);
     expect(mobile).toMatch(/\.project-screenshots__thumbnails \{[^}]*overflow-x: auto;/);
     expect(mobile).toMatch(/\.project-screenshots__thumbnails \{[^}]*scroll-snap-type: x proximity;/);
     expect(mobile).toMatch(/\.project-screenshots__thumbnail \{[^}]*scroll-snap-align: start;/);

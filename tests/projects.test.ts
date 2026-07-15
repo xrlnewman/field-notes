@@ -63,7 +63,17 @@ function readPngDimensions(path: string): { width: number; height: number } {
 
 describe('project publishing rules', () => {
   it('rejects a public project without a cover and repository', () => {
-    expect(projectSchema.safeParse(baseProject).success).toBe(false);
+    const result = projectSchema.safeParse({
+      ...baseProject,
+      screenshots: createScreenshots(4),
+    });
+
+    expect(result.success).toBe(false);
+    if (result.success) throw new Error('缺少封面和仓库的公开项目不应通过');
+    expect(result.error.issues.map((issue) => issue.path[0]).toSorted()).toEqual([
+      'cover',
+      'repoUrl',
+    ]);
   });
 
   it('allows an incomplete project only while it remains a draft', () => {
