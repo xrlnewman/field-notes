@@ -10,6 +10,9 @@ export const siteConfig = {
     age: 27,
     experienceYears: 7,
     bio: '我是一名拥有 7 年开发经验的产品型全栈工程师，能从需求梳理、系统设计、前后端开发一路做到部署交付与持续迭代。',
+    avatarSrc: '/images/profile/xu-rulin-avatar.png',
+    availability: '可承接产品与复杂系统开发',
+    skills: ['PHP / Laravel', 'Go', 'Vue 3 / TypeScript', 'MySQL / Redis', '系统设计与交付'],
   },
   social: {
     github: 'https://github.com/xrlnewman',
