@@ -22,6 +22,10 @@ describe('personal profile contract', () => {
     expect(componentSource).toContain('href="/guestbook/"');
   });
 
+  it('lets the responsive avatar height follow its square width', () => {
+    expect(componentSource).toMatch(/\[data-profile-avatar\]\s*\{[^}]*height:\s*auto;/s);
+  });
+
   it('removes unused tool screenshots', () => {
     for (const file of ['api-bench.png', 'bi-report.png', 'db-snapshot-diff.png', 'excel-analyzer.png', 'inventory-system.svg', 'invoice-ocr.png', 'toolkit-box.png', 'web-scraper.png']) {
       expect(existsSync(resolve(root, 'public/images/projects', file))).toBe(false);
