@@ -1,4 +1,4 @@
-import { lstatSync, readdirSync, readFileSync } from 'node:fs';
+import { existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs';
 import { basename, extname, join, relative, sep } from 'node:path';
 
 import { describe, expect, it } from 'vitest';
@@ -115,6 +115,12 @@ function isScannableText(filePath: string): boolean {
 }
 
 describe('showcase publishing contract', () => {
+  it.each(expectedShowcaseProjects)('requires a public README for $slug', ({ slug }) => {
+    const readmePath = `showcase/${slug}/README.md`;
+
+    expect.soft(existsSync(readmePath), readmePath).toBe(true);
+  });
+
   it('excludes forbidden paths from every public source tree', () => {
     const violations = expectedShowcaseProjects.flatMap(({ slug }) => {
       const root = `showcase/${slug}`;
