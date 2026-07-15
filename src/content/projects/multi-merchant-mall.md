@@ -5,7 +5,7 @@ publishedAt: 2026-07-14
 status: active
 category: 电商平台
 tech: [Vue 3, Vant, Element Plus, Laravel 12, PHP 8.3]
-cover: /images/projects/field-notes.png
+cover: /images/projects/multi-merchant-mall.png
 repoUrl: https://github.com/xrlnewman/mall-h5
 repositories:
   - name: mall-h5

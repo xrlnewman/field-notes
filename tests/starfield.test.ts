@@ -179,6 +179,17 @@ describe('cosmic backdrop integration', () => {
     expect(backdrop).toContain('cancelAnimationFrame');
   });
 
+  it('uses the document client width for canvas pixels, CSS size, and star layout', () => {
+    const backdrop = readText('src/components/CosmicBackdrop.astro');
+
+    expect(backdrop).toContain('width = document.documentElement.clientWidth;');
+    expect(backdrop).not.toContain('width = window.innerWidth;');
+    expect(backdrop).toContain('canvas.width = Math.round(width * dpr);');
+    expect(backdrop).toContain('canvas.style.width = `${width}px`;');
+    expect(backdrop).toContain('getAdaptiveStarCount(width, height, coarsePointer.matches)');
+    expect(backdrop).toContain('createStar(index + 1, width, height)');
+  });
+
   it('names and removes every runtime event handler during teardown', () => {
     const backdrop = readText('src/components/CosmicBackdrop.astro');
 
@@ -204,5 +215,15 @@ describe('cosmic backdrop integration', () => {
     expect(styles).toContain('.cosmic-noise');
     expect(styles).toContain('.cosmic-pointer-glow');
     expect(styles).toContain('body > :not(.cosmic-backdrop):not(.cosmic-noise):not(.cosmic-pointer-glow)');
+  });
+
+  it('sizes the fixed canvas without widening the document viewport', () => {
+    const styles = readText('src/styles/global.css');
+    const backdropRule = styles.match(/\.cosmic-backdrop\s*\{([^}]*)\}/)?.[1] ?? '';
+
+    expect(backdropRule).toContain('inset: 0;');
+    expect(backdropRule).toContain('width: 100%;');
+    expect(backdropRule).toContain('height: 100%;');
+    expect(backdropRule).not.toMatch(/100v[wh]/);
   });
 });

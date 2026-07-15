@@ -5,7 +5,7 @@ publishedAt: 2026-07-14
 status: active
 category: 社区服务
 tech: [uni-app, Vue 3, Element Plus, Laravel 12, PHP 8.3]
-cover: /images/projects/field-notes.png
+cover: /images/projects/linli-community.png
 repoUrl: https://github.com/xrlnewman/linli-mp
 repositories:
   - name: linli-mp

@@ -1,17 +1,18 @@
 # 许汝林个人博客
 
-一个以项目作品和开源源码为核心的个人博客。网站用于展示许汝林的产品实践、技术文章和完整交付能力；内容静态生成，评论由 Cloudflare Pages Functions 与 D1 提供，可以长期免费运行。
+一个以项目作品和开源源码为核心的个人博客。网站聚合四个完整网站产品，用于展示许汝林的产品实践、技术文章和完整交付能力；内容静态生成，评论由 Cloudflare Pages Functions 与 D1 提供，可以长期免费运行。
 
 在线访问：[field-notes-2fi.pages.dev](https://field-notes-2fi.pages.dev)
 
 ## 功能
 
-- 项目分类筛选、截图卡片、项目详情和 GitHub 源码入口
+- 四个网站产品聚合展示，关联前台、运营后台、后端 API 与各自 GitHub 源码入口
 - 文章列表、文章详情、标签聚合和阅读目录
 - Pagefind 中文静态搜索
 - 无需账号的站内文章评论、项目评论、一级回复和固定全局留言板
 - RSS、站点地图、SEO 元信息和 404 页面
-- 响应式导航、深浅主题、键盘操作和减少动效支持
+- 深空观测站、梦幻银河、宇宙终端三套星空主题，支持主题记忆、响应式导航、键盘操作和减少动效
+- Cloudflare Pages、Functions 与 D1 免费额度部署，无需自购应用服务器
 - Markdown/MDX 内容模型与构建期字段校验
 
 ## 成本
@@ -87,7 +88,7 @@ title: 项目名称
 description: 项目解决什么问题
 publishedAt: 2026-07-13
 status: active
-category: 网站产品
+category: 个人品牌
 tech: [Astro, TypeScript]
 cover: /images/projects/project-name.png
 demoUrl: https://example.com
@@ -101,7 +102,7 @@ draft: false
 这里开始写项目详情。
 ```
 
-`status` 只能是 `active`、`completed` 或 `archived`；`category` 只能选择网站产品、业务系统、开发工具、数据与搜索或 AI 自动化。
+`status` 只能是 `active`、`completed` 或 `archived`；`category` 只能选择个人品牌、电商平台、社区服务或企业官网。
 
 公开项目必须同时提供站内封面图和 GitHub 仓库地址。项目封面放在 `public/images/projects/`，建议使用真实运行界面，而不是与成品不一致的效果图。
 

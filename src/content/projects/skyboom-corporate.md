@@ -5,7 +5,7 @@ publishedAt: 2026-07-14
 status: active
 category: 企业官网
 tech: [Vue 3, vue-i18n, Element Plus, Laravel, PHP 8.3]
-cover: /images/projects/field-notes.png
+cover: /images/projects/skyboom-corporate.png
 repoUrl: https://github.com/xrlnewman/skyboom-web
 repositories:
   - name: skyboom-web

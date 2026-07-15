@@ -3,16 +3,57 @@ import { extname, join } from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
-const showcaseProjects = [
-  { slug: 'toolkit-box', title: 'ToolkitBox' },
-  { slug: 'api-bench', title: 'API Bench' },
-  { slug: 'db-snapshot-diff', title: 'DB Snapshot Diff' },
-  { slug: 'web-scraper', title: 'Web Scraper' },
-  { slug: 'bi-report', title: 'BI Report' },
-  { slug: 'inventory-system', title: 'Inventory System' },
-  { slug: 'invoice-ocr', title: 'Invoice OCR' },
-  { slug: 'excel-analyzer', title: 'Excel Analyzer' },
+const publicProjects = [
+  {
+    slug: 'field-notes',
+    title: '许汝林个人博客',
+    cover: 'field-notes.png',
+    repositories: ['https://github.com/xrlnewman/field-notes'],
+  },
+  {
+    slug: 'multi-merchant-mall',
+    title: '多商户商城',
+    cover: 'multi-merchant-mall.png',
+    repositories: [
+      'https://github.com/xrlnewman/mall-h5',
+      'https://github.com/xrlnewman/mall-admin',
+      'https://github.com/xrlnewman/mall-system',
+    ],
+  },
+  {
+    slug: 'linli-community',
+    title: '邻里社区服务平台',
+    cover: 'linli-community.png',
+    repositories: [
+      'https://github.com/xrlnewman/linli-mp',
+      'https://github.com/xrlnewman/linli-admin',
+      'https://github.com/xrlnewman/linli-server',
+    ],
+  },
+  {
+    slug: 'skyboom-corporate',
+    title: '天舶重工企业官网',
+    cover: 'skyboom-corporate.png',
+    repositories: [
+      'https://github.com/xrlnewman/skyboom-web',
+      'https://github.com/xrlnewman/skyboom-admin',
+      'https://github.com/xrlnewman/skyboom-server',
+    ],
+  },
 ] as const;
+
+const obsoleteProjectSlugs = [
+  'toolkit-box',
+  'api-bench',
+  'db-snapshot-diff',
+  'web-scraper',
+  'bi-report',
+  'inventory-system',
+  'invoice-ocr',
+  'excel-analyzer',
+] as const;
+
+const pngSignature = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
 
 function listHtmlFiles(root: string): string[] {
   return readdirSync(root, { withFileTypes: true }).flatMap((entry) => {
@@ -26,46 +67,59 @@ function listHtmlFiles(root: string): string[] {
 }
 
 describe('static site build', () => {
-  it('builds the home and 404 pages with the theme initializer', () => {
+  it('builds the home and 404 pages with three themes and the free promise', () => {
     expect(existsSync('dist/index.html')).toBe(true);
     expect(existsSync('dist/404.html')).toBe(true);
 
     const home = readFileSync('dist/index.html', 'utf8');
     expect(home).toContain('data-theme-toggle');
+    expect(home.match(/<button\b[^>]*data-theme="(?:observatory|nebula|terminal)"[^>]*>/g)).toHaveLength(3);
+    for (const theme of ['observatory', 'nebula', 'terminal']) {
+      expect(home).toContain(`data-theme="${theme}"`);
+    }
+    expect(home).toContain('永久免费 · 零成本部署 · 完全开源');
+    for (const { slug } of publicProjects) {
+      expect(home).toContain(`/projects/${slug}/`);
+    }
     expect(home).toContain('https://field-notes-2fi.pages.dev');
   });
 
-  it('builds the project index and project details from content', () => {
+  it('builds only the four public project details with their real covers and repositories', () => {
     expect(existsSync('dist/projects/index.html')).toBe(true);
-    expect(existsSync('dist/projects/field-notes/index.html')).toBe(true);
-    expect(existsSync('dist/images/projects/field-notes.png')).toBe(true);
 
     const projects = readFileSync('dist/projects/index.html', 'utf8');
-    const project = readFileSync('dist/projects/field-notes/index.html', 'utf8');
-    expect(projects).toContain('许汝林个人博客');
     expect(projects).toContain('data-project-filter');
-    expect(projects).toContain('data-project-category="网站产品"');
-    expect(projects).toContain('https://github.com/xrlnewman/field-notes');
-    expect(projects).toContain('/images/projects/field-notes.png');
-    expect(project).toContain('project-showcase');
-    expect(project).toContain('/images/projects/field-notes.png');
-    expect(project).toContain('GitHub 源码');
-    expect(project).toContain('https://field-notes-2fi.pages.dev');
 
-    for (const { slug, title } of showcaseProjects) {
-      const coverExtension = slug === 'inventory-system' ? 'svg' : 'png';
+    const detailSlugs = readdirSync('dist/projects', { withFileTypes: true })
+      .filter((entry) => entry.isDirectory() && existsSync(join('dist/projects', entry.name, 'index.html')))
+      .map((entry) => entry.name)
+      .toSorted();
+    expect(detailSlugs).toEqual(publicProjects.map(({ slug }) => slug).toSorted());
+
+    for (const { slug, title, cover, repositories } of publicProjects) {
       const detailPath = `dist/projects/${slug}/index.html`;
 
       expect(existsSync(detailPath), detailPath).toBe(true);
+      expect(existsSync(`dist/images/projects/${cover}`), cover).toBe(true);
+      const coverBytes = readFileSync(`dist/images/projects/${cover}`);
+      expect([...coverBytes.subarray(0, 8)], `${cover} must be a PNG`).toEqual(pngSignature);
+      expect(coverBytes.readUInt32BE(16), `${cover} width`).toBe(1440);
+      expect(coverBytes.readUInt32BE(20), `${cover} height`).toBe(900);
       const detail = readFileSync(detailPath, 'utf8');
       expect(projects).toContain(title);
-      expect(detail).toContain(`/images/projects/${slug}.${coverExtension}`);
-      expect(detail).toContain(`https://github.com/xrlnewman/${slug}`);
+      expect(projects).toContain(`/images/projects/${cover}`);
+      expect(detail).toContain('project-showcase');
+      expect(detail).toContain(`/images/projects/${cover}`);
+      repositories.forEach((repository) => expect(detail).toContain(repository));
     }
+
+    obsoleteProjectSlugs.forEach((slug) => {
+      expect(existsSync(`dist/projects/${slug}/index.html`), slug).toBe(false);
+    });
   });
 
-  it('builds the expected 24 HTML pages', () => {
-    expect(listHtmlFiles('dist')).toHaveLength(24);
+  it('builds the expected 19 HTML pages', () => {
+    expect(listHtmlFiles('dist')).toHaveLength(19);
   });
 
   it('builds article details and tag indexes', () => {
@@ -80,7 +134,7 @@ describe('static site build', () => {
     const home = readFileSync('dist/index.html', 'utf8');
     const about = readFileSync('dist/about/index.html', 'utf8');
 
-    expect(home).toContain('把复杂业务，做成真正可用的产品。');
+    expect(home).toContain('把复杂业务，做成可运行的产品。');
     expect(home.indexOf('项目作品')).toBeLessThan(home.indexOf('最近写下的内容'));
     expect(about).toContain('我不只写代码，也负责让产品落地。');
     expect(about).toContain('7 年');
@@ -88,56 +142,34 @@ describe('static site build', () => {
     expect(home).not.toContain('Field Notes');
   });
 
-  it('puts the compact category navigation directly before real project cards on home', () => {
+  it('puts the four real project cards in the home product catalog', () => {
     const home = readFileSync('dist/index.html', 'utf8');
 
     expect(home).toMatch(
-      /<section class="hero-studio"[\s\S]*?<\/section>\s*<section class="home-section home-section--projects"[^>]*data-home-project-catalog/,
-    );
-    expect(home).toMatch(
-      /data-project-category-grid[\s\S]*?<\/nav>\s*<div class="home-grid home-grid--projects"[^>]*>/,
+      /<section class="hero-studio"[\s\S]*?<\/section>\s*<aside class="open-source-promise"[\s\S]*?<\/aside>\s*<section class="home-section home-section--projects"[^>]*data-home-project-catalog/,
     );
 
     const catalogStart = home.indexOf('data-home-project-catalog');
-    const categoryNavigation = home.indexOf('data-project-category-grid', catalogStart);
-    const firstProjectCard = home.indexOf('data-project-category="网站产品"', categoryNavigation);
 
     expect(catalogStart).toBeGreaterThan(-1);
-    expect(categoryNavigation).toBeGreaterThan(catalogStart);
-    expect(firstProjectCard).toBeGreaterThan(categoryNavigation);
-    expect(home.slice(categoryNavigation, firstProjectCard)).toContain('/projects/?category=');
-    expect(home.slice(firstProjectCard)).toContain('/images/projects/field-notes.png');
+    expect(home.slice(catalogStart)).not.toContain('data-project-category-grid');
+    for (const { slug, cover } of publicProjects) {
+      expect(home.slice(catalogStart)).toContain(`/projects/${slug}/`);
+      expect(home.slice(catalogStart)).toContain(`/images/projects/${cover}`);
+    }
   });
 
-  it('builds the complete project category navigation on home and projects pages', () => {
+  it('builds the four product category filters on the projects page', () => {
     const home = readFileSync('dist/index.html', 'utf8');
     const projects = readFileSync('dist/projects/index.html', 'utf8');
-    const categories = ['网站产品', '业务系统', '开发工具', '数据与搜索', 'AI 自动化'];
+    const categories = ['个人品牌', '电商平台', '社区服务', '企业官网'];
 
-    expect(home).toContain('data-project-category-grid');
-    expect(home).toContain('公开项目');
-    expect(home).not.toContain('PROJECT CATALOG');
-    expect(home).toMatch(/data-project-count="9"[^>]*>9<\/strong>[\s\S]*?公开项目/);
-    expect(home).toMatch(/<strong[^>]*>5<\/strong>[\s\S]*?项目分类/);
-    expect(home).toMatch(/<strong[^>]*>7 年<\/strong>[\s\S]*?开发经验/);
+    expect(home).toMatch(/data-project-count="4"[^>]*>4<\/strong>[\s\S]*?个网站产品/);
     expect(projects).toContain('data-project-catalog');
-    expect(projects).toContain('业务系统');
-    expect(projects).toContain('数据与搜索');
-    expect(projects).toContain('AI 自动化');
+    expect(projects).toContain('四个可运行的网站产品');
     expect(projects).toContain('<h1');
-    const categoryCounts = [1, 2, 2, 3, 1];
-    categories.forEach((category, index) => {
-      const href = `/projects/?category=${encodeURIComponent(category)}`;
-      const linkStart = home.indexOf(`href="${href}"`);
-      const categoryLink = home.slice(linkStart, home.indexOf('</a>', linkStart));
-
-      expect(linkStart).toBeGreaterThan(-1);
-      expect(categoryLink).toContain(category);
-      expect(categoryLink).toContain(`data-project-category-count="${categoryCounts[index]}"`);
-    });
-
-    expect(projects.match(/data-project-filter=/g)).toHaveLength(6);
-    const filterCounts = [9, ...categoryCounts];
+    expect(projects.match(/data-project-filter=/g)).toHaveLength(5);
+    const filterCounts = [4, 1, 1, 1, 1];
     ['全部', ...categories].forEach((category, index) => {
       const buttonStart = projects.indexOf(`data-project-filter="${category}"`);
       const filterButton = projects.slice(buttonStart, projects.indexOf('</button>', buttonStart));

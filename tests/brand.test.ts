@@ -119,6 +119,17 @@ describe('personal brand configuration', () => {
     expect.soft(mobileHeroRule).not.toContain('3.8rem');
   });
 
+  it('clips only the oversized decorative hero orbit at the section boundary', () => {
+    const home = readText('src/pages/index.astro');
+    const heroRule = home.match(/\.hero-studio\s*\{([^}]*)\}/)?.[1] ?? '';
+    const decorationRule = home.match(/\.hero-studio::before\s*\{([^}]*)\}/)?.[1] ?? '';
+
+    expect.soft(heroRule).toContain('position: relative;');
+    expect.soft(heroRule).toContain('overflow: clip;');
+    expect.soft(decorationRule).toContain('right: -14%;');
+    expect.soft(decorationRule).toContain("content: '';");
+  });
+
   it('limits cosmic card motion and reveals content once on capable pointers', () => {
     const interactions = readOptional('src/components/CosmicInteractions.astro');
     const pendingRevealRule = interactions.match(/html\.cosmic-interactions-ready \[data-reveal\] \{([^}]*)\}/)?.[1] ?? '';
