@@ -42,23 +42,23 @@ screenshots:
     alt: 邻里社区团长工作台的数据概览页面
     title: 团长工作台
     caption: 汇总订单、销售与佣金等经营指标，帮助团长掌握社区团购进度。
-    viewport: desktop
-    width: 988
-    height: 557
+    viewport: mobile
+    width: 390
+    height: 844
   - src: /images/projects/linli-community/products-admin.png
     alt: 邻里社区运营后台的商品管理列表
     title: 商品管理
     caption: 支持运营人员集中查看和维护社区团购商品，衔接居民端的商品供给。
     viewport: desktop
-    width: 1264
-    height: 569
+    width: 1440
+    height: 900
   - src: /images/projects/linli-community/orders-admin.png
     alt: 邻里社区运营后台包含真实业务数据的订单管理列表
     title: 订单管理
     caption: 通过有数据的订单列表展示运营筛选、履约跟进与订单状态管理能力。
     viewport: desktop
-    width: 1500
-    height: 980
+    width: 1440
+    height: 900
 featured: true
 draft: false
 ---
