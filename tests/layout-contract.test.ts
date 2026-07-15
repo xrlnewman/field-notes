@@ -14,4 +14,23 @@ describe('editorial cosmic layout', () => {
     expect(globalStyles).toContain('overflow-wrap: anywhere;');
     expect(header).toContain('min-height: 44px;');
   });
+
+  it('keeps the home hero compact and every product in one shared grid', () => {
+    const home = read('src/pages/index.astro');
+    const card = read('src/components/ProjectCard.astro');
+
+    expect(home).toContain('max-height: 620px;');
+    expect(home).toContain('grid-template-columns: minmax(0, 7fr) minmax(320px, 5fr);');
+    expect(home).toContain('font-size: clamp(3.25rem, 5vw, 4rem);');
+    expect(card).not.toContain('grid-column: 1 / -1;');
+    expect(card).toContain('min-height: 280px;');
+  });
+
+  it('keeps project directory cards in the same two-column editorial grid', () => {
+    const page = read('src/pages/projects/index.astro');
+    const gallery = read('src/components/ProjectGallery.astro');
+
+    expect(page).toContain('grid-template-columns: minmax(0, 1fr) auto;');
+    expect(gallery).toContain('grid-template-columns: repeat(2, minmax(0, 1fr));');
+  });
 });

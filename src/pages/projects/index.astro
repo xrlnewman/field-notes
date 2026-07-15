@@ -34,22 +34,23 @@ const projects = sortByPublishedAt(
 
 <style>
   .page-shell {
-    padding-block: clamp(84px, 11vw, 148px) 120px;
+    padding-block: clamp(64px, 8vw, 96px) 96px;
   }
 
   .project-catalog__hero {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(190px, 0.25fr);
+    grid-template-columns: minmax(0, 1fr) auto;
     gap: clamp(36px, 7vw, 100px);
     align-items: end;
-    margin-bottom: clamp(68px, 8vw, 106px);
-    padding-bottom: clamp(48px, 7vw, 76px);
+    margin-bottom: 40px;
+    padding-bottom: 36px;
     border-bottom: 1px solid var(--border);
   }
 
   .project-catalog__count {
     display: flex;
-    min-height: 170px;
+    min-width: 160px;
+    min-height: 0;
     flex-direction: column;
     justify-content: flex-end;
     margin: 0;
@@ -59,7 +60,7 @@ const projects = sortByPublishedAt(
 
   .project-catalog__count strong {
     color: var(--accent-strong);
-    font-size: clamp(4rem, 8vw, 6rem);
+    font-size: clamp(3rem, 6vw, 4.5rem);
     line-height: 0.9;
   }
 
