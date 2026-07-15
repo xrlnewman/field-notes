@@ -258,12 +258,13 @@ const featuredProjects = [...projects].sort((left, right) =>
   @media (max-width: 760px) {
     .hero-studio {
       min-height: auto;
+      max-height: none;
       gap: 48px;
       padding-block: 76px 64px;
     }
 
     .hero-studio h1 {
-      font-size: clamp(2.65rem, 12vw, 3.5rem);
+      font-size: clamp(2.5rem, 10vw, 2.75rem);
     }
 
     .hero-studio__stats {

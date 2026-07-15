@@ -112,14 +112,14 @@ describe('personal brand configuration', () => {
     expect.soft(layout).toContain('<CosmicInteractions />');
   });
 
-  it('caps the mobile hero title at the 56px design maximum', () => {
+  it('caps the mobile hero title at the 44px design maximum', () => {
     const home = readText('src/pages/index.astro');
     const mobileHeroRule = home.match(
       /@media \(max-width: 760px\) \{[\s\S]*?\.hero-studio h1 \{([^}]*)\}/,
     )?.[1] ?? '';
 
-    expect.soft(mobileHeroRule).toContain('font-size: clamp(2.65rem, 12vw, 3.5rem);');
-    expect.soft(mobileHeroRule).not.toContain('3.8rem');
+    expect.soft(mobileHeroRule).toContain('font-size: clamp(2.5rem, 10vw, 2.75rem);');
+    expect.soft(mobileHeroRule).not.toContain('3.5rem');
   });
 
   it('clips only the oversized decorative hero orbit at the section boundary', () => {

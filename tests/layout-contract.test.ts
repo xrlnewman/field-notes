@@ -26,6 +26,14 @@ describe('editorial cosmic layout', () => {
     expect(card).toContain('min-height: 280px;');
   });
 
+  it('keeps the narrow home hero visible and its title at or below 44px', () => {
+    const home = read('src/pages/index.astro');
+    const mobile = home.slice(home.indexOf('@media (max-width: 760px) {'));
+
+    expect.soft(mobile).toContain('max-height: none;');
+    expect.soft(mobile).toContain('font-size: clamp(2.5rem, 10vw, 2.75rem);');
+  });
+
   it('keeps project directory cards in the same two-column editorial grid', () => {
     const page = read('src/pages/projects/index.astro');
     const gallery = read('src/components/ProjectGallery.astro');
