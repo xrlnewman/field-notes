@@ -1,49 +1,76 @@
-<button class="theme-toggle" type="button" aria-label="切换深浅主题" data-theme-toggle>
-  <span aria-hidden="true" data-theme-icon>◐</span>
-</button>
+---
+import { cosmicThemes, DEFAULT_COSMIC_THEME } from '../lib/cosmic-theme';
+---
+
+<div class="theme-toggle" role="group" aria-label="星空主题" data-theme-toggle>
+  {
+    cosmicThemes.map((theme) => (
+      <button
+        type="button"
+        aria-label={theme.label}
+        aria-pressed={theme.id === DEFAULT_COSMIC_THEME ? 'true' : 'false'}
+        data-theme={theme.id}
+        title={theme.description}
+      >
+        {theme.shortLabel}
+      </button>
+    ))
+  }
+</div>
 
 <script>
-  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]');
+  import {
+    COSMIC_THEME_STORAGE_KEY,
+    resolveCosmicTheme,
+    type CosmicTheme,
+  } from '../lib/cosmic-theme';
 
-  const updateLabels = (theme: 'light' | 'dark') => {
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle] button[data-theme]');
+
+  const updateButtons = (theme: CosmicTheme) => {
     buttons.forEach((button) => {
-      button.setAttribute('aria-label', theme === 'dark' ? '切换到浅色主题' : '切换到深色主题');
-      const icon = button.querySelector<HTMLElement>('[data-theme-icon]');
-      if (icon) icon.textContent = theme === 'dark' ? '☀' : '☾';
+      button.setAttribute('aria-pressed', String(button.dataset.theme === theme));
     });
   };
 
-  const currentTheme = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
-  updateLabels(currentTheme);
+  const currentTheme = resolveCosmicTheme(document.documentElement.dataset.theme);
+  updateButtons(currentTheme);
 
   buttons.forEach((button) => {
     button.addEventListener('click', () => {
-      const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-      document.documentElement.dataset.theme = next;
-      document.documentElement.style.colorScheme = next;
-      localStorage.setItem('theme', next);
-      updateLabels(next);
-      document.dispatchEvent(new CustomEvent('theme-change', { detail: { theme: next } }));
+      const theme = resolveCosmicTheme(button.dataset.theme);
+      document.documentElement.dataset.theme = theme;
+      document.documentElement.style.colorScheme = 'dark';
+      localStorage.setItem(COSMIC_THEME_STORAGE_KEY, theme);
+      updateButtons(theme);
+      document.dispatchEvent(new CustomEvent('cosmic-theme-change', { detail: { theme } }));
     });
   });
 </script>
 
 <style>
   .theme-toggle {
-    display: grid;
-    width: 38px;
-    height: 38px;
-    padding: 0;
-    place-items: center;
+    display: inline-flex;
+    gap: 4px;
+    padding: 4px;
     border: 1px solid var(--border);
-    border-radius: 50%;
-    color: var(--ink);
+    border-radius: 999px;
     background: var(--surface);
+  }
+
+  .theme-toggle button {
+    min-width: 44px;
+    min-height: 36px;
+    padding: 6px 10px;
+    border: 0;
+    border-radius: 999px;
+    color: var(--ink);
+    background: transparent;
     cursor: pointer;
   }
 
-  .theme-toggle:hover {
-    border-color: var(--accent);
+  .theme-toggle button[aria-pressed='true'] {
+    color: var(--canvas);
+    background: var(--accent);
   }
 </style>
-

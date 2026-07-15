@@ -29,7 +29,7 @@ const socialImage = image ? new URL(image, Astro.site) : undefined;
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
-    <meta name="color-scheme" content="light dark" />
+    <meta name="color-scheme" content="dark" />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="alternate" type="application/rss+xml" title={`${siteConfig.name} RSS`} href="/rss.xml" />
@@ -43,12 +43,12 @@ const socialImage = image ? new URL(image, Astro.site) : undefined;
     <title>{pageTitle}</title>
     <script is:inline>
       (() => {
-        const stored = localStorage.getItem('theme');
-        const theme = stored === 'light' || stored === 'dark'
+        const stored = localStorage.getItem('cosmic-theme');
+        const theme = ['observatory', 'nebula', 'terminal'].includes(stored)
           ? stored
-          : matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          : 'observatory';
         document.documentElement.dataset.theme = theme;
-        document.documentElement.style.colorScheme = theme;
+        document.documentElement.style.colorScheme = 'dark';
       })();
     </script>
   </head>
