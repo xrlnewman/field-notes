@@ -10,6 +10,12 @@ import {
   sortByPublishedAt,
   toTagSlug,
 } from '../src/lib/content';
+import { projectSchema } from '../src/lib/project-schema';
+
+function isProductionProject(frontmatter: unknown): boolean {
+  const data = projectSchema.parse(frontmatter);
+  return isVisibleEntry({ data }, true);
+}
 
 describe('content helpers', () => {
   it('counts mixed Chinese and English text with a minimum of one minute', () => {
@@ -46,6 +52,28 @@ describe('content helpers', () => {
 });
 
 describe('published project content', () => {
+  const projectWithoutDraft = {
+    title: '默认公开项目',
+    description: '用于验证内容模型默认值。',
+    publishedAt: '2026-07-14',
+    status: 'active',
+    category: '个人品牌',
+    tech: ['Astro'],
+    cover: '/images/projects/example.png',
+    repoUrl: 'https://github.com/xrlnewman/example',
+  };
+
+  it('treats an omitted draft flag as production-visible after schema defaults', () => {
+    expect(isProductionProject(projectWithoutDraft)).toBe(true);
+  });
+
+  it('rejects invalid project frontmatter through the production contract', () => {
+    expect(() => isProductionProject({
+      ...projectWithoutDraft,
+      category: '旧分类',
+    })).toThrow();
+  });
+
   it('publishes exactly the four website products', () => {
     const projectIds = readdirSync('src/content/projects', { withFileTypes: true })
       .filter((entry) => entry.isFile() && ['.md', '.mdx'].includes(extname(entry.name)))
@@ -53,8 +81,8 @@ describe('published project content', () => {
         const markdown = readFileSync(`src/content/projects/${entry.name}`, 'utf8');
         const match = markdown.match(/^---\r?\n([\s\S]*?)\r?\n---/);
         if (!match?.[1]) throw new Error(`${entry.name} 缺少 YAML frontmatter`);
-        const frontmatter = parseYaml(match[1]) as { draft?: unknown };
-        return frontmatter.draft === false;
+        const frontmatter = parseYaml(match[1]);
+        return isProductionProject(frontmatter);
       })
       .map((entry) => parse(entry.name).name)
       .toSorted();
