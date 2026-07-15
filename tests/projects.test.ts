@@ -24,6 +24,16 @@ const baseProject = {
   draft: false,
 };
 
+const screenshot = {
+  src: '/images/projects/example/home.png',
+  alt: '示例网站首页',
+  title: '网站首页',
+  caption: '展示网站的主要入口。',
+  viewport: 'desktop' as const,
+  width: 1440,
+  height: 900,
+};
+
 function readProjectFrontmatter(slug: string): Record<string, unknown> {
   const markdown = readFileSync(`src/content/projects/${slug}.md`, 'utf8');
   const match = markdown.match(/^---\r?\n([\s\S]*?)\r?\n---/);
@@ -52,6 +62,45 @@ describe('project publishing rules', () => {
       repoUrl: 'https://github.com/xrlnewman/example',
     });
     expect(result.success).toBe(true);
+  });
+
+  it('accepts four to six typed project screenshots when provided', () => {
+    const publicProject = {
+      ...baseProject,
+      cover: '/images/projects/example.png',
+      repoUrl: 'https://github.com/xrlnewman/example',
+    };
+
+    expect(projectSchema.safeParse(publicProject).success).toBe(true);
+    expect(projectSchema.safeParse({
+      ...publicProject,
+      screenshots: Array.from({ length: 4 }, (_, index) => ({
+        ...screenshot,
+        src: `/images/projects/example/screen-${index + 1}.png`,
+      })),
+    }).success).toBe(true);
+    expect(projectSchema.safeParse({
+      ...publicProject,
+      screenshots: Array.from({ length: 7 }, () => screenshot),
+    }).success).toBe(false);
+  });
+
+  it('rejects malformed screenshot metadata', () => {
+    const screenshots = Array.from({ length: 4 }, () => screenshot);
+    const publicProject = {
+      ...baseProject,
+      cover: '/images/projects/example.png',
+      repoUrl: 'https://github.com/xrlnewman/example',
+    };
+
+    expect(projectSchema.safeParse({
+      ...publicProject,
+      screenshots: [{ ...screenshot, viewport: 'tablet' }, ...screenshots.slice(1)],
+    }).success).toBe(false);
+    expect(projectSchema.safeParse({
+      ...publicProject,
+      screenshots: [{ ...screenshot, width: 0 }, ...screenshots.slice(1)],
+    }).success).toBe(false);
   });
 
   it('accepts repository nodes only when every URL is GitHub HTTPS', () => {

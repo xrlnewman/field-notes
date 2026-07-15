@@ -15,12 +15,23 @@ const baseFields = {
   featured: z.boolean().default(false),
 };
 
+const projectScreenshotSchema = z.object({
+  src: z.string().startsWith('/'),
+  alt: z.string().min(1),
+  title: z.string().min(1),
+  caption: z.string().min(1),
+  viewport: z.enum(['desktop', 'mobile']),
+  width: z.number().int().positive(),
+  height: z.number().int().positive(),
+});
+
 export const projectSchema = z.object({
   ...baseFields,
   status: z.enum(['active', 'completed', 'archived']),
   category: z.enum(projectCategories),
   tech: z.array(z.string().min(1)).default([]),
   cover: z.string().startsWith('/').optional(),
+  screenshots: z.array(projectScreenshotSchema).min(4).max(6).optional(),
   demoUrl: z.url().optional(),
   repoUrl: z.url().optional(),
   repositories: z.array(z.object({
