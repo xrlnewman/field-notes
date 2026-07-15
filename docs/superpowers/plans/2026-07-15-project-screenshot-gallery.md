@@ -295,11 +295,11 @@ Copy-Item (Join-Path $workspace 'linli-mp\docs\screenshots\mp-leader-01-dashboar
 Copy-Item (Join-Path $workspace 'linli-admin\docs\screenshots\admin-06-products.png') public\images\projects\linli-community\products-admin.png
 Copy-Item (Join-Path $workspace 'linli-admin\docs\screenshots\admin-08-orders.png') public\images\projects\linli-community\orders-admin.png
 Copy-Item (Join-Path $workspace 'linli-admin\docs\screenshots\admin-06-products.png') public\images\projects\linli-community.png -Force
-Copy-Item (Join-Path $workspace 'skyboom-web\docs\screenshots\01-home-desktop-zh.png') public\images\projects\skyboom-corporate\home-desktop.png
-Copy-Item (Join-Path $workspace 'skyboom-web\docs\screenshots\web-products-desktop-zh.png') public\images\projects\skyboom-corporate\products-desktop.png
-Copy-Item (Join-Path $workspace 'skyboom-web\docs\screenshots\web-polish-about-desktop.png') public\images\projects\skyboom-corporate\about-desktop.png
-Copy-Item (Join-Path $workspace 'skyboom-web\docs\screenshots\web-contact.png') public\images\projects\skyboom-corporate\contact-desktop.png
-Copy-Item (Join-Path $workspace 'skyboom-web\docs\screenshots\02-home-mobile-zh.png') public\images\projects\skyboom-corporate\home-mobile.png
+Copy-Item public\images\projects\skyboom-corporate.png public\images\projects\skyboom-corporate\home-desktop.png
+Copy-Item (Join-Path $workspace 'skyboom-web\docs\screenshots\qa-02-products-zh-desktop.png') public\images\projects\skyboom-corporate\products-desktop.png
+Copy-Item (Join-Path $workspace 'skyboom-web\docs\screenshots\qa-10-about-zh-desktop.png') public\images\projects\skyboom-corporate\about-desktop.png
+Copy-Item (Join-Path $workspace 'skyboom-web\docs\screenshots\web-polish-contact-desktop.png') public\images\projects\skyboom-corporate\contact-desktop.png
+Copy-Item (Join-Path $workspace 'skyboom-web\docs\screenshots\qa-21-home-mobile-390.png') public\images\projects\skyboom-corporate\home-mobile.png
 ```
 
 复制前用图片查看器确认每张图不是加载中、空态、报错态或隐私数据页面。
