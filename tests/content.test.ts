@@ -1,4 +1,8 @@
+import { readdirSync, readFileSync } from 'node:fs';
+import { extname, parse } from 'node:path';
+
 import { describe, expect, it } from 'vitest';
+import { parse as parseYaml } from 'yaml';
 
 import {
   estimateReadingTime,
@@ -38,5 +42,37 @@ describe('content helpers', () => {
     expect(toTagSlug('Git Worktree')).toBe('git-worktree');
     expect(toTagSlug('工程实践')).toBe('工程实践');
     expect(toTagSlug('API / 设计')).toBe('api-设计');
+  });
+});
+
+describe('published project content', () => {
+  it('publishes exactly the four website products', () => {
+    const projectIds = readdirSync('src/content/projects', { withFileTypes: true })
+      .filter((entry) => entry.isFile() && ['.md', '.mdx'].includes(extname(entry.name)))
+      .filter((entry) => {
+        const markdown = readFileSync(`src/content/projects/${entry.name}`, 'utf8');
+        const match = markdown.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+        if (!match?.[1]) throw new Error(`${entry.name} 缺少 YAML frontmatter`);
+        const frontmatter = parseYaml(match[1]) as { draft?: unknown };
+        return frontmatter.draft === false;
+      })
+      .map((entry) => parse(entry.name).name)
+      .toSorted();
+
+    expect(projectIds).toEqual([
+      'field-notes',
+      'linli-community',
+      'multi-merchant-mall',
+      'skyboom-corporate',
+    ]);
+  });
+
+  it('states the three free commitments and keeps comments on-site', () => {
+    const fieldNotes = readFileSync('src/content/projects/field-notes.md', 'utf8');
+
+    expect(fieldNotes).toContain('永久免费');
+    expect(fieldNotes).toContain('零成本部署');
+    expect(fieldNotes).toContain('完全开源');
+    expect(fieldNotes).toMatch(/评论.*留言.*站内完成|评论和留言都在站内完成/);
   });
 });

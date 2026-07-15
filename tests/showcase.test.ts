@@ -2,42 +2,17 @@ import { existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs';
 import { basename, extname, join, relative, sep } from 'node:path';
 
 import { describe, expect, it } from 'vitest';
-import { parse as parseYaml } from 'yaml';
 
 const expectedShowcaseProjects = [
-  { slug: 'toolkit-box', category: '开发工具' },
-  { slug: 'api-bench', category: '开发工具' },
-  { slug: 'db-snapshot-diff', category: '数据与搜索' },
-  { slug: 'web-scraper', category: '数据与搜索' },
-  { slug: 'bi-report', category: '业务系统' },
-  { slug: 'inventory-system', category: '业务系统' },
-  { slug: 'invoice-ocr', category: 'AI 自动化' },
-  { slug: 'excel-analyzer', category: '数据与搜索' },
+  { slug: 'toolkit-box' },
+  { slug: 'api-bench' },
+  { slug: 'db-snapshot-diff' },
+  { slug: 'web-scraper' },
+  { slug: 'bi-report' },
+  { slug: 'inventory-system' },
+  { slug: 'invoice-ocr' },
+  { slug: 'excel-analyzer' },
 ] as const;
-
-const expectedMetadata = {
-  'toolkit-box': { category: '开发工具', tech: ['Electron', 'JavaScript', 'SheetJS', 'PDF.js'] },
-  'api-bench': { category: '开发工具', tech: ['Electron', 'Node.js', 'Chart.js'] },
-  'db-snapshot-diff': { category: '数据与搜索', tech: ['Electron', 'MySQL', 'PostgreSQL'] },
-  'web-scraper': { category: '数据与搜索', tech: ['Electron', 'WebView', 'SheetJS'] },
-  'bi-report': { category: '业务系统', tech: ['Electron', 'MySQL', 'Chart.js'] },
-  'inventory-system': { category: '业务系统', tech: ['Laravel 12', 'PHP 8.3', 'MySQL', 'Redis'] },
-  'invoice-ocr': { category: 'AI 自动化', tech: ['Electron', 'Tesseract.js', 'SheetJS'] },
-  'excel-analyzer': { category: '数据与搜索', tech: ['Electron', 'SheetJS', 'JavaScript'] },
-} as const;
-
-const expectedPublishingMetadata = {
-  'toolkit-box': { publishedAt: '2026-07-12', featured: true, cover: '/images/projects/toolkit-box.png' },
-  'invoice-ocr': { publishedAt: '2026-07-11', featured: true, cover: '/images/projects/invoice-ocr.png' },
-  'inventory-system': { publishedAt: '2026-07-10', featured: true, cover: '/images/projects/inventory-system.svg' },
-  'api-bench': { publishedAt: '2026-07-09', featured: false, cover: '/images/projects/api-bench.png' },
-  'db-snapshot-diff': { publishedAt: '2026-07-08', featured: false, cover: '/images/projects/db-snapshot-diff.png' },
-  'web-scraper': { publishedAt: '2026-07-07', featured: false, cover: '/images/projects/web-scraper.png' },
-  'bi-report': { publishedAt: '2026-07-06', featured: false, cover: '/images/projects/bi-report.png' },
-  'excel-analyzer': { publishedAt: '2026-07-04', featured: false, cover: '/images/projects/excel-analyzer.png' },
-} as const;
-
-const expectedSectionHeadings = ['项目目标', '核心能力', '技术实现', '工程取舍'];
 
 const forbiddenNames = new Set([
   '.git', '.env', '.gateway-token', 'memory.db', 'node_modules',
@@ -85,8 +60,6 @@ const databaseExtensions = new Set([
   '.sqlite-journal', '.sqlite3-wal', '.sqlite3-shm', '.sqlite3-journal',
 ]);
 
-const repositoryOwnerUrl = 'https://github.com/xrlnewman';
-
 interface SourceEntry {
   path: string;
   kind: 'directory' | 'file' | 'symbolic-link' | 'other';
@@ -129,27 +102,6 @@ function listEntries(root: string): SourceEntry[] {
       ? [sourceEntry, ...listEntries(entryPath)]
       : [sourceEntry];
   });
-}
-
-function readFrontmatter(filePath: string): Record<string, unknown> {
-  const markdown = readFileSync(filePath, 'utf8');
-  const match = markdown.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/);
-
-  if (!match) {
-    throw new Error(`${filePath} 缺少有效 YAML frontmatter`);
-  }
-
-  const yaml = match[1];
-  if (yaml === undefined) {
-    throw new Error(`${filePath} 缺少 YAML frontmatter 内容`);
-  }
-
-  const frontmatter = parseYaml(yaml);
-  if (!frontmatter || typeof frontmatter !== 'object' || Array.isArray(frontmatter)) {
-    throw new Error(`${filePath} 的 YAML frontmatter 必须为对象`);
-  }
-
-  return frontmatter as Record<string, unknown>;
 }
 
 function isForbiddenPathName(name: string): boolean {
@@ -204,53 +156,9 @@ describe('showcase publishing contract', () => {
     const readmePath = `showcase/${slug}/README.md`;
     const coverExtension = slug === 'inventory-system' ? 'svg' : 'png';
     const coverPath = `public/images/projects/${slug}.${coverExtension}`;
-    const contentPath = `src/content/projects/${slug}.md`;
 
     expect.soft(existsSync(readmePath), readmePath).toBe(true);
     expect.soft(existsSync(coverPath), coverPath).toBe(true);
-    expect.soft(existsSync(contentPath), contentPath).toBe(true);
-  });
-
-  it.each(expectedShowcaseProjects)('$slug 链接到同名的独立公开仓库', ({ slug }) => {
-    const frontmatter = readFrontmatter(`src/content/projects/${slug}.md`);
-
-    expect(frontmatter.repoUrl).toBe(`${repositoryOwnerUrl}/${slug}`);
-  });
-
-  it('项目元数据与发布约束保持精确映射', () => {
-    for (const { slug } of expectedShowcaseProjects) {
-      const contentPath = `src/content/projects/${slug}.md`;
-
-      expect.soft(existsSync(contentPath), contentPath).toBe(true);
-      if (!existsSync(contentPath)) {
-        continue;
-      }
-
-      const frontmatter = readFrontmatter(contentPath);
-      const metadata = expectedMetadata[slug];
-      const publishing = expectedPublishingMetadata[slug];
-
-      expect(frontmatter.category).toBe(metadata.category);
-      expect(frontmatter.tech).toEqual(metadata.tech);
-      expect(frontmatter.publishedAt).toBe(publishing.publishedAt);
-      expect(frontmatter.status).toBe('completed');
-      expect(frontmatter.cover).toBe(publishing.cover);
-      expect(frontmatter.featured).toBe(publishing.featured);
-      expect(frontmatter.draft).toBe(false);
-    }
-  });
-
-  it.each(expectedShowcaseProjects)('$slug 详情只使用约定的四个二级章节', ({ slug }) => {
-    const contentPath = `src/content/projects/${slug}.md`;
-
-    expect.soft(existsSync(contentPath), contentPath).toBe(true);
-    if (!existsSync(contentPath)) {
-      return;
-    }
-
-    const markdown = readFileSync(contentPath, 'utf8');
-    const headings = [...markdown.matchAll(/^##[ \t]+(.+?)\r?$/gm)].map((match) => match[1]);
-    expect(headings).toEqual(expectedSectionHeadings);
   });
 
   it.each(expectedShowcaseProjects.filter(({ slug }) => slug !== 'inventory-system'))(
@@ -341,31 +249,6 @@ describe('showcase publishing contract', () => {
     });
 
     expect(violations).toEqual([]);
-  });
-
-  it('keeps ten project entries, one draft, and nine public projects', () => {
-    const contentRoot = 'src/content/projects';
-    const projects = listEntries(contentRoot)
-      .filter(({ kind, path: filePath }) => (
-        kind === 'file' && ['.md', '.mdx'].includes(extname(filePath).toLowerCase())
-      ))
-      .map(({ path: filePath }) => ({
-        file: relative(contentRoot, filePath).split(sep).join('/'),
-        frontmatter: readFrontmatter(filePath),
-      }));
-    const invalidDraftValues = projects
-      .filter(({ frontmatter }) => typeof frontmatter.draft !== 'boolean')
-      .map(({ file }) => file);
-    const drafts = projects
-      .filter(({ frontmatter }) => frontmatter.draft === true)
-      .map(({ file }) => file);
-    const publicProjects = projects
-      .filter(({ frontmatter }) => frontmatter.draft === false);
-
-    expect(projects).toHaveLength(10);
-    expect(invalidDraftValues).toEqual([]);
-    expect(drafts).toEqual(['trend-product-lab.md']);
-    expect(publicProjects).toHaveLength(9);
   });
 
   it('keeps public source snapshots outside the Astro type-check scope', () => {

@@ -2,6 +2,10 @@ import { z } from 'astro/zod';
 
 import { projectCategories } from './projects';
 
+export const projectRepositoryRoles = ['frontend', 'admin', 'backend', 'content'] as const;
+
+export type ProjectRepositoryRole = typeof projectRepositoryRoles[number];
+
 const baseFields = {
   title: z.string().min(1),
   description: z.string().min(1),
@@ -19,6 +23,13 @@ export const projectSchema = z.object({
   cover: z.string().startsWith('/').optional(),
   demoUrl: z.url().optional(),
   repoUrl: z.url().optional(),
+  repositories: z.array(z.object({
+    name: z.string().min(1),
+    role: z.enum(projectRepositoryRoles),
+    description: z.string().min(1),
+    tech: z.array(z.string().min(1)).min(1),
+    url: z.url().refine((url) => url.startsWith('https://github.com/')),
+  })).optional(),
 }).superRefine((project, context) => {
   if (project.draft) return;
 

@@ -1,9 +1,9 @@
 ---
 title: 许汝林个人博客
-description: 一个以项目作品和开源源码为核心、接入站内评论的个人博客。
+description: 一个永久免费、零成本部署、完全开源，并在站内完成评论和留言的个人博客。
 publishedAt: 2026-07-13
 status: active
-category: 网站产品
+category: 个人品牌
 tech: [Astro, TypeScript, Pagefind, Cloudflare D1]
 cover: /images/projects/field-notes.png
 demoUrl: https://field-notes-2fi.pages.dev
@@ -14,11 +14,11 @@ draft: false
 
 ## 项目目标
 
-把项目、文章和公开交流放到一个真正属于自己的空间，同时把长期费用和维护成本降到最低。
+把项目、文章和公开交流放到一个真正属于自己的空间，并坚持永久免费、零成本部署和完全开源。
 
 ## 解决方案
 
-网站由 Astro 在构建阶段生成静态 HTML。文章和项目直接使用 Markdown 管理，Pagefind 在构建完成后生成中文搜索索引，站内评论和回复保存到 Cloudflare D1。
+网站由 Astro 在构建阶段生成静态 HTML。文章和项目直接使用 Markdown 管理，Pagefind 在构建完成后生成中文搜索索引，站内评论和回复保存到 Cloudflare D1，评论和留言都在站内完成。
 
 正文继续由 Cloudflare Pages 静态分发，只有读取或发布评论时才会访问 Pages Functions 和 D1。
 

@@ -11,20 +11,19 @@ const projects = sortByPublishedAt(
   (await getCollection('projects')).filter((entry) => isVisibleEntry(entry, import.meta.env.PROD)),
 );
 const categoryDescriptions = {
-  网站产品: '从内容结构、体验设计到稳定发布的完整网站交付。',
-  业务系统: '围绕真实业务流程构建可维护、可追踪的管理系统。',
-  开发工具: '把重复工作沉淀为更顺手、更可靠的工程工具。',
-  数据与搜索: '让复杂数据更快被检索、理解并转化为业务判断。',
-  'AI 自动化': '将模型能力接入明确流程，减少重复操作和等待。',
+  个人品牌: '以文章、项目和站内交流持续沉淀个人作品。',
+  电商平台: '连接用户端、运营后台和后端服务的完整商城产品。',
+  社区服务: '围绕居民、团长与运营人员组织社区服务流程。',
+  企业官网: '由访客前台、内容管理后台和后端服务共同支撑。',
 } satisfies Record<(typeof projectCategories)[number], string>;
 ---
 
-<BaseLayout title="项目作品" description="已经完成源码整理和安全检查的产品与工具，每个项目都可以查看实现过程和 GitHub 源码。">
+<BaseLayout title="项目作品" description="四个网站产品及其关联仓库，每个项目都可以查看产品组成和 GitHub 源码。">
   <div class="container page-shell" data-project-catalog data-pagefind-body>
     <SectionHeading
       eyebrow="PROJECT INDEX"
       title="公开项目目录"
-      description="不是概念稿，而是经过源码整理和安全检查、可以继续查看实现过程的产品与工具。"
+      description="聚合个人品牌、电商平台、社区服务和企业官网，并按职责关联公开源码。"
       level="h1"
     />
 
@@ -33,7 +32,7 @@ const categoryDescriptions = {
         <strong data-project-count={projects.length}>{projects.length}</strong>
         <span>公开项目</span>
       </div>
-      <div class="project-catalog__categories" aria-label="五类项目说明">
+      <div class="project-catalog__categories" aria-label="四类项目说明">
         {projectCategories.map((category, index) => (
           <article>
             <span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>

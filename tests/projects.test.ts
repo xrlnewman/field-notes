@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 
 import { describe, expect, it } from 'vitest';
+import { parse as parseYaml } from 'yaml';
 
 import { projectSchema } from '../src/lib/project-schema';
 import {
@@ -14,14 +15,22 @@ import {
 } from '../src/lib/projects';
 
 const baseProject = {
-  title: '示例工具',
+  title: '示例网站',
   description: '解决一个明确问题。',
   publishedAt: '2026-07-14',
   status: 'completed' as const,
-  category: '开发工具' as const,
+  category: '个人品牌' as const,
   tech: ['TypeScript'],
   draft: false,
 };
+
+function readProjectFrontmatter(slug: string): Record<string, unknown> {
+  const markdown = readFileSync(`src/content/projects/${slug}.md`, 'utf8');
+  const match = markdown.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+
+  if (!match?.[1]) throw new Error(`${slug} 缺少 YAML frontmatter`);
+  return parseYaml(match[1]) as Record<string, unknown>;
+}
 
 describe('project publishing rules', () => {
   it('rejects a public project without a cover and repository', () => {
@@ -40,71 +49,120 @@ describe('project publishing rules', () => {
     });
     expect(result.success).toBe(true);
   });
+
+  it('accepts repository nodes only when every URL is GitHub HTTPS', () => {
+    const validRepository = {
+      name: 'example-web',
+      role: 'frontend',
+      description: '网站前台。',
+      tech: ['Vue 3'],
+      url: 'https://github.com/xrlnewman/example-web',
+    };
+
+    expect(projectSchema.safeParse({
+      ...baseProject,
+      cover: '/images/projects/example.png',
+      repoUrl: 'https://github.com/xrlnewman/example',
+      repositories: [validRepository],
+    }).success).toBe(true);
+    expect(projectSchema.safeParse({
+      ...baseProject,
+      cover: '/images/projects/example.png',
+      repoUrl: 'https://github.com/xrlnewman/example',
+      repositories: [{ ...validRepository, url: 'http://github.com/xrlnewman/example-web' }],
+    }).success).toBe(false);
+    expect(projectSchema.safeParse({
+      ...baseProject,
+      cover: '/images/projects/example.png',
+      repoUrl: 'https://github.com/xrlnewman/example',
+      repositories: [{ ...validRepository, url: 'https://example.com/example-web' }],
+    }).success).toBe(false);
+  });
+
+  it.each(['multi-merchant-mall', 'linli-community', 'skyboom-corporate'])(
+    '%s links one frontend, admin, and backend repository',
+    (slug) => {
+      const frontmatter = readProjectFrontmatter(slug);
+      const repositories = frontmatter.repositories as Array<{ role: string }>;
+      const roles = repositories.map(({ role }) => role);
+
+      expect(repositories).toHaveLength(3);
+      expect(new Set(roles).size).toBe(3);
+      expect(roles.toSorted()).toEqual(['admin', 'backend', 'frontend']);
+      expect(projectSchema.safeParse(frontmatter).success).toBe(true);
+    },
+  );
 });
 
 describe('project category helpers', () => {
   const projects = [
-    { data: { category: '开发工具' as const } },
-    { data: { category: '数据与搜索' as const } },
-    { data: { category: '开发工具' as const } },
+    { data: { category: '电商平台' as const } },
+    { data: { category: '企业官网' as const } },
+    { data: { category: '电商平台' as const } },
   ];
 
   it('uses the fixed public category order', () => {
     expect(projectCategories).toEqual([
-      '网站产品',
-      '业务系统',
-      '开发工具',
-      '数据与搜索',
-      'AI 自动化',
+      '个人品牌',
+      '电商平台',
+      '社区服务',
+      '企业官网',
     ]);
   });
 
+  it('provides a project-page description for every public category', () => {
+    const projectsPage = readFileSync('src/pages/projects/index.astro', 'utf8');
+
+    for (const category of projectCategories) {
+      expect(projectsPage).toContain(`${category}:`);
+    }
+  });
+
   it('returns unique categories in configured order', () => {
-    expect(getProjectCategories(projects)).toEqual(['全部', '开发工具', '数据与搜索']);
+    expect(getProjectCategories(projects)).toEqual(['全部', '电商平台', '企业官网']);
   });
 
   it('matches all or one category', () => {
-    expect(matchesProjectCategory('开发工具', '全部')).toBe(true);
-    expect(matchesProjectCategory('开发工具', '数据与搜索')).toBe(false);
+    expect(matchesProjectCategory('电商平台', '全部')).toBe(true);
+    expect(matchesProjectCategory('电商平台', '企业官网')).toBe(false);
   });
 
   it('returns every configured category with a public project count', () => {
     expect(getProjectCategoryStats([
-      { data: { category: '网站产品' as const } },
-      { data: { category: '网站产品' as const } },
+      { data: { category: '个人品牌' as const } },
+      { data: { category: '个人品牌' as const } },
     ])).toEqual([
-      { category: '网站产品', count: 2 },
-      { category: '业务系统', count: 0 },
-      { category: '开发工具', count: 0 },
-      { category: '数据与搜索', count: 0 },
-      { category: 'AI 自动化', count: 0 },
+      { category: '个人品牌', count: 2 },
+      { category: '电商平台', count: 0 },
+      { category: '社区服务', count: 0 },
+      { category: '企业官网', count: 0 },
     ]);
   });
 
   it('restores only a configured category from the query string', () => {
-    expect(parseProjectCategory('数据与搜索')).toBe('数据与搜索');
+    expect(parseProjectCategory('社区服务')).toBe('社区服务');
     expect(parseProjectCategory('不存在的分类')).toBe('全部');
     expect(parseProjectCategory(null)).toBe('全部');
   });
 
   it('builds an encoded project category link', () => {
-    expect(getProjectCategoryHref('AI 自动化')).toBe(
-      '/projects/?category=AI%20%E8%87%AA%E5%8A%A8%E5%8C%96',
+    expect(getProjectCategoryHref('企业官网')).toBe(
+      '/projects/?category=%E4%BC%81%E4%B8%9A%E5%AE%98%E7%BD%91',
     );
   });
 
   it('sets a configured category while preserving other URL parts', () => {
     expect(getProjectCategoryUrl(
       'https://example.com/projects/?sort=recent#gallery',
-      '数据与搜索',
+      '社区服务',
     )).toBe(
-      'https://example.com/projects/?sort=recent&category=%E6%95%B0%E6%8D%AE%E4%B8%8E%E6%90%9C%E7%B4%A2#gallery',
+      'https://example.com/projects/?sort=recent&category=%E7%A4%BE%E5%8C%BA%E6%9C%8D%E5%8A%A1#gallery',
     );
   });
 
   it('removes only the category parameter for the all filter', () => {
     expect(getProjectCategoryUrl(
-      'https://example.com/projects/?category=%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7&sort=recent',
+      'https://example.com/projects/?category=%E7%94%B5%E5%95%86%E5%B9%B3%E5%8F%B0&sort=recent',
       '全部',
     )).toBe('https://example.com/projects/?sort=recent');
   });
