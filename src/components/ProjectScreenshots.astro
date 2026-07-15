@@ -4,19 +4,26 @@ import type { ProjectData } from '../lib/project-schema';
 interface Props {
   screenshots: NonNullable<ProjectData['screenshots']>;
   projectTitle: string;
+  headingId: string;
 }
 
-const { screenshots, projectTitle } = Astro.props;
+const { screenshots, projectTitle, headingId } = Astro.props;
 const firstScreenshot = screenshots[0];
 if (!firstScreenshot) throw new Error('项目截图画廊至少需要一张截图');
 const initialProgress = `01 / ${String(screenshots.length).padStart(2, '0')}`;
 ---
 
-<section class="project-screenshots container" data-project-screenshots aria-labelledby="project-screenshots-title" data-reveal>
+<section class="project-screenshots container" data-project-screenshots aria-labelledby={headingId} data-reveal>
   <div class="project-screenshots__heading">
     <p class="eyebrow">PRODUCT SCREENS · REAL WORKFLOWS</p>
-    <h2 id="project-screenshots-title">界面截图</h2>
-    <p>从真实界面查看产品在桌面端与移动端的关键工作流。</p>
+    <h2 id={headingId}>界面截图</h2>
+    <p class="project-screenshots__intro">从真实界面查看产品在桌面端与移动端的关键工作流。</p>
+    <div class="project-screenshots__current">
+      <span class="project-screenshots__progress" data-screenshot-progress>{initialProgress}</span>
+      <h3 data-screenshot-title>{firstScreenshot.title}</h3>
+      <p data-screenshot-caption>{firstScreenshot.caption}</p>
+      <button class="project-screenshots__open" type="button" data-open-screenshot-dialog>查看大图</button>
+    </div>
   </div>
 
   <div class="project-screenshots__gallery">
@@ -31,14 +38,6 @@ const initialProgress = `01 / ${String(screenshots.length).padStart(2, '0')}`;
           loading="lazy"
         />
       </div>
-      <figcaption class="project-screenshots__caption">
-        <div>
-          <span class="project-screenshots__progress" data-screenshot-progress>{initialProgress}</span>
-          <h3 data-screenshot-title>{firstScreenshot.title}</h3>
-          <p data-screenshot-caption>{firstScreenshot.caption}</p>
-        </div>
-        <button class="project-screenshots__open" type="button" data-open-screenshot-dialog>查看大图</button>
-      </figcaption>
     </figure>
 
     <div class="project-screenshots__thumbnails" aria-label="截图缩略图">
@@ -206,10 +205,16 @@ const initialProgress = `01 / ${String(screenshots.length).padStart(2, '0')}`;
     line-height: 1.08;
   }
 
-  .project-screenshots__heading > p:last-child {
+  .project-screenshots__intro {
     margin: 22px 0 0;
     color: var(--muted);
     line-height: 1.75;
+  }
+
+  .project-screenshots__current {
+    margin-top: 30px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
   }
 
   .project-screenshots__gallery {
@@ -242,22 +247,14 @@ const initialProgress = `01 / ${String(screenshots.length).padStart(2, '0')}`;
     object-fit: contain;
   }
 
-  .project-screenshots__caption {
-    display: flex;
-    gap: 24px;
-    align-items: end;
-    justify-content: space-between;
-    padding-block: 22px 6px;
-  }
-
-  .project-screenshots__caption h3,
+  .project-screenshots__current h3,
   .project-screenshots__dialog-figure h3,
   .project-screenshots__static-list h3 {
     margin: 6px 0 0;
     font-size: 1.15rem;
   }
 
-  .project-screenshots__caption p,
+  .project-screenshots__current p,
   .project-screenshots__dialog-figure p,
   .project-screenshots__static-list p {
     margin: 8px 0 0;
@@ -285,7 +282,7 @@ const initialProgress = `01 / ${String(screenshots.length).padStart(2, '0')}`;
   }
 
   .project-screenshots__open {
-    flex: 0 0 auto;
+    margin-top: 18px;
     padding: 10px 16px;
     border-radius: 999px;
   }
@@ -390,11 +387,6 @@ const initialProgress = `01 / ${String(screenshots.length).padStart(2, '0')}`;
     .project-screenshots {
       grid-template-columns: 1fr;
       gap: 42px;
-    }
-
-    .project-screenshots__caption {
-      align-items: start;
-      flex-direction: column;
     }
 
     .project-screenshots__thumbnails {

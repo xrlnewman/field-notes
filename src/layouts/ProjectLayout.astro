@@ -16,6 +16,8 @@ const { data } = project;
 const hasMultipleRepositories = (data.repositories?.length ?? 0) > 1;
 const date = new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' }).format(data.publishedAt);
 const statusLabels = { active: '持续迭代', completed: '已经完成', archived: '已归档' } as const;
+const projectScreenshotSlug = project.id.replace(/\.[^/.]+$/, '').replace(/[^a-zA-Z0-9_-]+/g, '-');
+const projectScreenshotHeadingId = `project-${projectScreenshotSlug || 'detail'}-screenshots-title`;
 ---
 
 <BaseLayout title={data.title} description={data.description} type="article">
@@ -47,7 +49,11 @@ const statusLabels = { active: '持续迭代', completed: '已经完成', archiv
     </header>
 
     {data.screenshots && (
-      <ProjectScreenshots screenshots={data.screenshots} projectTitle={data.title} />
+      <ProjectScreenshots
+        screenshots={data.screenshots}
+        projectTitle={data.title}
+        headingId={projectScreenshotHeadingId}
+      />
     )}
 
     <section class="container project-panorama" aria-labelledby="product-panorama-title" data-reveal>

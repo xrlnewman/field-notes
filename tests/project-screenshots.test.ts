@@ -21,4 +21,33 @@ describe('project screenshot gallery', () => {
     expect(layout).toContain('<ProjectScreenshots');
     expect(layout.indexOf('<ProjectScreenshots')).toBeLessThan(layout.indexOf('project-panorama'));
   });
+
+  it('keeps the current screenshot explanation in the left column before the visual stage', () => {
+    const gallery = read('src/components/ProjectScreenshots.astro');
+    const stageIndex = gallery.indexOf('data-screenshot-stage');
+
+    expect(stageIndex).toBeGreaterThan(-1);
+    for (const hook of [
+      'data-screenshot-progress',
+      'data-screenshot-title',
+      'data-screenshot-caption',
+      'data-open-screenshot-dialog',
+    ]) {
+      expect(gallery.indexOf(hook), `${hook} should render before the screenshot stage`).toBeLessThan(stageIndex);
+    }
+  });
+
+  it('uses a caller-provided stable heading id derived from the project id', () => {
+    const gallery = read('src/components/ProjectScreenshots.astro');
+    const layout = read('src/layouts/ProjectLayout.astro');
+
+    expect(gallery).toContain('headingId: string;');
+    expect(gallery).toContain('aria-labelledby={headingId}');
+    expect(gallery).toContain('<h2 id={headingId}>');
+    expect(gallery).not.toContain('id="project-screenshots-title"');
+
+    expect(layout).toContain("project.id.replace(/\\.[^/.]+$/, '')");
+    expect(layout).toContain("replace(/[^a-zA-Z0-9_-]+/g, '-')");
+    expect(layout).toContain('headingId={projectScreenshotHeadingId}');
+  });
 });
