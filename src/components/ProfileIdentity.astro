@@ -28,7 +28,7 @@ const { author } = siteConfig;
       {author.skills.map((skill) => <li>{skill}</li>)}
     </ul>
     {projectCount !== undefined && (
-      <p class="profile-identity__metric"><strong>{projectCount}</strong> 个网站产品</p>
+      <p class="profile-identity__metric"><strong data-project-count={projectCount}>{projectCount}</strong> 个网站产品</p>
     )}
     <div class="button-row">
       <a class="button button--primary" href={siteConfig.social.github} target="_blank" rel="noreferrer">GitHub</a>
