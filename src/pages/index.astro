@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 
 import ContentCard from '../components/ContentCard.astro';
+import ProfileIdentity from '../components/ProfileIdentity.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -28,14 +29,12 @@ const featuredProjects = [...projects].sort((left, right) =>
         <p class="hero-studio__intro">{siteConfig.description}</p>
         <div class="button-row">
           <a class="button button--primary" href="/projects/">查看项目 <span aria-hidden="true">→</span></a>
-          <a class="button" href="/articles/">阅读文章</a>
+          <a class="button" href="/about/">了解我</a>
         </div>
       </div>
-      <ul class="hero-studio__stats" aria-label="工作室数据">
-        <li><strong>7 年经验</strong><span>持续交付真实业务</span></li>
-        <li aria-label="4 个网站产品"><strong data-project-count={projects.length}>{projects.length}</strong><span>个网站产品</span></li>
-        <li><strong>永久免费</strong><span>个人博客与源码</span></li>
-      </ul>
+      <div class="hero-studio__profile" aria-label={`${siteConfig.author.experienceYears} 年经验 · ${projects.length} 个网站产品`}>
+        <ProfileIdentity variant="compact" projectCount={projects.length} />
+      </div>
     </section>
 
     <aside class="open-source-promise" data-free-open-source data-reveal>
@@ -96,9 +95,9 @@ const featuredProjects = [...projects].sort((left, right) =>
     overflow: clip;
     display: grid;
     min-height: 540px;
-    max-height: 620px;
+    max-height: none;
     grid-template-columns: minmax(0, 7fr) minmax(320px, 5fr);
-    gap: clamp(44px, 6vw, 88px);
+    gap: clamp(36px, 5vw, 72px);
     align-items: center;
     padding-block: clamp(72px, 8vw, 104px);
     border-bottom: 1px solid var(--border);
@@ -119,8 +118,16 @@ const featuredProjects = [...projects].sort((left, right) =>
   }
 
   .hero-studio__copy,
-  .hero-studio__stats {
+  .hero-studio__profile {
     min-width: 0;
+  }
+
+  @media (max-width: 1120px) {
+    .hero-studio {
+      max-height: none;
+      grid-template-columns: 1fr;
+      align-items: start;
+    }
   }
 
   .hero-studio h1 {
@@ -137,38 +144,6 @@ const featuredProjects = [...projects].sort((left, right) =>
     color: var(--muted);
     font-size: clamp(1.05rem, 1.7vw, 1.24rem);
     line-height: 1.8;
-  }
-
-  .hero-studio__stats {
-    display: grid;
-    gap: 0;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .hero-studio__stats li {
-    display: grid;
-    min-height: 104px;
-    align-content: center;
-    padding: 20px 4px;
-    border-top: 1px solid var(--border);
-  }
-
-  .hero-studio__stats li:last-child {
-    border-bottom: 1px solid var(--border);
-  }
-
-  .hero-studio__stats strong {
-    color: var(--ink);
-    font-size: clamp(1.35rem, 2.5vw, 2rem);
-    line-height: 1.15;
-  }
-
-  .hero-studio__stats span {
-    margin-top: 7px;
-    color: var(--muted);
-    font-size: 0.86rem;
   }
 
   .open-source-promise {
@@ -239,21 +214,6 @@ const featuredProjects = [...projects].sort((left, right) =>
       grid-template-columns: 1fr;
       align-items: start;
     }
-
-    .hero-studio__stats {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .hero-studio__stats li {
-      min-height: 96px;
-      padding-inline: 18px;
-      border-bottom: 1px solid var(--border);
-      border-left: 1px solid var(--border);
-    }
-
-    .hero-studio__stats li:first-child {
-      border-left: 0;
-    }
   }
 
   @media (max-width: 760px) {
@@ -266,21 +226,6 @@ const featuredProjects = [...projects].sort((left, right) =>
 
     .hero-studio h1 {
       font-size: clamp(2.5rem, 10vw, 2.75rem);
-    }
-
-    .hero-studio__stats {
-      grid-template-columns: 1fr;
-    }
-
-    .hero-studio__stats li {
-      min-height: 82px;
-      padding-inline: 0;
-      border-left: 0;
-      border-bottom: 0;
-    }
-
-    .hero-studio__stats li:last-child {
-      border-bottom: 1px solid var(--border);
     }
 
     .open-source-promise {

@@ -104,8 +104,9 @@ describe('personal brand configuration', () => {
 
     expect.soft(home).toContain('data-cosmic-hero');
     expect.soft(home).toContain('把复杂业务，做成可运行的产品。');
-    expect.soft(home).toContain('7 年经验');
-    expect.soft(home).toContain('4 个网站产品');
+    expect.soft(home).toContain(
+      'aria-label={`${siteConfig.author.experienceYears} 年经验 · ${projects.length} 个网站产品`}',
+    );
     expect.soft(home).toContain('永久免费');
     expect.soft(home).toContain('data-free-open-source');
     expect.soft(card).toContain('data-cosmic-card');

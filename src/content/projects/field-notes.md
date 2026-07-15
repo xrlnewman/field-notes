@@ -12,22 +12,22 @@ screenshots:
     title: 个人首页
     caption: 星空主题首屏集中呈现七年工程经验、网站项目入口与永久免费开源承诺。
     viewport: desktop
-    width: 1254
-    height: 1108
+    width: 1440
+    height: 900
   - src: /images/projects/field-notes/projects.png
     alt: 许汝林个人博客项目目录按类别展示四个网站产品
     title: 项目分类目录
     caption: 按个人品牌、电商平台、社区服务和企业官网筛选完整网站产品。
     viewport: desktop
-    width: 1254
-    height: 1108
+    width: 1440
+    height: 900
   - src: /images/projects/field-notes/project-detail.png
     alt: 许汝林个人博客项目详情展示技术栈和 GitHub 源码入口
     title: 项目详情
     caption: 项目详情明确展示产品状态、技术栈、在线体验和 GitHub 源码入口。
     viewport: desktop
-    width: 1254
-    height: 1108
+    width: 1440
+    height: 900
   - src: /images/projects/field-notes/guestbook.png
     alt: 许汝林个人博客全局留言页内嵌 GitHub 登录评论区
     title: 站内全局留言
