@@ -26,6 +26,15 @@ describe('editorial cosmic layout', () => {
     expect(card).toContain('min-height: 280px;');
   });
 
+  it('releases the home hero height as soon as it stacks at tablet widths', () => {
+    const home = read('src/pages/index.astro');
+    const tabletHero = home.match(
+      /@media \(max-width: 960px\) \{[\s\S]*?\.hero-studio \{([^}]*)\}/,
+    )?.[1] ?? '';
+
+    expect(tabletHero).toContain('max-height: none;');
+  });
+
   it('keeps the narrow home hero visible and its title at or below 44px', () => {
     const home = read('src/pages/index.astro');
     const mobile = home.slice(home.indexOf('@media (max-width: 760px) {'));
