@@ -22,9 +22,9 @@
 ### Task 1: 多商户 SaaS 商城三仓审计与公开
 
 **Files:**
-- Modify when required: `E:\project\mall-h5\README.md`, `.gitignore`, `.env.example`
-- Modify when required: `E:\project\mall-admin\README.md`, `.gitignore`, `.env.example`
-- Modify when required: `E:\project\mall-system\README.md`, `.gitignore`, `.env.example`
+- Modify when required: `../mall-h5/README.md`, `.gitignore`, `.env.example`
+- Modify when required: `../mall-admin/README.md`, `.gitignore`, `.env.example`
+- Modify when required: `../mall-system/README.md`, `.gitignore`, `.env.example`
 
 **Interfaces:**
 - Produces: `https://github.com/xrlnewman/mall-h5`
@@ -50,9 +50,9 @@ README 顶部统一列出：商城 H5（Vue 3/Vant）、商家后台（Vue 3/Ele
 ### Task 2: 邻里社区服务平台三仓审计与公开
 
 **Files:**
-- Modify when required: `E:\project\linli-mp\README.md`, `.gitignore`, `.env.example`
-- Modify when required: `E:\project\linli-admin\README.md`, `.gitignore`, `.env.example`
-- Modify when required: `E:\project\linli-server\README.md`, `.gitignore`, `.env.example`
+- Modify when required: `../linli-mp/README.md`, `.gitignore`, `.env.example`
+- Modify when required: `../linli-admin/README.md`, `.gitignore`, `.env.example`
+- Modify when required: `../linli-server/README.md`, `.gitignore`, `.env.example`
 
 **Interfaces:**
 - Produces: `https://github.com/xrlnewman/linli-mp`
@@ -78,9 +78,9 @@ README 顶部统一列出：小程序/H5（uni-app/Vue 3）、运营后台（Vue
 ### Task 3: 天舶重工多语言官网三仓审计与公开
 
 **Files:**
-- Modify when required: `E:\project\skyboom-web\README.md`, `.gitignore`, `.env.example`
-- Modify when required: `E:\project\skyboom-admin\README.md`, `.gitignore`, `.env.example`
-- Modify when required: `E:\project\skyboom-server\README.md`, `.gitignore`, `.env.example`
+- Modify when required: `../skyboom-web/README.md`, `.gitignore`, `.env.example`
+- Modify when required: `../skyboom-admin/README.md`, `.gitignore`, `.env.example`
+- Modify when required: `../skyboom-server/README.md`, `.gitignore`, `.env.example`
 
 **Interfaces:**
 - Produces: `https://github.com/xrlnewman/skyboom-web`

@@ -8,15 +8,15 @@
 
 | 产品 | 角色 | 本地目录 | GitHub 仓库 |
 |---|---|---|---|
-| 多商户 SaaS 商城 | 用户商城 | `E:\project\mall-h5` | `xrlnewman/mall-h5` |
-| 多商户 SaaS 商城 | 商家后台 | `E:\project\mall-admin` | `xrlnewman/mall-admin` |
-| 多商户 SaaS 商城 | 服务端 | `E:\project\mall-system` | `xrlnewman/mall-system` |
-| 邻里社区服务平台 | 小程序/H5 | `E:\project\linli-mp` | `xrlnewman/linli-mp` |
-| 邻里社区服务平台 | 运营后台 | `E:\project\linli-admin` | `xrlnewman/linli-admin` |
-| 邻里社区服务平台 | 服务端 | `E:\project\linli-server` | `xrlnewman/linli-server` |
-| 天舶重工多语言官网 | 企业官网 | `E:\project\skyboom-web` | `xrlnewman/skyboom-web` |
-| 天舶重工多语言官网 | 内容后台 | `E:\project\skyboom-admin` | `xrlnewman/skyboom-admin` |
-| 天舶重工多语言官网 | 服务端 | `E:\project\skyboom-server` | `xrlnewman/skyboom-server` |
+| 多商户 SaaS 商城 | 用户商城 | `../mall-h5` | `xrlnewman/mall-h5` |
+| 多商户 SaaS 商城 | 商家后台 | `../mall-admin` | `xrlnewman/mall-admin` |
+| 多商户 SaaS 商城 | 服务端 | `../mall-system` | `xrlnewman/mall-system` |
+| 邻里社区服务平台 | 小程序/H5 | `../linli-mp` | `xrlnewman/linli-mp` |
+| 邻里社区服务平台 | 运营后台 | `../linli-admin` | `xrlnewman/linli-admin` |
+| 邻里社区服务平台 | 服务端 | `../linli-server` | `xrlnewman/linli-server` |
+| 天舶重工多语言官网 | 企业官网 | `../skyboom-web` | `xrlnewman/skyboom-web` |
+| 天舶重工多语言官网 | 内容后台 | `../skyboom-admin` | `xrlnewman/skyboom-admin` |
+| 天舶重工多语言官网 | 服务端 | `../skyboom-server` | `xrlnewman/skyboom-server` |
 
 个人博客 `xrlnewman/field-notes` 已经公开，不重复创建。
 
