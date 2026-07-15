@@ -140,7 +140,7 @@ describe('personal brand configuration', () => {
     expect.soft(interactions).toContain('const maxTilt = 2.5;');
     expect.soft(interactions).toContain("setProperty('--card-highlight-x'");
     expect.soft(interactions).toContain('new IntersectionObserver');
-    expect.soft(interactions).toContain('observer.unobserve(entry.target);');
+    expect.soft(interactions).toContain('nextObserver.unobserve(entry.target);');
     expect.soft(pendingRevealRule).toContain('translate: 0 22px;');
     expect.soft(pendingRevealRule).not.toContain('transform:');
   });

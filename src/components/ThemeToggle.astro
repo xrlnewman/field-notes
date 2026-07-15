@@ -12,7 +12,8 @@ import { cosmicThemes } from '../lib/cosmic-theme';
         data-theme={theme.id}
         title={theme.description}
       >
-        {theme.shortLabel}
+        <span class="theme-toggle__full-label">{theme.label}</span>
+        <span class="theme-toggle__short-label" aria-hidden="true">{theme.shortLabel}</span>
       </button>
     ))
   }
@@ -79,14 +80,35 @@ import { cosmicThemes } from '../lib/cosmic-theme';
     border: 0;
     border-radius: 999px;
     color: var(--ink);
-    background: transparent;
+    background-color: transparent;
     cursor: pointer;
+    transition: color 280ms ease, background-color 280ms ease;
+  }
+
+  .theme-toggle__short-label {
+    display: none;
   }
 
   :global(:root[data-theme='observatory']) .theme-toggle button[data-theme='observatory'],
   :global(:root[data-theme='nebula']) .theme-toggle button[data-theme='nebula'],
   :global(:root[data-theme='terminal']) .theme-toggle button[data-theme='terminal'] {
     color: var(--canvas);
-    background: var(--accent);
+    background-color: var(--accent);
+  }
+
+  @media (max-width: 520px) {
+    .theme-toggle__full-label {
+      display: none;
+    }
+
+    .theme-toggle__short-label {
+      display: inline;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .theme-toggle button {
+      transition: none;
+    }
   }
 </style>

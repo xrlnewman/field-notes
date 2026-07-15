@@ -48,6 +48,7 @@ export interface StarfieldRenderState {
 
 export interface StarfieldRuntimeSnapshot extends StarfieldRenderState {
   reducedMotion: boolean;
+  coarsePointer: boolean;
   hidden: boolean;
   frameId: number | null;
   destroyed: boolean;
@@ -63,6 +64,7 @@ export interface StarfieldRuntimeDependencies {
 
 export interface StarfieldRuntimeOptions {
   reducedMotion: boolean;
+  coarsePointer?: boolean;
   hidden: boolean;
 }
 
@@ -74,6 +76,7 @@ export interface StarfieldRuntimeController {
   handlePointerOut: () => void;
   handleVisibilityChange: (hidden: boolean) => void;
   handleReducedMotionChange: (reducedMotion: boolean) => void;
+  handleCoarsePointerChange: (coarsePointer: boolean) => void;
   teardown: () => void;
   getSnapshot: () => StarfieldRuntimeSnapshot;
 }
@@ -166,6 +169,7 @@ export const createStarfieldRuntime = (
   let pointer: PointerState = { x: 0, y: 0, active: false };
   let ripples: Ripple[] = [];
   let reducedMotion = options.reducedMotion;
+  let coarsePointer = options.coarsePointer ?? false;
   let hidden = options.hidden;
   let frameId: number | null = null;
   let started = false;
@@ -177,6 +181,7 @@ export const createStarfieldRuntime = (
     pointer: { ...pointer },
     ripples: ripples.map((ripple) => ({ ...ripple })),
     reducedMotion,
+    coarsePointer,
     hidden,
     frameId,
     destroyed,
@@ -213,14 +218,13 @@ export const createStarfieldRuntime = (
   };
 
   const handlePointerMove = (input: StarfieldPointerInput) => {
-    if (destroyed || reducedMotion) return;
+    if (destroyed || reducedMotion || coarsePointer) return;
     pointer = { x: input.normalizedX, y: input.normalizedY, active: true };
     dependencies.setPointerGlow(input);
   };
 
   const handlePointerDown = (input: StarfieldPointerInput) => {
     if (destroyed || reducedMotion) return;
-    handlePointerMove(input);
     ripples.push({
       x: input.clientX,
       y: input.clientY,
@@ -258,6 +262,16 @@ export const createStarfieldRuntime = (
     }
   };
 
+  const handleCoarsePointerChange = (nextCoarsePointer: boolean) => {
+    if (destroyed || coarsePointer === nextCoarsePointer) return;
+    coarsePointer = nextCoarsePointer;
+
+    if (coarsePointer) {
+      pointer = { x: 0, y: 0, active: false };
+      dependencies.setPointerGlow(null);
+    }
+  };
+
   const teardown = () => {
     if (destroyed) return;
     destroyed = true;
@@ -275,6 +289,7 @@ export const createStarfieldRuntime = (
     handlePointerOut,
     handleVisibilityChange,
     handleReducedMotionChange,
+    handleCoarsePointerChange,
     teardown,
     getSnapshot,
   };

@@ -191,6 +191,27 @@ describe('project category helpers', () => {
     expect(card).toMatch(/\.project-card\[hidden\] \{[^}]*display: none;/);
   });
 
+  it('renders every project image at the real 1440 by 900 ratio without cropping', () => {
+    const card = readFileSync('src/components/ProjectCard.astro', 'utf8');
+    const layout = readFileSync('src/layouts/ProjectLayout.astro', 'utf8');
+
+    for (const source of [card, layout]) {
+      expect(source).toContain('width="1440" height="900"');
+      expect(source).toContain('aspect-ratio: 16 / 10;');
+      expect(source).toContain('object-fit: contain;');
+    }
+    expect(card).not.toContain('aspect-ratio: auto;');
+  });
+
+  it('documents single-repository, multi-repository, and hidden showcase conventions', () => {
+    const readme = readFileSync('README.md', 'utf8');
+
+    expect(readme).toContain('单仓项目使用 `repoUrl`');
+    expect(readme).toContain('多仓项目使用 `repositories`');
+    expect(readme).toContain('`showcase/` 保留的是已隐藏工具项目的脱敏源码快照');
+    expect(readme).toContain('不会出现在网站项目列表');
+  });
+
   it('renders every related repository as a semantic product panorama', () => {
     const layout = readFileSync('src/layouts/ProjectLayout.astro', 'utf8');
     const constellation = readOptional('src/components/RepositoryConstellation.astro');

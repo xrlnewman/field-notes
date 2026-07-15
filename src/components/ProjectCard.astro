@@ -45,7 +45,7 @@ const statusLabels = {
 >
   <span class="project-card__highlight" aria-hidden="true"></span>
   <a class="project-cover" href={href} aria-label={`查看项目：${title}`}>
-    <img src={cover} alt={`${title} 界面截图`} width="960" height="600" loading="lazy" />
+    <img src={cover} alt={`${title} 界面截图`} width="1440" height="900" loading="lazy" />
   </a>
   <div class="project-card__body">
     <div class="project-card__meta">
@@ -124,14 +124,12 @@ const statusLabels = {
     z-index: 1;
     display: block;
     overflow: hidden;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 16 / 10;
     border-bottom: 1px solid var(--border);
     background: var(--surface-soft);
   }
 
   .project-card--featured .project-cover {
-    min-height: 100%;
-    aspect-ratio: auto;
     border-right: 1px solid var(--border);
     border-bottom: 0;
   }
@@ -144,7 +142,7 @@ const statusLabels = {
   .project-cover img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     transition: transform 280ms ease;
   }
 
@@ -282,7 +280,7 @@ const statusLabels = {
 
     .project-card--featured .project-cover {
       min-height: auto;
-      aspect-ratio: 16 / 9;
+      aspect-ratio: 16 / 10;
       border-right: 0;
       border-bottom: 1px solid var(--border);
     }

@@ -201,7 +201,11 @@
         setPointerGlow,
         now: () => performance.now(),
       },
-      { reducedMotion: reduceMotion.matches, hidden: document.hidden },
+      {
+        reducedMotion: reduceMotion.matches,
+        coarsePointer: coarsePointer.matches,
+        hidden: document.hidden,
+      },
     );
 
     const toPointerInput = (event: PointerEvent): StarfieldPointerInput => ({
@@ -217,7 +221,7 @@
     };
 
     const handlePointerMove = (event: PointerEvent) => {
-      if (reduceMotion.matches) return;
+      if (reduceMotion.matches || coarsePointer.matches) return;
       runtime.handlePointerMove(toPointerInput(event));
     };
 
@@ -245,6 +249,12 @@
       runtime.handleReducedMotionChange(event.matches);
     };
 
+    const handlePointerPreference = (event: MediaQueryListEvent) => {
+      runtime.handleCoarsePointerChange(event.matches);
+      rebuildStars();
+      if (reduceMotion.matches) runtime.drawStaticFrame();
+    };
+
     const handleBeforeSwap = () => teardown();
 
     const teardown = () => {
@@ -256,6 +266,7 @@
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       document.removeEventListener('astro:before-swap', handleBeforeSwap);
       reduceMotion.removeEventListener('change', handleMotionPreference);
+      coarsePointer.removeEventListener('change', handlePointerPreference);
       runtime.teardown();
     };
 
@@ -267,6 +278,7 @@
     document.addEventListener('visibilitychange', handleVisibilityChange);
     document.addEventListener('astro:before-swap', handleBeforeSwap);
     reduceMotion.addEventListener('change', handleMotionPreference);
+    coarsePointer.addEventListener('change', handlePointerPreference);
 
     resizeCanvas();
     runtime.start();

@@ -4,45 +4,114 @@
   const cards = document.querySelectorAll<HTMLElement>('[data-cosmic-card]');
   const revealTargets = document.querySelectorAll<HTMLElement>('[data-reveal]');
   const maxTilt = 2.5;
+  const cosmicWindow = window as typeof window & {
+    __fieldNotesCosmicInteractionsTeardown?: () => void;
+  };
+  let cardsBound = false;
+  let observer: IntersectionObserver | null = null;
 
-  if (!reducedMotion.matches && !coarsePointer.matches) {
-    cards.forEach((card) => {
-      card.addEventListener('pointermove', (event) => {
-        const bounds = card.getBoundingClientRect();
-        const horizontal = (event.clientX - bounds.left) / bounds.width;
-        const vertical = (event.clientY - bounds.top) / bounds.height;
-        const clampTilt = (value: number) => Math.max(-maxTilt, Math.min(maxTilt, value));
+  cosmicWindow.__fieldNotesCosmicInteractionsTeardown?.();
 
-        card.style.setProperty('--card-rotate-x', `${clampTilt((0.5 - vertical) * maxTilt * 2)}deg`);
-        card.style.setProperty('--card-rotate-y', `${clampTilt((horizontal - 0.5) * maxTilt * 2)}deg`);
-        card.style.setProperty('--card-highlight-x', `${horizontal * 100}%`);
-        card.style.setProperty('--card-highlight-y', `${vertical * 100}%`);
-      });
+  const resetCard = (card: HTMLElement) => {
+    card.style.setProperty('--card-rotate-x', '0deg');
+    card.style.setProperty('--card-rotate-y', '0deg');
+    card.style.setProperty('--card-highlight-x', '50%');
+    card.style.setProperty('--card-highlight-y', '50%');
+  };
 
-      card.addEventListener('pointerleave', () => {
-        card.style.setProperty('--card-rotate-x', '0deg');
-        card.style.setProperty('--card-rotate-y', '0deg');
-        card.style.setProperty('--card-highlight-x', '50%');
-        card.style.setProperty('--card-highlight-y', '50%');
-      });
-    });
+  function handleCardPointerMove(event: PointerEvent) {
+    const card = event.currentTarget as HTMLElement;
+    const bounds = card.getBoundingClientRect();
+    const horizontal = (event.clientX - bounds.left) / bounds.width;
+    const vertical = (event.clientY - bounds.top) / bounds.height;
+    const clampTilt = (value: number) => Math.max(-maxTilt, Math.min(maxTilt, value));
+
+    card.style.setProperty('--card-rotate-x', `${clampTilt((0.5 - vertical) * maxTilt * 2)}deg`);
+    card.style.setProperty('--card-rotate-y', `${clampTilt((horizontal - 0.5) * maxTilt * 2)}deg`);
+    card.style.setProperty('--card-highlight-x', `${horizontal * 100}%`);
+    card.style.setProperty('--card-highlight-y', `${vertical * 100}%`);
   }
 
-  if (reducedMotion.matches || !('IntersectionObserver' in window)) {
-    revealTargets.forEach((target) => target.classList.add('is-visible'));
-  } else {
+  function handleCardPointerLeave(event: PointerEvent) {
+    resetCard(event.currentTarget as HTMLElement);
+  }
+
+  const bindCards = () => {
+    if (cardsBound || reducedMotion.matches || coarsePointer.matches) return;
+
+    cards.forEach((card) => {
+      card.addEventListener('pointermove', handleCardPointerMove);
+      card.addEventListener('pointerleave', handleCardPointerLeave);
+    });
+    cardsBound = true;
+  };
+
+  const unbindCards = () => {
+    cards.forEach((card) => {
+      card.removeEventListener('pointermove', handleCardPointerMove);
+      card.removeEventListener('pointerleave', handleCardPointerLeave);
+      resetCard(card);
+    });
+    cardsBound = false;
+  };
+
+  const setupRevealObserver = () => {
+    observer?.disconnect();
+    observer = null;
+
+    if (reducedMotion.matches || !('IntersectionObserver' in window)) {
+      document.documentElement.classList.remove('cosmic-interactions-ready');
+      revealTargets.forEach((target) => target.classList.add('is-visible'));
+      return;
+    }
+
     document.documentElement.classList.add('cosmic-interactions-ready');
-    const observer = new IntersectionObserver((entries) => {
+    const nextObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
 
         entry.target.classList.add('is-visible');
-        observer.unobserve(entry.target);
+        nextObserver.unobserve(entry.target);
       });
     }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
+    observer = nextObserver;
+    revealTargets.forEach((target) => nextObserver.observe(target));
+  };
 
-    revealTargets.forEach((target) => observer.observe(target));
+  function handleMotionPreference(event: MediaQueryListEvent) {
+    if (event.matches) unbindCards();
+    else bindCards();
+    setupRevealObserver();
   }
+
+  function handlePointerPreference(event: MediaQueryListEvent) {
+    if (event.matches) unbindCards();
+    else bindCards();
+  }
+
+  function handleBeforeSwap() {
+    teardown();
+  }
+
+  function teardown() {
+    unbindCards();
+    observer?.disconnect();
+    observer = null;
+    document.documentElement.classList.remove('cosmic-interactions-ready');
+    reducedMotion.removeEventListener('change', handleMotionPreference);
+    coarsePointer.removeEventListener('change', handlePointerPreference);
+    document.removeEventListener('astro:before-swap', handleBeforeSwap);
+    if (cosmicWindow.__fieldNotesCosmicInteractionsTeardown === teardown) {
+      delete cosmicWindow.__fieldNotesCosmicInteractionsTeardown;
+    }
+  }
+
+  reducedMotion.addEventListener('change', handleMotionPreference);
+  coarsePointer.addEventListener('change', handlePointerPreference);
+  document.addEventListener('astro:before-swap', handleBeforeSwap);
+  bindCards();
+  setupRevealObserver();
+  cosmicWindow.__fieldNotesCosmicInteractionsTeardown = teardown;
 </script>
 
 <style is:global>

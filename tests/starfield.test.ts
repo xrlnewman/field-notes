@@ -68,7 +68,7 @@ describe('starfield runtime controller', () => {
     clientY: 240,
   };
 
-  const createHarness = (reducedMotion = false) => {
+  const createHarness = (reducedMotion = false, coarsePointer = false) => {
     const frameCallbacks: FrameRequestCallback[] = [];
     const requestFrame = vi.fn((callback: FrameRequestCallback) => {
       frameCallbacks.push(callback);
@@ -79,7 +79,7 @@ describe('starfield runtime controller', () => {
     const setPointerGlow = vi.fn();
     const runtime = createStarfieldRuntime(
       { requestFrame, cancelFrame, draw, setPointerGlow, now: () => 100 },
-      { reducedMotion, hidden: false },
+      { reducedMotion, hidden: false, coarsePointer },
     );
 
     return { runtime, frameCallbacks, requestFrame, cancelFrame, draw, setPointerGlow };
@@ -122,6 +122,31 @@ describe('starfield runtime controller', () => {
       pointer: { x: 0, y: 0, active: false },
       ripples: [],
     });
+  });
+
+  it('creates a ripple on pointer down without activating parallax or glow', () => {
+    const { runtime, setPointerGlow } = createHarness();
+
+    runtime.handlePointerDown(pointerInput);
+
+    expect(runtime.getSnapshot().pointer).toEqual({ x: 0, y: 0, active: false });
+    expect(runtime.getSnapshot().ripples).toEqual([
+      { x: 640, y: 240, startedAt: 100, duration: 900 },
+    ]);
+    expect(setPointerGlow).not.toHaveBeenCalled();
+  });
+
+  it('ignores pointer movement on coarse pointers and clears an active pointer after media changes', () => {
+    const coarseHarness = createHarness(false, true);
+    coarseHarness.runtime.handlePointerMove(pointerInput);
+    expect(coarseHarness.runtime.getSnapshot().pointer.active).toBe(false);
+    expect(coarseHarness.setPointerGlow).not.toHaveBeenCalled();
+
+    const fineHarness = createHarness();
+    fineHarness.runtime.handlePointerMove(pointerInput);
+    fineHarness.runtime.handleCoarsePointerChange(true);
+    expect(fineHarness.runtime.getSnapshot().pointer).toEqual({ x: 0, y: 0, active: false });
+    expect(fineHarness.setPointerGlow).toHaveBeenLastCalledWith(null);
   });
 
   it('cancels animation while hidden and resumes with only one loop', () => {
@@ -205,7 +230,16 @@ describe('cosmic backdrop integration', () => {
       "document.removeEventListener('visibilitychange', handleVisibilityChange)",
     );
     expect(backdrop).toContain("reduceMotion.removeEventListener('change', handleMotionPreference)");
+    expect(backdrop).toContain("coarsePointer.removeEventListener('change', handlePointerPreference)");
     expect(backdrop).toContain('return teardown;');
+  });
+
+  it('provides a coarse-pointer CSS fallback that removes the pointer glow', () => {
+    const styles = readText('src/styles/global.css');
+
+    expect(styles).toMatch(
+      /@media\s*\(pointer:\s*coarse\)\s*\{[\s\S]*?\.cosmic-pointer-glow\s*\{[\s\S]*?display:\s*none;/,
+    );
   });
 
   it('defines backdrop layers behind the page content without intercepting events', () => {

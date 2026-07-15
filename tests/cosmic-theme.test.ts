@@ -99,4 +99,17 @@ describe('cosmic theme startup and controls', () => {
       /try\s*{\s*localStorage\.setItem\(COSMIC_THEME_STORAGE_KEY, theme\);\s*}\s*catch\s*{[^}]*}\s*updateButtons\(theme\);\s*document\.dispatchEvent/s,
     );
   });
+
+  it('uses full desktop labels, compact mobile labels, and motion-safe transitions', () => {
+    const toggle = readText('src/components/ThemeToggle.astro');
+
+    expect(toggle).toContain('{theme.label}');
+    expect(toggle).toContain('{theme.shortLabel}');
+    expect(toggle).toMatch(/\.theme-toggle__short-label\s*\{[^}]*display:\s*none;/);
+    expect(toggle).toMatch(/@media\s*\(max-width:\s*520px\)/);
+    expect(toggle).toContain('transition: color 280ms ease, background-color 280ms ease;');
+    expect(toggle).toMatch(
+      /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.theme-toggle button\s*\{[^}]*transition:\s*none;/,
+    );
+  });
 });

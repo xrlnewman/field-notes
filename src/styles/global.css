@@ -149,6 +149,12 @@ body {
   transition: opacity 180ms ease;
 }
 
+@media (pointer: coarse) {
+  .cosmic-pointer-glow {
+    display: none;
+  }
+}
+
 body > :not(.cosmic-backdrop):not(.cosmic-noise):not(.cosmic-pointer-glow) {
   position: relative;
   z-index: 3;
