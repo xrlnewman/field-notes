@@ -287,17 +287,19 @@ Expected: FAIL，两个 frontmatter 尚无 `screenshots`。
 使用 `Copy-Item` 保留原文件字节，不做拉伸：
 
 ```powershell
-Copy-Item E:\project\linli-mp\docs\screenshots\mp-02-home.png public\images\projects\linli-community\home-mobile.png
-Copy-Item E:\project\linli-mp\docs\screenshots\mp-04-groupbuy-detail.png public\images\projects\linli-community\groupbuy-detail-mobile.png
-Copy-Item E:\project\linli-mp\docs\screenshots\mp-leader-01-dashboard.png public\images\projects\linli-community\leader-dashboard-mobile.png
-Copy-Item E:\project\linli-admin\docs\screenshots\admin-06-products.png public\images\projects\linli-community\products-admin.png
-Copy-Item E:\project\linli-admin\docs\screenshots\admin-08-orders.png public\images\projects\linli-community\orders-admin.png
-Copy-Item E:\project\linli-admin\docs\screenshots\admin-06-products.png public\images\projects\linli-community.png -Force
-Copy-Item E:\project\skyboom-web\docs\screenshots\01-home-desktop-zh.png public\images\projects\skyboom-corporate\home-desktop.png
-Copy-Item E:\project\skyboom-web\docs\screenshots\web-products-desktop-zh.png public\images\projects\skyboom-corporate\products-desktop.png
-Copy-Item E:\project\skyboom-web\docs\screenshots\web-polish-about-desktop.png public\images\projects\skyboom-corporate\about-desktop.png
-Copy-Item E:\project\skyboom-web\docs\screenshots\web-contact.png public\images\projects\skyboom-corporate\contact-desktop.png
-Copy-Item E:\project\skyboom-web\docs\screenshots\02-home-mobile-zh.png public\images\projects\skyboom-corporate\home-mobile.png
+$mainRepository = (Resolve-Path (Join-Path (git rev-parse --path-format=absolute --git-common-dir) '..')).Path
+$workspace = Split-Path $mainRepository -Parent
+Copy-Item (Join-Path $workspace 'linli-mp\docs\screenshots\mp-02-home.png') public\images\projects\linli-community\home-mobile.png
+Copy-Item (Join-Path $workspace 'linli-mp\docs\screenshots\mp-04-groupbuy-detail.png') public\images\projects\linli-community\groupbuy-detail-mobile.png
+Copy-Item (Join-Path $workspace 'linli-mp\docs\screenshots\mp-leader-01-dashboard.png') public\images\projects\linli-community\leader-dashboard-mobile.png
+Copy-Item (Join-Path $workspace 'linli-admin\docs\screenshots\admin-06-products.png') public\images\projects\linli-community\products-admin.png
+Copy-Item (Join-Path $workspace 'linli-admin\docs\screenshots\admin-08-orders.png') public\images\projects\linli-community\orders-admin.png
+Copy-Item (Join-Path $workspace 'linli-admin\docs\screenshots\admin-06-products.png') public\images\projects\linli-community.png -Force
+Copy-Item (Join-Path $workspace 'skyboom-web\docs\screenshots\01-home-desktop-zh.png') public\images\projects\skyboom-corporate\home-desktop.png
+Copy-Item (Join-Path $workspace 'skyboom-web\docs\screenshots\web-products-desktop-zh.png') public\images\projects\skyboom-corporate\products-desktop.png
+Copy-Item (Join-Path $workspace 'skyboom-web\docs\screenshots\web-polish-about-desktop.png') public\images\projects\skyboom-corporate\about-desktop.png
+Copy-Item (Join-Path $workspace 'skyboom-web\docs\screenshots\web-contact.png') public\images\projects\skyboom-corporate\contact-desktop.png
+Copy-Item (Join-Path $workspace 'skyboom-web\docs\screenshots\02-home-mobile-zh.png') public\images\projects\skyboom-corporate\home-mobile.png
 ```
 
 复制前用图片查看器确认每张图不是加载中、空态、报错态或隐私数据页面。
