@@ -46,6 +46,14 @@ function readOptional(path: string): string {
   return existsSync(path) ? readFileSync(path, 'utf8') : '';
 }
 
+function readPngDimensions(path: string): { width: number; height: number } {
+  const png = readFileSync(path);
+  return {
+    width: png.readUInt32BE(16),
+    height: png.readUInt32BE(20),
+  };
+}
+
 describe('project publishing rules', () => {
   it('rejects a public project without a cover and repository', () => {
     expect(projectSchema.safeParse(baseProject).success).toBe(false);
@@ -146,9 +154,14 @@ describe('project publishing rules', () => {
     },
   );
 
-  it.each(['linli-community', 'skyboom-corporate'])(
-    '%s publishes five existing real screenshots',
-    (slug) => {
+  it.each([
+    ['field-notes', 4],
+    ['linli-community', 5],
+    ['multi-merchant-mall', 5],
+    ['skyboom-corporate', 5],
+  ] as const)(
+    '%s publishes its complete real screenshot set',
+    (slug, count) => {
       const frontmatter = readProjectFrontmatter(slug);
       const screenshots = frontmatter.screenshots as Array<{
         src: string;
@@ -156,11 +169,16 @@ describe('project publishing rules', () => {
         height: number;
       }>;
 
-      expect(screenshots).toHaveLength(5);
+      expect(screenshots).toHaveLength(count);
       for (const screenshot of screenshots) {
-        expect(existsSync(`public${screenshot.src}`), screenshot.src).toBe(true);
+        const imagePath = `public${screenshot.src}`;
+        expect(existsSync(imagePath), screenshot.src).toBe(true);
         expect(screenshot.width).toBeGreaterThan(0);
         expect(screenshot.height).toBeGreaterThan(0);
+        expect(readPngDimensions(imagePath)).toEqual({
+          width: screenshot.width,
+          height: screenshot.height,
+        });
       }
     },
   );

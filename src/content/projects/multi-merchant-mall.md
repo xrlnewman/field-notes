@@ -6,6 +6,42 @@ status: active
 category: 电商平台
 tech: [Vue 3, Vant, Element Plus, Laravel 12, PHP 8.3]
 cover: /images/projects/multi-merchant-mall.png
+screenshots:
+  - src: /images/projects/multi-merchant-mall/home.png
+    alt: 多商户商城移动端首页展示分类入口、营销活动和商品推荐
+    title: 移动商城首页
+    caption: 首页将商品分类、限时秒杀、拼团活动和新品推荐组织在同一条移动购物路径中。
+    viewport: mobile
+    width: 390
+    height: 844
+  - src: /images/projects/multi-merchant-mall/category.png
+    alt: 多商户商城移动端分类页展示数码与家电商品分类
+    title: 商品分类
+    caption: 双栏分类导航帮助顾客从一级类目快速进入手机、摄影、影音和智能家居等场景。
+    viewport: mobile
+    width: 390
+    height: 844
+  - src: /images/projects/multi-merchant-mall/product-detail.png
+    alt: 多商户商城移动端商品详情展示价格、库存、规格和购买操作
+    title: 商品详情
+    caption: 商品详情集中展示促销价、库存、规格、服务承诺和加购购买入口。
+    viewport: mobile
+    width: 390
+    height: 844
+  - src: /images/projects/multi-merchant-mall/products-admin.png
+    alt: 多商户商城商户后台商品管理表格展示售价、库存和上架状态
+    title: 商品管理
+    caption: 商户可按状态筛选商品，并在同一列表核对售价、库存、启用与商城上架状态。
+    viewport: desktop
+    width: 1254
+    height: 1108
+  - src: /images/projects/multi-merchant-mall/orders-admin.png
+    alt: 多商户商城商户后台订单管理展示脱敏买家和履约状态
+    title: 商城订单
+    caption: 订单列表按履约状态分组，展示脱敏买家信息、订单金额和发货处理入口。
+    viewport: desktop
+    width: 1254
+    height: 1108
 repoUrl: https://github.com/xrlnewman/mall-h5
 repositories:
   - name: mall-h5
