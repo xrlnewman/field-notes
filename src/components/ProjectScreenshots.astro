@@ -1,0 +1,423 @@
+---
+import type { ProjectData } from '../lib/project-schema';
+
+interface Props {
+  screenshots: NonNullable<ProjectData['screenshots']>;
+  projectTitle: string;
+}
+
+const { screenshots, projectTitle } = Astro.props;
+const firstScreenshot = screenshots[0];
+if (!firstScreenshot) throw new Error('项目截图画廊至少需要一张截图');
+const initialProgress = `01 / ${String(screenshots.length).padStart(2, '0')}`;
+---
+
+<section class="project-screenshots container" data-project-screenshots aria-labelledby="project-screenshots-title" data-reveal>
+  <div class="project-screenshots__heading">
+    <p class="eyebrow">PRODUCT SCREENS · REAL WORKFLOWS</p>
+    <h2 id="project-screenshots-title">界面截图</h2>
+    <p>从真实界面查看产品在桌面端与移动端的关键工作流。</p>
+  </div>
+
+  <div class="project-screenshots__gallery">
+    <figure class="project-screenshots__stage" data-screenshot-stage data-viewport={firstScreenshot.viewport}>
+      <div class="project-screenshots__media">
+        <img
+          data-screenshot-stage-image
+          src={firstScreenshot.src}
+          alt={firstScreenshot.alt}
+          width={firstScreenshot.width}
+          height={firstScreenshot.height}
+          loading="lazy"
+        />
+      </div>
+      <figcaption class="project-screenshots__caption">
+        <div>
+          <span class="project-screenshots__progress" data-screenshot-progress>{initialProgress}</span>
+          <h3 data-screenshot-title>{firstScreenshot.title}</h3>
+          <p data-screenshot-caption>{firstScreenshot.caption}</p>
+        </div>
+        <button class="project-screenshots__open" type="button" data-open-screenshot-dialog>查看大图</button>
+      </figcaption>
+    </figure>
+
+    <div class="project-screenshots__thumbnails" aria-label="截图缩略图">
+      {screenshots.map((screenshot, index) => (
+        <button
+          class="project-screenshots__thumbnail"
+          type="button"
+          data-screenshot-thumbnail
+          data-screenshot={JSON.stringify(screenshot)}
+          aria-current={index === 0 ? 'true' : 'false'}
+          aria-label={`查看截图：${screenshot.title}`}
+        >
+          <img
+            src={screenshot.src}
+            alt=""
+            width={screenshot.width}
+            height={screenshot.height}
+            loading="lazy"
+          />
+          <span>{String(index + 1).padStart(2, '0')}</span>
+        </button>
+      ))}
+    </div>
+  </div>
+
+  <dialog data-screenshot-dialog aria-label={`${projectTitle} 大图预览`}>
+    <div class="project-screenshots__dialog-panel">
+      <button class="project-screenshots__dialog-close" type="button" data-close-screenshot-dialog aria-label="关闭大图">×</button>
+      <button class="project-screenshots__dialog-nav" type="button" data-previous-screenshot aria-label="上一张截图">←</button>
+      <figure class="project-screenshots__dialog-figure">
+        <img
+          data-screenshot-dialog-image
+          src={firstScreenshot.src}
+          alt={firstScreenshot.alt}
+          width={firstScreenshot.width}
+          height={firstScreenshot.height}
+        />
+        <figcaption>
+          <h3 data-screenshot-dialog-title>{firstScreenshot.title}</h3>
+          <p data-screenshot-dialog-caption>{firstScreenshot.caption}</p>
+        </figcaption>
+      </figure>
+      <button class="project-screenshots__dialog-nav" type="button" data-next-screenshot aria-label="下一张截图">→</button>
+    </div>
+  </dialog>
+
+  <noscript>
+    <div class="project-screenshots__static-list">
+      {screenshots.map((screenshot) => (
+        <figure>
+          <img
+            src={screenshot.src}
+            alt={screenshot.alt}
+            width={screenshot.width}
+            height={screenshot.height}
+            loading="lazy"
+          />
+          <figcaption>
+            <h3>{screenshot.title}</h3>
+            <p>{screenshot.caption}</p>
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  </noscript>
+</section>
+
+<script>
+  interface ScreenshotData {
+    src: string;
+    alt: string;
+    title: string;
+    caption: string;
+    viewport: 'desktop' | 'mobile';
+    width: number;
+    height: number;
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-project-screenshots]').forEach((gallery) => {
+    const stage = gallery.querySelector<HTMLElement>('[data-screenshot-stage]');
+    const stageImage = gallery.querySelector<HTMLImageElement>('[data-screenshot-stage-image]');
+    const title = gallery.querySelector<HTMLElement>('[data-screenshot-title]');
+    const caption = gallery.querySelector<HTMLElement>('[data-screenshot-caption]');
+    const progress = gallery.querySelector<HTMLElement>('[data-screenshot-progress]');
+    const dialog = gallery.querySelector<HTMLDialogElement>('[data-screenshot-dialog]');
+    const dialogImage = gallery.querySelector<HTMLImageElement>('[data-screenshot-dialog-image]');
+    const dialogTitle = gallery.querySelector<HTMLElement>('[data-screenshot-dialog-title]');
+    const dialogCaption = gallery.querySelector<HTMLElement>('[data-screenshot-dialog-caption]');
+    const openButton = gallery.querySelector<HTMLButtonElement>('[data-open-screenshot-dialog]');
+    const closeButton = gallery.querySelector<HTMLButtonElement>('[data-close-screenshot-dialog]');
+    const previousButton = gallery.querySelector<HTMLButtonElement>('[data-previous-screenshot]');
+    const nextButton = gallery.querySelector<HTMLButtonElement>('[data-next-screenshot]');
+    const thumbnailButtons = Array.from(
+      gallery.querySelectorAll<HTMLButtonElement>('[data-screenshot-thumbnail]'),
+    );
+    const screenshots = thumbnailButtons.map((button) => JSON.parse(button.dataset.screenshot ?? '') as ScreenshotData);
+
+    if (
+      screenshots.length === 0
+      || !stage
+      || !stageImage
+      || !title
+      || !caption
+      || !progress
+      || !dialog
+      || !dialogImage
+      || !dialogTitle
+      || !dialogCaption
+      || !openButton
+      || !closeButton
+      || !previousButton
+      || !nextButton
+    ) return;
+
+    let currentIndex = 0;
+
+    const selectScreenshot = (index: number) => {
+      currentIndex = (index + screenshots.length) % screenshots.length;
+      const item = screenshots[currentIndex];
+      if (!item) throw new Error('无法选择项目截图');
+      stageImage.src = item.src;
+      stageImage.alt = item.alt;
+      stageImage.width = item.width;
+      stageImage.height = item.height;
+      stage.dataset.viewport = item.viewport;
+      title.textContent = item.title;
+      caption.textContent = item.caption;
+      progress.textContent = `${String(currentIndex + 1).padStart(2, '0')} / ${String(screenshots.length).padStart(2, '0')}`;
+      dialogImage.src = item.src;
+      dialogImage.alt = item.alt;
+      dialogImage.width = item.width;
+      dialogImage.height = item.height;
+      dialogTitle.textContent = item.title;
+      dialogCaption.textContent = item.caption;
+      thumbnailButtons.forEach((button, buttonIndex) => {
+        button.setAttribute('aria-current', String(buttonIndex === currentIndex));
+      });
+    };
+
+    thumbnailButtons.forEach((button, index) => {
+      button.addEventListener('click', () => selectScreenshot(index));
+    });
+    openButton.addEventListener('click', () => dialog.showModal());
+    closeButton.addEventListener('click', () => dialog.close());
+    previousButton.addEventListener('click', () => selectScreenshot(currentIndex - 1));
+    nextButton.addEventListener('click', () => selectScreenshot(currentIndex + 1));
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+  });
+</script>
+
+<style>
+  .project-screenshots {
+    display: grid;
+    grid-template-columns: minmax(220px, 4fr) minmax(0, 8fr);
+    gap: clamp(36px, 5vw, 72px);
+    padding-block: clamp(64px, 8vw, 88px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .project-screenshots__heading h2 {
+    margin: 0;
+    font-size: clamp(2.2rem, 4.5vw, 3.6rem);
+    line-height: 1.08;
+  }
+
+  .project-screenshots__heading > p:last-child {
+    margin: 22px 0 0;
+    color: var(--muted);
+    line-height: 1.75;
+  }
+
+  .project-screenshots__gallery {
+    min-width: 0;
+  }
+
+  .project-screenshots__stage,
+  .project-screenshots__dialog-figure,
+  .project-screenshots__static-list figure {
+    margin: 0;
+  }
+
+  .project-screenshots__media {
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface-soft);
+    box-shadow: var(--shadow);
+  }
+
+  .project-screenshots__stage[data-viewport='mobile'] .project-screenshots__media {
+    max-width: 390px;
+    margin-inline: auto;
+  }
+
+  .project-screenshots img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .project-screenshots__caption {
+    display: flex;
+    gap: 24px;
+    align-items: end;
+    justify-content: space-between;
+    padding-block: 22px 6px;
+  }
+
+  .project-screenshots__caption h3,
+  .project-screenshots__dialog-figure h3,
+  .project-screenshots__static-list h3 {
+    margin: 6px 0 0;
+    font-size: 1.15rem;
+  }
+
+  .project-screenshots__caption p,
+  .project-screenshots__dialog-figure p,
+  .project-screenshots__static-list p {
+    margin: 8px 0 0;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+
+  .project-screenshots__progress {
+    color: var(--accent);
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+  }
+
+  .project-screenshots__open,
+  .project-screenshots__thumbnail,
+  .project-screenshots__dialog-close,
+  .project-screenshots__dialog-nav {
+    min-height: 44px;
+    border: 1px solid var(--border);
+    color: var(--ink);
+    background: var(--surface);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .project-screenshots__open {
+    flex: 0 0 auto;
+    padding: 10px 16px;
+    border-radius: 999px;
+  }
+
+  .project-screenshots__thumbnails {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 22px;
+  }
+
+  .project-screenshots__thumbnail {
+    position: relative;
+    overflow: hidden;
+    padding: 0;
+    border-radius: var(--radius-sm);
+    opacity: 0.68;
+  }
+
+  .project-screenshots__thumbnail[aria-current='true'] {
+    border-color: var(--accent);
+    opacity: 1;
+    box-shadow: 0 0 0 2px var(--accent-soft);
+  }
+
+  .project-screenshots__thumbnail span {
+    position: absolute;
+    right: 6px;
+    bottom: 6px;
+    padding: 2px 6px;
+    border-radius: 999px;
+    color: var(--ink);
+    background: color-mix(in srgb, var(--canvas) 82%, transparent);
+    font-size: 0.68rem;
+  }
+
+  [data-screenshot-dialog] {
+    width: min(1100px, calc(100vw - 32px));
+    max-height: calc(100vh - 32px);
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    color: var(--ink);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+
+  [data-screenshot-dialog]::backdrop {
+    background: color-mix(in srgb, var(--canvas) 82%, transparent);
+    backdrop-filter: blur(12px);
+  }
+
+  .project-screenshots__dialog-panel {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 16px;
+    align-items: center;
+    padding: 56px 18px 24px;
+  }
+
+  .project-screenshots__dialog-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    min-width: 44px;
+    border-radius: 50%;
+    font-size: 1.4rem;
+  }
+
+  .project-screenshots__dialog-nav {
+    min-width: 44px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+  }
+
+  .project-screenshots__dialog-figure {
+    overflow: auto;
+    max-height: calc(100vh - 132px);
+  }
+
+  .project-screenshots__dialog-figure img {
+    max-height: calc(100vh - 220px);
+  }
+
+  .project-screenshots__static-list {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    margin-top: 40px;
+  }
+
+  .project-screenshots__static-list figure {
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface-soft);
+  }
+
+  @media (max-width: 760px) {
+    .project-screenshots {
+      grid-template-columns: 1fr;
+      gap: 42px;
+    }
+
+    .project-screenshots__caption {
+      align-items: start;
+      flex-direction: column;
+    }
+
+    .project-screenshots__thumbnails {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .project-screenshots__dialog-panel {
+      grid-template-columns: 44px minmax(0, 1fr) 44px;
+      gap: 8px;
+      padding-inline: 8px;
+    }
+
+    .project-screenshots__static-list {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .project-screenshots__thumbnail,
+    .project-screenshots__open,
+    .project-screenshots__dialog-nav,
+    .project-screenshots__dialog-close {
+      transition: none;
+    }
+  }
+</style>
