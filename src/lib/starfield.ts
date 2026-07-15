@@ -34,6 +34,50 @@ export interface StarfieldPalette {
   label: string;
 }
 
+export interface StarfieldPointerInput {
+  normalizedX: number;
+  normalizedY: number;
+  clientX: number;
+  clientY: number;
+}
+
+export interface StarfieldRenderState {
+  pointer: PointerState;
+  ripples: readonly Ripple[];
+}
+
+export interface StarfieldRuntimeSnapshot extends StarfieldRenderState {
+  reducedMotion: boolean;
+  hidden: boolean;
+  frameId: number | null;
+  destroyed: boolean;
+}
+
+export interface StarfieldRuntimeDependencies {
+  requestFrame: (callback: FrameRequestCallback) => number;
+  cancelFrame: (frameId: number) => void;
+  draw: (timestamp: number, state: StarfieldRenderState) => void;
+  setPointerGlow: (input: StarfieldPointerInput | null) => void;
+  now: () => number;
+}
+
+export interface StarfieldRuntimeOptions {
+  reducedMotion: boolean;
+  hidden: boolean;
+}
+
+export interface StarfieldRuntimeController {
+  start: () => void;
+  drawStaticFrame: (timestamp?: number) => void;
+  handlePointerMove: (input: StarfieldPointerInput) => void;
+  handlePointerDown: (input: StarfieldPointerInput) => void;
+  handlePointerOut: () => void;
+  handleVisibilityChange: (hidden: boolean) => void;
+  handleReducedMotionChange: (reducedMotion: boolean) => void;
+  teardown: () => void;
+  getSnapshot: () => StarfieldRuntimeSnapshot;
+}
+
 const palettes: Record<CosmicTheme, StarfieldPalette> = {
   observatory: {
     background: '#07111f',
@@ -112,5 +156,126 @@ export const getParallaxOffset = (pointer: PointerState, depth: number) => {
   return {
     x: pointer.x * strength,
     y: pointer.y * strength,
+  };
+};
+
+export const createStarfieldRuntime = (
+  dependencies: StarfieldRuntimeDependencies,
+  options: StarfieldRuntimeOptions,
+): StarfieldRuntimeController => {
+  let pointer: PointerState = { x: 0, y: 0, active: false };
+  let ripples: Ripple[] = [];
+  let reducedMotion = options.reducedMotion;
+  let hidden = options.hidden;
+  let frameId: number | null = null;
+  let started = false;
+  let destroyed = false;
+
+  const getRenderState = (): StarfieldRenderState => ({ pointer, ripples });
+
+  const getSnapshot = (): StarfieldRuntimeSnapshot => ({
+    pointer: { ...pointer },
+    ripples: ripples.map((ripple) => ({ ...ripple })),
+    reducedMotion,
+    hidden,
+    frameId,
+    destroyed,
+  });
+
+  const drawStaticFrame = (timestamp = 0) => {
+    if (destroyed || hidden) return;
+    dependencies.draw(timestamp, getRenderState());
+  };
+
+  const stopAnimation = () => {
+    if (frameId === null) return;
+    dependencies.cancelFrame(frameId);
+    frameId = null;
+  };
+
+  const scheduleAnimation = () => {
+    if (destroyed || reducedMotion || hidden || frameId !== null) return;
+    frameId = dependencies.requestFrame(handleAnimationFrame);
+  };
+
+  const handleAnimationFrame = (timestamp: number) => {
+    frameId = null;
+    ripples = ripples.filter((ripple) => timestamp - ripple.startedAt <= ripple.duration);
+    dependencies.draw(timestamp, getRenderState());
+    scheduleAnimation();
+  };
+
+  const start = () => {
+    if (started || destroyed) return;
+    started = true;
+    if (reducedMotion) drawStaticFrame();
+    else scheduleAnimation();
+  };
+
+  const handlePointerMove = (input: StarfieldPointerInput) => {
+    if (destroyed || reducedMotion) return;
+    pointer = { x: input.normalizedX, y: input.normalizedY, active: true };
+    dependencies.setPointerGlow(input);
+  };
+
+  const handlePointerDown = (input: StarfieldPointerInput) => {
+    if (destroyed || reducedMotion) return;
+    handlePointerMove(input);
+    ripples.push({
+      x: input.clientX,
+      y: input.clientY,
+      startedAt: dependencies.now(),
+      duration: 900,
+    });
+  };
+
+  const handlePointerOut = () => {
+    if (destroyed || reducedMotion) return;
+    pointer = { x: 0, y: 0, active: false };
+    dependencies.setPointerGlow(null);
+  };
+
+  const handleVisibilityChange = (nextHidden: boolean) => {
+    if (destroyed || hidden === nextHidden) return;
+    hidden = nextHidden;
+    if (hidden) stopAnimation();
+    else if (reducedMotion) drawStaticFrame();
+    else scheduleAnimation();
+  };
+
+  const handleReducedMotionChange = (nextReducedMotion: boolean) => {
+    if (destroyed || reducedMotion === nextReducedMotion) return;
+    reducedMotion = nextReducedMotion;
+
+    if (reducedMotion) {
+      stopAnimation();
+      pointer = { x: 0, y: 0, active: false };
+      ripples = [];
+      dependencies.setPointerGlow(null);
+      drawStaticFrame();
+    } else {
+      scheduleAnimation();
+    }
+  };
+
+  const teardown = () => {
+    if (destroyed) return;
+    destroyed = true;
+    stopAnimation();
+    pointer = { x: 0, y: 0, active: false };
+    ripples = [];
+    dependencies.setPointerGlow(null);
+  };
+
+  return {
+    start,
+    drawStaticFrame,
+    handlePointerMove,
+    handlePointerDown,
+    handlePointerOut,
+    handleVisibilityChange,
+    handleReducedMotionChange,
+    teardown,
+    getSnapshot,
   };
 };

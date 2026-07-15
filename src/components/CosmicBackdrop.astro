@@ -6,12 +6,15 @@
   import { resolveCosmicTheme, type CosmicTheme } from '../lib/cosmic-theme';
   import {
     createStar,
+    createStarfieldRuntime,
     getAdaptiveStarCount,
     getParallaxOffset,
     getThemePalette,
     type PointerState,
     type Ripple,
     type Star,
+    type StarfieldPointerInput,
+    type StarfieldRenderState,
   } from '../lib/starfield';
 
   const setupBackdrop = (canvas: HTMLCanvasElement, pointerGlow: HTMLElement | null) => {
@@ -23,12 +26,9 @@
     let width = window.innerWidth;
     let height = window.innerHeight;
     let stars: Star[] = [];
-    let ripples: Ripple[] = [];
     let theme: CosmicTheme = resolveCosmicTheme(document.documentElement.dataset.theme);
-    let pointer: PointerState = { x: 0, y: 0, active: false };
-    let frameId: number | null = null;
 
-    const projectedPosition = (star: Star) => {
+    const projectedPosition = (star: Star, pointer: PointerState) => {
       const offset = getParallaxOffset(pointer, star.depth);
       return { x: star.x + offset.x, y: star.y + offset.y };
     };
@@ -79,7 +79,7 @@
       context.restore();
     };
 
-    const drawNearbyConnections = () => {
+    const drawNearbyConnections = (pointer: PointerState) => {
       if (!pointer.active) return;
 
       const palette = getThemePalette(theme);
@@ -87,7 +87,7 @@
       const pointerY = ((pointer.y + 1) / 2) * height;
 
       stars.forEach((star) => {
-        const position = projectedPosition(star);
+        const position = projectedPosition(star, pointer);
         const distance = Math.hypot(position.x - pointerX, position.y - pointerY);
         if (distance > 160) return;
 
@@ -102,11 +102,11 @@
       context.globalAlpha = 1;
     };
 
-    const drawStars = (timestamp: number) => {
+    const drawStars = (timestamp: number, pointer: PointerState) => {
       const palette = getThemePalette(theme);
 
       stars.forEach((star, index) => {
-        const position = projectedPosition(star);
+        const position = projectedPosition(star, pointer);
         const twinkle = reduceMotion.matches
           ? 1
           : 0.78 + Math.sin(timestamp * star.twinkleSpeed + star.twinkleOffset) * 0.22;
@@ -137,9 +137,8 @@
       context.shadowBlur = 0;
     };
 
-    const drawRipples = (timestamp: number) => {
+    const drawRipples = (timestamp: number, ripples: readonly Ripple[]) => {
       const palette = getThemePalette(theme);
-      ripples = ripples.filter((ripple) => timestamp - ripple.startedAt <= ripple.duration);
 
       ripples.forEach((ripple) => {
         const progress = Math.max(0, (timestamp - ripple.startedAt) / ripple.duration);
@@ -153,7 +152,7 @@
       context.globalAlpha = 1;
     };
 
-    const drawScene = (timestamp: number) => {
+    const drawScene = (timestamp: number, state: StarfieldRenderState) => {
       const palette = getThemePalette(theme);
       context.clearRect(0, 0, width, height);
       context.fillStyle = palette.background;
@@ -161,9 +160,9 @@
 
       if (theme === 'nebula') drawNebula();
       if (theme === 'terminal') drawTerminalGrid();
-      if (theme === 'observatory') drawNearbyConnections();
-      drawStars(timestamp);
-      drawRipples(timestamp);
+      if (theme === 'observatory') drawNearbyConnections(state.pointer);
+      drawStars(timestamp, state.pointer);
+      drawRipples(timestamp, state.ripples);
     };
 
     const rebuildStars = () => {
@@ -183,85 +182,95 @@
       rebuildStars();
     };
 
-    const stopAnimation = () => {
-      if (frameId === null) return;
-      cancelAnimationFrame(frameId);
-      frameId = null;
-    };
+    const setPointerGlow = (input: StarfieldPointerInput | null) => {
+      if (!input) {
+        pointerGlow?.style.setProperty('--pointer-opacity', '0');
+        return;
+      }
 
-    const animate = (timestamp: number) => {
-      frameId = null;
-      drawScene(timestamp);
-      startAnimation();
-    };
-
-    const startAnimation = () => {
-      if (reduceMotion.matches || document.hidden || frameId !== null) return;
-      frameId = requestAnimationFrame(animate);
-    };
-
-    const updatePointer = (event: PointerEvent) => {
-      pointer = {
-        x: (event.clientX / width) * 2 - 1,
-        y: (event.clientY / height) * 2 - 1,
-        active: true,
-      };
-      pointerGlow?.style.setProperty('--pointer-x', `${event.clientX}px`);
-      pointerGlow?.style.setProperty('--pointer-y', `${event.clientY}px`);
+      pointerGlow?.style.setProperty('--pointer-x', `${input.clientX}px`);
+      pointerGlow?.style.setProperty('--pointer-y', `${input.clientY}px`);
       pointerGlow?.style.setProperty('--pointer-opacity', '1');
     };
 
+    const runtime = createStarfieldRuntime(
+      {
+        requestFrame: (callback) => requestAnimationFrame(callback),
+        cancelFrame: (id) => cancelAnimationFrame(id),
+        draw: drawScene,
+        setPointerGlow,
+        now: () => performance.now(),
+      },
+      { reducedMotion: reduceMotion.matches, hidden: document.hidden },
+    );
+
+    const toPointerInput = (event: PointerEvent): StarfieldPointerInput => ({
+      normalizedX: (event.clientX / Math.max(width, 1)) * 2 - 1,
+      normalizedY: (event.clientY / Math.max(height, 1)) * 2 - 1,
+      clientX: event.clientX,
+      clientY: event.clientY,
+    });
+
     const handleResize = () => {
       resizeCanvas();
-      if (reduceMotion.matches) drawScene(0);
+      if (reduceMotion.matches) runtime.drawStaticFrame();
+    };
+
+    const handlePointerMove = (event: PointerEvent) => {
+      if (reduceMotion.matches) return;
+      runtime.handlePointerMove(toPointerInput(event));
     };
 
     const handlePointerDown = (event: PointerEvent) => {
-      updatePointer(event);
-      ripples.push({ x: event.clientX, y: event.clientY, startedAt: performance.now(), duration: 900 });
-      if (reduceMotion.matches) drawScene(performance.now());
+      if (reduceMotion.matches) return;
+      runtime.handlePointerDown(toPointerInput(event));
+    };
+
+    const handlePointerOut = (event: PointerEvent) => {
+      if (reduceMotion.matches || event.relatedTarget) return;
+      runtime.handlePointerOut();
     };
 
     const handleThemeChange = (event: Event) => {
       const nextTheme = event instanceof CustomEvent ? event.detail?.theme : undefined;
       theme = resolveCosmicTheme(nextTheme);
-      if (reduceMotion.matches) drawScene(0);
+      if (reduceMotion.matches) runtime.drawStaticFrame();
     };
 
     const handleVisibilityChange = () => {
-      if (document.hidden) {
-        stopAnimation();
-        return;
-      }
-
-      if (reduceMotion.matches) drawScene(0);
-      else startAnimation();
+      runtime.handleVisibilityChange(document.hidden);
     };
 
-    const handleMotionPreference = () => {
-      if (reduceMotion.matches) {
-        stopAnimation();
-        drawScene(0);
-      } else {
-        startAnimation();
-      }
+    const handleMotionPreference = (event: MediaQueryListEvent) => {
+      runtime.handleReducedMotionChange(event.matches);
     };
 
-    resizeCanvas();
-    if (reduceMotion.matches) drawScene(0);
-    else startAnimation();
+    const handleBeforeSwap = () => teardown();
+
+    const teardown = () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('pointerdown', handlePointerDown);
+      window.removeEventListener('pointerout', handlePointerOut);
+      document.removeEventListener('cosmic-theme-change', handleThemeChange);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      document.removeEventListener('astro:before-swap', handleBeforeSwap);
+      reduceMotion.removeEventListener('change', handleMotionPreference);
+      runtime.teardown();
+    };
 
     window.addEventListener('resize', handleResize);
-    window.addEventListener('pointermove', updatePointer);
+    window.addEventListener('pointermove', handlePointerMove);
     window.addEventListener('pointerdown', handlePointerDown);
-    window.addEventListener('pointerout', (event) => {
-      if (event.relatedTarget) return;
-      pointer = { x: 0, y: 0, active: false };
-      pointerGlow?.style.setProperty('--pointer-opacity', '0');
-    });
+    window.addEventListener('pointerout', handlePointerOut);
     document.addEventListener('cosmic-theme-change', handleThemeChange);
     document.addEventListener('visibilitychange', handleVisibilityChange);
+    document.addEventListener('astro:before-swap', handleBeforeSwap);
     reduceMotion.addEventListener('change', handleMotionPreference);
+
+    resizeCanvas();
+    runtime.start();
+    return teardown;
   };
 
   const canvas = document.querySelector<HTMLCanvasElement>('canvas.cosmic-backdrop');

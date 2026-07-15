@@ -1,9 +1,10 @@
 import { readFileSync } from 'node:fs';
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import {
   createStar,
+  createStarfieldRuntime,
   getAdaptiveStarCount,
   getParallaxOffset,
   getThemePalette,
@@ -59,6 +60,100 @@ describe('pointer parallax', () => {
   });
 });
 
+describe('starfield runtime controller', () => {
+  const pointerInput = {
+    normalizedX: 0.5,
+    normalizedY: -0.25,
+    clientX: 640,
+    clientY: 240,
+  };
+
+  const createHarness = (reducedMotion = false) => {
+    const frameCallbacks: FrameRequestCallback[] = [];
+    const requestFrame = vi.fn((callback: FrameRequestCallback) => {
+      frameCallbacks.push(callback);
+      return frameCallbacks.length;
+    });
+    const cancelFrame = vi.fn();
+    const draw = vi.fn();
+    const setPointerGlow = vi.fn();
+    const runtime = createStarfieldRuntime(
+      { requestFrame, cancelFrame, draw, setPointerGlow, now: () => 100 },
+      { reducedMotion, hidden: false },
+    );
+
+    return { runtime, frameCallbacks, requestFrame, cancelFrame, draw, setPointerGlow };
+  };
+
+  it('keeps reduced-motion rendering static and ignores pointer input', () => {
+    const { runtime, requestFrame, draw, setPointerGlow } = createHarness(true);
+
+    runtime.start();
+    runtime.handlePointerMove(pointerInput);
+    runtime.handlePointerDown(pointerInput);
+
+    expect(requestFrame).not.toHaveBeenCalled();
+    expect(draw).toHaveBeenCalledTimes(1);
+    expect(setPointerGlow).not.toHaveBeenCalled();
+    expect(runtime.getSnapshot()).toMatchObject({
+      pointer: { x: 0, y: 0, active: false },
+      ripples: [],
+    });
+  });
+
+  it('clears interaction and draws one static frame when reduced motion turns on', () => {
+    const { runtime, requestFrame, cancelFrame, draw, setPointerGlow } = createHarness();
+
+    runtime.start();
+    runtime.handlePointerMove(pointerInput);
+    runtime.handlePointerDown(pointerInput);
+    expect(runtime.getSnapshot().ripples[0]?.duration).toBe(900);
+    runtime.handleReducedMotionChange(true);
+
+    expect(requestFrame).toHaveBeenCalledTimes(1);
+    expect(cancelFrame).toHaveBeenCalledWith(1);
+    expect(setPointerGlow).toHaveBeenLastCalledWith(null);
+    expect(draw).toHaveBeenCalledTimes(1);
+    expect(draw).toHaveBeenLastCalledWith(0, {
+      pointer: { x: 0, y: 0, active: false },
+      ripples: [],
+    });
+    expect(runtime.getSnapshot()).toMatchObject({
+      pointer: { x: 0, y: 0, active: false },
+      ripples: [],
+    });
+  });
+
+  it('cancels animation while hidden and resumes with only one loop', () => {
+    const { runtime, frameCallbacks, requestFrame, cancelFrame } = createHarness();
+
+    runtime.start();
+    runtime.handleVisibilityChange(true);
+    runtime.handleVisibilityChange(false);
+    runtime.handleVisibilityChange(false);
+
+    expect(cancelFrame).toHaveBeenCalledWith(1);
+    expect(requestFrame).toHaveBeenCalledTimes(2);
+
+    frameCallbacks[1]?.(16);
+    expect(requestFrame).toHaveBeenCalledTimes(3);
+  });
+
+  it('tears down the active frame and ignores later input', () => {
+    const { runtime, requestFrame, cancelFrame, setPointerGlow } = createHarness();
+
+    runtime.start();
+    runtime.teardown();
+    runtime.handlePointerMove(pointerInput);
+
+    expect(cancelFrame).toHaveBeenCalledWith(1);
+    expect(requestFrame).toHaveBeenCalledTimes(1);
+    expect(setPointerGlow).toHaveBeenCalledTimes(1);
+    expect(setPointerGlow).toHaveBeenLastCalledWith(null);
+    expect(runtime.getSnapshot().destroyed).toBe(true);
+  });
+});
+
 describe('cosmic backdrop integration', () => {
   it('renders a non-interactive, hidden canvas before the skip link', () => {
     const backdrop = readText('src/components/CosmicBackdrop.astro');
@@ -76,12 +171,30 @@ describe('cosmic backdrop integration', () => {
     expect(backdrop).toContain("window.addEventListener('resize'");
     expect(backdrop).toContain("window.addEventListener('pointermove'");
     expect(backdrop).toContain("window.addEventListener('pointerdown'");
-    expect(backdrop).toContain('duration: 900');
+    expect(backdrop).toContain('createStarfieldRuntime');
     expect(backdrop).toContain("document.addEventListener('cosmic-theme-change'");
     expect(backdrop).toContain("window.matchMedia('(prefers-reduced-motion: reduce)')");
     expect(backdrop).toContain("document.addEventListener('visibilitychange'");
     expect(backdrop).toContain('document.hidden');
     expect(backdrop).toContain('cancelAnimationFrame');
+  });
+
+  it('names and removes every runtime event handler during teardown', () => {
+    const backdrop = readText('src/components/CosmicBackdrop.astro');
+
+    expect(backdrop).not.toContain("window.addEventListener('pointerout', (");
+    expect(backdrop).toContain("window.removeEventListener('resize', handleResize)");
+    expect(backdrop).toContain("window.removeEventListener('pointermove', handlePointerMove)");
+    expect(backdrop).toContain("window.removeEventListener('pointerdown', handlePointerDown)");
+    expect(backdrop).toContain("window.removeEventListener('pointerout', handlePointerOut)");
+    expect(backdrop).toContain(
+      "document.removeEventListener('cosmic-theme-change', handleThemeChange)",
+    );
+    expect(backdrop).toContain(
+      "document.removeEventListener('visibilitychange', handleVisibilityChange)",
+    );
+    expect(backdrop).toContain("reduceMotion.removeEventListener('change', handleMotionPreference)");
+    expect(backdrop).toContain('return teardown;');
   });
 
   it('defines backdrop layers behind the page content without intercepting events', () => {
