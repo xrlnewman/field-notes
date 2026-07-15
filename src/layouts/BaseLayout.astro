@@ -5,6 +5,7 @@ import '@fontsource-variable/noto-sans-sc/wght.css';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import CosmicBackdrop from '../components/CosmicBackdrop.astro';
+import CosmicInteractions from '../components/CosmicInteractions.astro';
 import { siteConfig } from '../config/site';
 import '../styles/global.css';
 
@@ -69,5 +70,6 @@ const socialImage = image ? new URL(image, Astro.site) : undefined;
       <slot />
     </main>
     <Footer />
+    <CosmicInteractions />
   </body>
 </html>

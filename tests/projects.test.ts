@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 
 import { describe, expect, it } from 'vitest';
 import { parse as parseYaml } from 'yaml';
@@ -30,6 +30,10 @@ function readProjectFrontmatter(slug: string): Record<string, unknown> {
 
   if (!match?.[1]) throw new Error(`${slug} 缺少 YAML frontmatter`);
   return parseYaml(match[1]) as Record<string, unknown>;
+}
+
+function readOptional(path: string): string {
+  return existsSync(path) ? readFileSync(path, 'utf8') : '';
 }
 
 describe('project publishing rules', () => {
@@ -110,12 +114,11 @@ describe('project category helpers', () => {
     ]);
   });
 
-  it('provides a project-page description for every public category', () => {
+  it('introduces the directory as a constellation of complete products', () => {
     const projectsPage = readFileSync('src/pages/projects/index.astro', 'utf8');
 
-    for (const category of projectCategories) {
-      expect(projectsPage).toContain(`${category}:`);
-    }
+    expect(projectsPage).toContain('四个可运行的网站产品');
+    expect(projectsPage).toContain('前台、运营后台与服务端之间的关联');
   });
 
   it('returns unique categories in configured order', () => {
@@ -186,5 +189,41 @@ describe('project category helpers', () => {
     const card = readFileSync('src/components/ProjectCard.astro', 'utf8');
 
     expect(card).toMatch(/\.project-card\[hidden\] \{[^}]*display: none;/);
+  });
+
+  it('renders every related repository as a semantic product panorama', () => {
+    const layout = readFileSync('src/layouts/ProjectLayout.astro', 'utf8');
+    const constellation = readOptional('src/components/RepositoryConstellation.astro');
+
+    expect.soft(layout).toContain('产品全景');
+    expect.soft(layout).toContain('<RepositoryConstellation repositories={data.repositories ?? []} />');
+    expect.soft(constellation).toContain('<ul');
+    expect.soft(constellation).toContain('repositories.map((repository)');
+    expect.soft(constellation).toContain('{repository.name}');
+    expect.soft(constellation).toContain('{roleLabels[repository.role]}');
+    expect.soft(constellation).toContain('{repository.description}');
+    expect.soft(constellation).toContain('repository.tech.map');
+    expect.soft(constellation).toContain('href={repository.url}');
+    expect.soft(constellation).toContain('target="_blank"');
+    expect.soft(constellation).toContain('rel="noopener noreferrer"');
+  });
+
+  it('keeps product descriptions readable instead of truncating them to one line', () => {
+    const card = readFileSync('src/components/ProjectCard.astro', 'utf8');
+    const descriptionRule = card.match(/\.project-card__description\s*\{([^}]*)\}/)?.[1] ?? '';
+
+    expect.soft(card).toContain('class="project-card__description"');
+    expect.soft(descriptionRule).not.toContain('white-space: nowrap');
+    expect.soft(descriptionRule).not.toContain('text-overflow: ellipsis');
+  });
+
+  it('does not restore the old tool-category explainer grid', () => {
+    const home = readFileSync('src/pages/index.astro', 'utf8');
+    const projectsPage = readFileSync('src/pages/projects/index.astro', 'utf8');
+
+    expect.soft(home).not.toContain('<ProjectCategoryGrid');
+    expect.soft(projectsPage).not.toContain('categoryDescriptions');
+    expect.soft(projectsPage).not.toContain('project-catalog__categories');
+    expect.soft(projectsPage).not.toContain('grid-template-columns: repeat(5');
   });
 });

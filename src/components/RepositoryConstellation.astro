@@ -1,0 +1,186 @@
+---
+import type { ProjectData } from '../lib/project-schema';
+
+interface Props {
+  repositories: NonNullable<ProjectData['repositories']>;
+}
+
+const { repositories } = Astro.props;
+const roleLabels = {
+  frontend: '用户前台',
+  admin: '运营后台',
+  backend: '服务端',
+  content: '内容仓库',
+} as const;
+---
+
+{repositories.length > 0 ? (
+  <ul class="repository-constellation" aria-label="产品关联源码">
+    {repositories.map((repository) => (
+      <li class="repository-node">
+        <article>
+          <div class="repository-node__heading">
+            <span class="repository-node__role">{roleLabels[repository.role]}</span>
+            <h3>{repository.name}</h3>
+          </div>
+          <p>{repository.description}</p>
+          <ul class="repository-node__tech" aria-label={`${repository.name} 技术栈`}>
+            {repository.tech.map((technology) => <li>{technology}</li>)}
+          </ul>
+          <a href={repository.url} target="_blank" rel="noopener noreferrer">
+            查看 {roleLabels[repository.role]} 源码 <span aria-hidden="true">↗</span>
+          </a>
+        </article>
+      </li>
+    ))}
+  </ul>
+) : (
+  <p class="repository-constellation__single">该产品由一个仓库完整维护，源码入口位于页面首屏。</p>
+)}
+
+<style>
+  .repository-constellation {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    margin: 0;
+    padding: 42px 0 0;
+    list-style: none;
+  }
+
+  .repository-constellation::before {
+    position: absolute;
+    top: 13px;
+    right: 15%;
+    left: 15%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), var(--secondary), transparent);
+    content: '';
+  }
+
+  .repository-node {
+    position: relative;
+    min-width: 0;
+  }
+
+  .repository-node::before {
+    position: absolute;
+    top: -35px;
+    left: 24px;
+    width: 11px;
+    height: 11px;
+    border: 2px solid var(--space-0);
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 18%, transparent), 0 0 24px var(--glow);
+    content: '';
+  }
+
+  .repository-node article {
+    display: flex;
+    min-height: 320px;
+    flex-direction: column;
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: color-mix(in srgb, var(--surface) 94%, var(--space-1));
+  }
+
+  .repository-node__heading {
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .repository-node__role {
+    color: var(--accent-strong);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  h3 {
+    overflow-wrap: anywhere;
+    margin: 9px 0 0;
+    font-size: clamp(1.18rem, 2vw, 1.42rem);
+    line-height: 1.25;
+  }
+
+  p {
+    margin: 18px 0;
+    color: var(--muted);
+    font-size: 0.94rem;
+    line-height: 1.7;
+  }
+
+  .repository-node__tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 16px;
+    margin: 0 0 22px;
+    padding: 0;
+    color: var(--muted);
+    font-size: 0.76rem;
+    list-style: none;
+  }
+
+  .repository-node__tech li:not(:last-child)::after {
+    margin-left: 16px;
+    color: var(--border);
+    content: '/';
+  }
+
+  .repository-node a {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+    color: var(--ink);
+    font-size: 0.88rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .repository-node a:hover {
+    color: var(--accent-strong);
+  }
+
+  .repository-constellation__single {
+    margin: 26px 0 0;
+    padding: 22px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    color: var(--muted);
+  }
+
+  @media (max-width: 900px) {
+    .repository-constellation {
+      grid-template-columns: 1fr;
+      gap: 18px;
+      padding: 0 0 0 32px;
+    }
+
+    .repository-constellation::before {
+      top: 24px;
+      right: auto;
+      bottom: 24px;
+      left: 5px;
+      width: 1px;
+      height: auto;
+      background: linear-gradient(180deg, var(--accent), var(--secondary), transparent);
+    }
+
+    .repository-node::before {
+      top: 26px;
+      left: -32px;
+    }
+
+    .repository-node article {
+      min-height: 0;
+    }
+  }
+</style>

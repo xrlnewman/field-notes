@@ -1,5 +1,6 @@
 ---
 import type { ProjectCategory } from '../lib/projects';
+import type { ProjectData } from '../lib/project-schema';
 
 import TagList from './TagList.astro';
 
@@ -12,9 +13,23 @@ interface Props {
   status: 'active' | 'completed' | 'archived';
   tech: readonly string[];
   repoUrl: string;
+  repositories?: ProjectData['repositories'];
+  featured?: boolean;
 }
 
-const { href, title, description, cover, category, status, tech, repoUrl } = Astro.props;
+const {
+  href,
+  title,
+  description,
+  cover,
+  category,
+  status,
+  tech,
+  repoUrl,
+  repositories,
+  featured = false,
+} = Astro.props;
+const repositoryCount = repositories?.length ?? 1;
 const statusLabels = {
   active: '持续迭代',
   completed: '已经完成',
@@ -22,7 +37,13 @@ const statusLabels = {
 } as const;
 ---
 
-<article class="project-card" data-project-category={category}>
+<article
+  class:list={['project-card', { 'project-card--featured': featured }]}
+  data-project-category={category}
+  data-cosmic-card
+  data-reveal
+>
+  <span class="project-card__highlight" aria-hidden="true"></span>
   <a class="project-cover" href={href} aria-label={`查看项目：${title}`}>
     <img src={cover} alt={`${title} 界面截图`} width="960" height="600" loading="lazy" />
   </a>
@@ -32,25 +53,37 @@ const statusLabels = {
       <span class="project-card__status">{statusLabels[status]}</span>
     </div>
     <h3><a href={href}>{title}</a></h3>
-    <p>{description}</p>
-    <TagList tags={tech.slice(0, 2)} />
+    <p class="project-card__description">{description}</p>
+    <TagList tags={tech.slice(0, 3)} />
+    <p class="project-card__repository-count">
+      <strong>{repositoryCount}</strong> 个关联仓库
+    </p>
     <div class="project-card__actions">
       <a class="project-card__action project-card__action--primary" href={href}>查看详情 →</a>
-      <a class="project-card__action" href={repoUrl} target="_blank" rel="noopener noreferrer">源码 ↗</a>
+      {repositoryCount === 1 && (
+        <a class="project-card__action" href={repoUrl} target="_blank" rel="noopener noreferrer">源码 ↗</a>
+      )}
     </div>
   </div>
 </article>
 
 <style>
   .project-card {
-    display: flex;
+    --card-rotate-x: 0deg;
+    --card-rotate-y: 0deg;
+    --card-highlight-x: 50%;
+    --card-highlight-y: 50%;
+    position: relative;
+    display: grid;
     height: 100%;
     min-width: 0;
-    flex-direction: column;
     overflow: hidden;
     border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    background: var(--surface);
+    border-radius: var(--radius-lg);
+    background: color-mix(in srgb, var(--surface) 92%, var(--space-1));
+    box-shadow: 0 22px 64px rgba(0, 0, 0, 0.24);
+    transform: perspective(1200px) rotateX(var(--card-rotate-x)) rotateY(var(--card-rotate-y));
+    transform-style: preserve-3d;
     transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
   }
 
@@ -58,18 +91,49 @@ const statusLabels = {
     display: none;
   }
 
+  .project-card--featured {
+    grid-column: 1 / -1;
+    grid-template-columns: minmax(0, 1.38fr) minmax(330px, 0.62fr);
+  }
+
   .project-card:hover {
-    border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
-    box-shadow: var(--shadow);
-    transform: translateY(-4px);
+    border-color: color-mix(in srgb, var(--accent) 62%, var(--border));
+    box-shadow: 0 30px 88px color-mix(in srgb, var(--glow) 46%, rgba(0, 0, 0, 0.36));
+  }
+
+  .project-card__highlight {
+    position: absolute;
+    z-index: 3;
+    inset: 0;
+    opacity: 0;
+    background: radial-gradient(
+      circle at var(--card-highlight-x) var(--card-highlight-y),
+      color-mix(in srgb, var(--accent) 16%, transparent),
+      transparent 32%
+    );
+    pointer-events: none;
+    transition: opacity 180ms ease;
+  }
+
+  .project-card:hover .project-card__highlight {
+    opacity: 1;
   }
 
   .project-cover {
+    position: relative;
+    z-index: 1;
     display: block;
     overflow: hidden;
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 16 / 9;
     border-bottom: 1px solid var(--border);
     background: var(--surface-soft);
+  }
+
+  .project-card--featured .project-cover {
+    min-height: 100%;
+    aspect-ratio: auto;
+    border-right: 1px solid var(--border);
+    border-bottom: 0;
   }
 
   .project-cover:focus-visible {
@@ -89,47 +153,49 @@ const statusLabels = {
   }
 
   .project-card__body {
+    position: relative;
+    z-index: 2;
     display: flex;
-    min-height: 244px;
+    min-height: 330px;
     flex: 1;
     flex-direction: column;
-    padding: 18px;
+    padding: clamp(24px, 3.2vw, 38px);
   }
 
   .project-card__meta {
     display: flex;
     flex-wrap: wrap;
-    gap: 7px;
+    gap: 10px 18px;
   }
 
   .project-card__meta span {
-    display: inline-flex;
-    min-height: 26px;
-    align-items: center;
-    padding: 4px 9px;
-    border-radius: 999px;
-    font-size: 0.68rem;
+    position: relative;
+    color: var(--accent-strong);
+    font-size: 0.76rem;
     font-weight: 700;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.06em;
   }
 
-  .project-card__category {
-    color: var(--secondary-strong);
-    background: var(--secondary-soft);
+  .project-card__meta span + span::before {
+    position: absolute;
+    top: 50%;
+    left: -10px;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--muted);
+    content: '';
+    transform: translateY(-50%);
   }
 
   .project-card__status {
-    color: var(--accent-strong);
-    background: var(--accent-soft);
+    color: var(--secondary-strong) !important;
   }
 
   h3 {
-    margin: 14px 0 0;
-    overflow: hidden;
-    font-size: clamp(1.18rem, 1.8vw, 1.48rem);
-    line-height: 1.2;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    margin: 18px 0 0;
+    font-size: clamp(1.55rem, 2.6vw, 2.1rem);
+    line-height: 1.18;
   }
 
   h3 a {
@@ -137,24 +203,42 @@ const statusLabels = {
     text-decoration: none;
   }
 
-  p {
-    margin: 8px 0 16px;
-    overflow: hidden;
+  .project-card__description {
+    margin: 14px 0 22px;
     color: var(--muted);
-    font-size: 0.88rem;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    font-size: 0.96rem;
+    line-height: 1.72;
   }
 
   .project-card :global(.tag-list) {
-    margin-top: 2px;
+    gap: 6px 12px;
+  }
+
+  .project-card :global(.tag-list span) {
+    padding: 2px 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--accent) 38%, transparent);
+    border-radius: 0;
+    color: var(--muted);
+    background: transparent;
+    font-size: 0.76rem;
+  }
+
+  .project-card__repository-count {
+    margin: 22px 0 0;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  .project-card__repository-count strong {
+    color: var(--ink);
+    font-size: 1rem;
   }
 
   .project-card__actions {
     display: flex;
-    gap: 8px;
+    gap: 10px;
     margin-top: auto;
-    padding-top: 18px;
+    padding-top: 24px;
     border-top: 1px solid var(--border);
   }
 
@@ -165,10 +249,10 @@ const statusLabels = {
     justify-content: center;
     padding: 8px 12px;
     border: 1px solid var(--border);
-    border-radius: 10px;
+    border-radius: var(--radius-sm);
     color: var(--ink);
     background: var(--surface-soft);
-    font-size: 0.8rem;
+    font-size: 0.86rem;
     font-weight: 700;
     text-decoration: none;
   }
@@ -191,8 +275,27 @@ const statusLabels = {
     background: var(--accent-strong);
   }
 
+  @media (max-width: 900px) {
+    .project-card--featured {
+      grid-template-columns: 1fr;
+    }
+
+    .project-card--featured .project-cover {
+      min-height: auto;
+      aspect-ratio: 16 / 9;
+      border-right: 0;
+      border-bottom: 1px solid var(--border);
+    }
+  }
+
   @media (max-width: 440px) {
-    .project-card__body { min-height: 238px; padding: 16px; }
+    .project-card__body { min-height: 310px; padding: 22px 20px; }
     .project-card__action { padding-inline: 10px; }
+  }
+
+  @media (prefers-reduced-motion: reduce), (pointer: coarse) {
+    .project-card {
+      transform: none;
+    }
   }
 </style>

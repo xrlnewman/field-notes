@@ -2,6 +2,7 @@
 import type { CollectionEntry } from 'astro:content';
 
 import Comments from '../components/Comments.astro';
+import RepositoryConstellation from '../components/RepositoryConstellation.astro';
 import TagList from '../components/TagList.astro';
 import BaseLayout from './BaseLayout.astro';
 
@@ -17,7 +18,7 @@ const statusLabels = { active: '持续迭代', completed: '已经完成', archiv
 
 <BaseLayout title={data.title} description={data.description} type="article">
   <article class="project-detail">
-    <header class="container project-hero">
+    <header class="container project-hero" data-reveal>
       <div>
         <p class="eyebrow">PROJECT / {statusLabels[data.status]}</p>
         <h1>{data.title}</h1>
@@ -41,7 +42,16 @@ const statusLabels = { active: '持续迭代', completed: '已经完成', archiv
       )}
     </header>
 
-    <div class="container project-body-grid">
+    <section class="container project-panorama" aria-labelledby="product-panorama-title" data-reveal>
+      <div class="project-panorama__heading">
+        <p class="eyebrow">ONE PRODUCT · CONNECTED CODEBASES</p>
+        <h2 id="product-panorama-title">产品全景</h2>
+        <p>一个产品，按用户前台、运营后台和服务端拆分职责，并通过清晰的源码节点保持关联。</p>
+      </div>
+      <RepositoryConstellation repositories={data.repositories ?? []} />
+    </section>
+
+    <div class="container project-body-grid" data-reveal>
       <div class="project-index" aria-hidden="true"><span>{project.id.slice(0, 2).toUpperCase()}</span></div>
       <div class="prose" data-pagefind-body>
         <slot />
@@ -56,15 +66,15 @@ const statusLabels = { active: '持续迭代', completed: '已经完成', archiv
 
 <style>
   .project-hero {
-    padding-block: clamp(72px, 10vw, 132px) 70px;
+    padding-block: clamp(84px, 11vw, 148px) clamp(64px, 8vw, 96px);
     border-bottom: 1px solid var(--border);
   }
 
   .project-hero h1 {
     max-width: 950px;
     margin: 0;
-    font-size: clamp(3.5rem, 10vw, 8rem);
-    line-height: 0.95;
+    font-size: clamp(3.25rem, 8vw, 6.4rem);
+    line-height: 1.02;
   }
 
   .project-description {
@@ -78,13 +88,13 @@ const statusLabels = { active: '持续迭代', completed: '已经完成', archiv
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 18px;
-    margin: 64px 0 0;
+    margin: 72px 0 0;
   }
 
   .project-showcase {
     overflow: hidden;
     margin: 58px 0 0;
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 16 / 9;
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     background: var(--surface-soft);
@@ -113,6 +123,26 @@ const statusLabels = { active: '持续迭代', completed: '已经完成', archiv
   dd {
     margin: 8px 0 0;
     font-weight: 600;
+  }
+
+  .project-panorama {
+    display: grid;
+    grid-template-columns: minmax(240px, 0.32fr) minmax(0, 0.68fr);
+    gap: clamp(40px, 7vw, 96px);
+    padding-block: clamp(80px, 10vw, 128px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .project-panorama__heading h2 {
+    margin: 0;
+    font-size: clamp(2.2rem, 4.5vw, 3.6rem);
+    line-height: 1.08;
+  }
+
+  .project-panorama__heading > p:last-child {
+    margin: 22px 0 0;
+    color: var(--muted);
+    line-height: 1.75;
   }
 
   .project-body-grid {
@@ -178,6 +208,11 @@ const statusLabels = { active: '持续迭代', completed: '已经完成', archiv
     .project-body-grid {
       grid-template-columns: 1fr;
       gap: 28px;
+    }
+
+    .project-panorama {
+      grid-template-columns: 1fr;
+      gap: 42px;
     }
 
     .project-index {

@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 import { describe, expect, it } from 'vitest';
@@ -6,6 +6,7 @@ import { describe, expect, it } from 'vitest';
 import { siteConfig } from '../src/config/site';
 
 const readText = (path: string) => readFileSync(path, 'utf8').replace(/\r\n/g, '\n');
+const readOptional = (path: string) => existsSync(path) ? readText(path) : '';
 
 const collectStyleSourcePaths = (directory: string): string[] =>
   readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -91,5 +92,35 @@ describe('personal brand configuration', () => {
     ).toEqual([]);
     expect.soft(findStyleViolations(/letter-spacing:\s*-[^;]+/g)).toEqual([]);
     expect.soft(findStyleViolations(/letter-spacing:[^;]*!important/g)).toEqual([]);
+  });
+
+  it('presents the home page as a four-product cosmic portfolio', () => {
+    const home = readText('src/pages/index.astro');
+    const card = readText('src/components/ProjectCard.astro');
+    const layout = readText('src/layouts/BaseLayout.astro');
+
+    expect.soft(home).toContain('data-cosmic-hero');
+    expect.soft(home).toContain('把复杂业务，做成可运行的产品。');
+    expect.soft(home).toContain('7 年经验');
+    expect.soft(home).toContain('4 个网站产品');
+    expect.soft(home).toContain('永久免费');
+    expect.soft(home).toContain('data-free-open-source');
+    expect.soft(card).toContain('data-cosmic-card');
+    expect.soft(layout).toContain('<CosmicInteractions />');
+  });
+
+  it('limits cosmic card motion and reveals content once on capable pointers', () => {
+    const interactions = readOptional('src/components/CosmicInteractions.astro');
+    const pendingRevealRule = interactions.match(/html\.cosmic-interactions-ready \[data-reveal\] \{([^}]*)\}/)?.[1] ?? '';
+
+    expect.soft(interactions).toContain("querySelectorAll<HTMLElement>('[data-cosmic-card]')");
+    expect.soft(interactions).toContain("matchMedia('(prefers-reduced-motion: reduce)')");
+    expect.soft(interactions).toContain("matchMedia('(pointer: coarse)')");
+    expect.soft(interactions).toContain('const maxTilt = 2.5;');
+    expect.soft(interactions).toContain("setProperty('--card-highlight-x'");
+    expect.soft(interactions).toContain('new IntersectionObserver');
+    expect.soft(interactions).toContain('observer.unobserve(entry.target);');
+    expect.soft(pendingRevealRule).toContain('translate: 0 22px;');
+    expect.soft(pendingRevealRule).not.toContain('transform:');
   });
 });

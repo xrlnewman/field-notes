@@ -4,46 +4,29 @@ import { getCollection } from 'astro:content';
 import ProjectGallery from '../../components/ProjectGallery.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
 import { isVisibleEntry, sortByPublishedAt } from '../../lib/content';
-import { projectCategories } from '../../lib/projects';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const projects = sortByPublishedAt(
   (await getCollection('projects')).filter((entry) => isVisibleEntry(entry, import.meta.env.PROD)),
 );
-const categoryDescriptions = {
-  个人品牌: '以文章、项目和站内交流持续沉淀个人作品。',
-  电商平台: '连接用户端、运营后台和后端服务的完整商城产品。',
-  社区服务: '围绕居民、团长与运营人员组织社区服务流程。',
-  企业官网: '由访客前台、内容管理后台和后端服务共同支撑。',
-} satisfies Record<(typeof projectCategories)[number], string>;
 ---
 
 <BaseLayout title="项目作品" description="四个网站产品及其关联仓库，每个项目都可以查看产品组成和 GitHub 源码。">
   <div class="container page-shell" data-project-catalog data-pagefind-body>
-    <SectionHeading
-      eyebrow="PROJECT INDEX"
-      title="公开项目目录"
-      description="聚合个人品牌、电商平台、社区服务和企业官网，并按职责关联公开源码。"
-      level="h1"
-    />
-
-    <section class="project-catalog__overview" aria-label="项目目录概览">
-      <div class="project-catalog__count">
+    <header class="project-catalog__hero" data-reveal>
+      <SectionHeading
+        eyebrow="PRODUCT CONSTELLATION"
+        title="四个可运行的网站产品"
+        description="每张卡片代表一个完整产品；进入详情即可查看前台、运营后台与服务端之间的关联。"
+        level="h1"
+      />
+      <p class="project-catalog__count">
         <strong data-project-count={projects.length}>{projects.length}</strong>
-        <span>公开项目</span>
-      </div>
-      <div class="project-catalog__categories" aria-label="四类项目说明">
-        {projectCategories.map((category, index) => (
-          <article>
-            <span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
-            <h2>{category}</h2>
-            <p>{categoryDescriptions[category]}</p>
-          </article>
-        ))}
-      </div>
-    </section>
+        <span>个公开网站产品</span>
+      </p>
+    </header>
 
-    <div class="project-catalog__gallery">
+    <div class="project-catalog__gallery" data-reveal>
       <ProjectGallery projects={projects} />
     </div>
   </div>
@@ -51,115 +34,58 @@ const categoryDescriptions = {
 
 <style>
   .page-shell {
-    padding-block: clamp(62px, 8vw, 100px) 110px;
+    padding-block: clamp(84px, 11vw, 148px) 120px;
   }
 
-  .project-catalog__overview {
+  .project-catalog__hero {
     display: grid;
-    grid-template-columns: minmax(170px, 0.22fr) minmax(0, 1fr);
-    gap: 14px;
-    margin-bottom: 56px;
-  }
-
-  .project-catalog__count,
-  .project-catalog__categories article {
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    background: var(--surface);
+    grid-template-columns: minmax(0, 1fr) minmax(190px, 0.25fr);
+    gap: clamp(36px, 7vw, 100px);
+    align-items: end;
+    margin-bottom: clamp(68px, 8vw, 106px);
+    padding-bottom: clamp(48px, 7vw, 76px);
+    border-bottom: 1px solid var(--border);
   }
 
   .project-catalog__count {
     display: flex;
-    min-height: 196px;
+    min-height: 170px;
     flex-direction: column;
     justify-content: flex-end;
-    padding: 22px;
-    color: var(--accent-ink);
-    border-color: var(--accent);
-    background: var(--accent);
+    margin: 0;
+    padding: 24px 0 0;
+    border-top: 1px solid var(--accent);
   }
 
   .project-catalog__count strong {
-    font-family: var(--font-sans);
-    font-size: clamp(3.2rem, 7vw, 5.4rem);
+    color: var(--accent-strong);
+    font-size: clamp(4rem, 8vw, 6rem);
     line-height: 0.9;
   }
 
   .project-catalog__count span {
-    margin-top: 16px;
-    font-size: 0.88rem;
-    font-weight: 700;
-  }
-
-  .project-catalog__categories {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 10px;
-  }
-
-  .project-catalog__categories article {
-    min-width: 0;
-    padding: 18px;
-  }
-
-  .project-catalog__categories article > span {
-    color: var(--secondary-strong);
-    font-family: var(--font-sans);
-    font-size: 0.7rem;
-    font-weight: 700;
-  }
-
-  .project-catalog__categories h2 {
-    margin: 28px 0 8px;
-    font-size: 1rem;
-    line-height: 1.2;
-  }
-
-  .project-catalog__categories p {
-    margin: 0;
+    margin-top: 18px;
     color: var(--muted);
-    font-size: 0.78rem;
-    line-height: 1.55;
+    font-size: 0.94rem;
   }
 
   .project-catalog__gallery {
-    padding-top: 34px;
-    border-top: 1px solid var(--border);
+    min-width: 0;
   }
 
   @media (max-width: 980px) {
-    .project-catalog__overview {
+    .project-catalog__hero {
       grid-template-columns: 1fr;
     }
 
     .project-catalog__count {
-      min-height: 150px;
-    }
-
-    .project-catalog__categories {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      min-height: 0;
     }
   }
 
   @media (max-width: 640px) {
     .page-shell {
-      padding-block: 52px 88px;
-    }
-
-    .project-catalog__overview {
-      margin-bottom: 44px;
-    }
-
-    .project-catalog__categories {
-      grid-template-columns: 1fr;
-    }
-
-    .project-catalog__categories article {
-      padding: 16px 18px;
-    }
-
-    .project-catalog__categories h2 {
-      margin-top: 14px;
+      padding-block: 72px 92px;
     }
   }
 </style>
