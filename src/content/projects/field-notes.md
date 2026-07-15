@@ -1,10 +1,10 @@
 ---
 title: 许汝林个人博客
-description: 一个永久免费、零成本部署、完全开源，并在站内完成评论和留言的个人博客。
+description: 一个永久免费、零成本部署、完全开源，并通过 GitHub 登录在站内完成评论和留言的个人博客。
 publishedAt: 2026-07-13
 status: active
 category: 个人品牌
-tech: [Astro, TypeScript, Pagefind, Cloudflare D1]
+tech: [Astro, TypeScript, Pagefind, Giscus]
 cover: /images/projects/field-notes.png
 demoUrl: https://field-notes-2fi.pages.dev
 repoUrl: https://github.com/xrlnewman/field-notes
@@ -18,9 +18,9 @@ draft: false
 
 ## 解决方案
 
-网站由 Astro 在构建阶段生成静态 HTML。文章和项目直接使用 Markdown 管理，Pagefind 在构建完成后生成中文搜索索引，站内评论和回复保存到 Cloudflare D1，评论和留言都在站内完成。
+网站由 Astro 在构建阶段生成静态 HTML。文章和项目直接使用 Markdown 管理，Pagefind 在构建完成后生成中文搜索索引，评论和回复保存到 GitHub Discussions，并通过 Giscus 嵌入博客页面。
 
-正文继续由 Cloudflare Pages 静态分发，只有读取或发布评论时才会访问 Pages Functions 和 D1。
+正文由 Cloudflare Pages 静态分发；访客登录 GitHub 后，可以直接在文章、项目和留言板页面发布评论或回复，评论和留言都在站内完成。
 
 ## 关键能力
 
@@ -34,5 +34,5 @@ draft: false
 
 ## 取舍
 
-评论无需账号，降低了参与门槛；同时需要通过频率限制、蜜罐字段和内容管理应对垃圾信息，并持续维护 D1 数据备份。
+评论依赖 GitHub 登录，减少匿名垃圾内容；讨论数据由 GitHub Discussions 保存，博客本身不维护用户密码、会话或评论数据库。
 

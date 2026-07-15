@@ -1,0 +1,175 @@
+---
+import {
+  defaultGiscusConfig,
+  readGiscusConfig,
+  resolveGiscusTheme,
+} from '../lib/giscus';
+
+interface Props {
+  mapping: 'pathname' | 'specific';
+  term?: string | undefined;
+  title?: string;
+}
+
+const { mapping, term, title = '评论与回复' } = Astro.props;
+const config = readGiscusConfig(import.meta.env) ?? defaultGiscusConfig;
+---
+
+<section
+  class="comments"
+  aria-labelledby="comments-title"
+  data-giscus-host
+  data-mapping={mapping}
+  data-term={term}
+>
+  <header>
+    <p class="eyebrow">GITHUB DISCUSSION</p>
+    <h2 id="comments-title">{title}</h2>
+    <p>评论保存在 GitHub Discussions，登录 GitHub 后即可参与，发布和回复都在本页完成。</p>
+  </header>
+
+  <div
+    class="giscus-mount"
+    data-giscus-mount
+    data-repo={config.repo}
+    data-repo-id={config.repoId}
+    data-category={config.category}
+    data-category-id={config.categoryId}
+    data-mapping={mapping}
+    data-term={term}
+    data-giscus-theme={resolveGiscusTheme('observatory')}
+  >
+    <p class="giscus-loading" data-giscus-status>评论区进入视口后自动加载。</p>
+  </div>
+</section>
+
+<script>
+  import { resolveGiscusTheme } from '../lib/giscus';
+
+  const hosts = document.querySelectorAll<HTMLElement>('[data-giscus-host]');
+
+  const showLoadError = (host: HTMLElement, mount: HTMLElement) => {
+    const message = document.createElement('p');
+    message.className = 'giscus-error';
+    message.textContent = '评论区加载失败，请检查网络后重试。';
+
+    const retry = document.createElement('button');
+    retry.className = 'giscus-retry';
+    retry.type = 'button';
+    retry.textContent = '重新加载';
+    retry.addEventListener('click', () => {
+      mount.dataset.loaded = 'false';
+      loadGiscus(host);
+    }, { once: true });
+
+    mount.replaceChildren(message, retry);
+  };
+
+  const loadGiscus = (host: HTMLElement) => {
+    const mount = host.querySelector<HTMLElement>('[data-giscus-mount]');
+    if (!mount || mount.dataset.loaded === 'true') return;
+
+    mount.dataset.loaded = 'true';
+    mount.replaceChildren();
+
+    const script = document.createElement('script');
+    script.src = 'https://giscus.app/client.js';
+    script.async = true;
+    script.crossOrigin = 'anonymous';
+    script.addEventListener('error', () => showLoadError(host, mount), { once: true });
+
+    const attributes: Record<string, string> = {
+      repo: mount.dataset.repo ?? '',
+      'repo-id': mount.dataset.repoId ?? '',
+      category: mount.dataset.category ?? '',
+      'category-id': mount.dataset.categoryId ?? '',
+      mapping: mount.dataset.mapping ?? 'pathname',
+      strict: '0',
+      'reactions-enabled': '1',
+      'emit-metadata': '0',
+      'input-position': 'top',
+      theme: resolveGiscusTheme(document.documentElement.dataset.theme),
+      lang: 'zh-CN',
+      loading: 'lazy',
+    };
+
+    if (mount.dataset.term) attributes.term = mount.dataset.term;
+    Object.entries(attributes).forEach(([name, value]) => script.setAttribute(`data-${name}`, value));
+    mount.append(script);
+  };
+
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        loadGiscus(entry.target as HTMLElement);
+        observer.unobserve(entry.target);
+      });
+    }, { rootMargin: '420px 0px' });
+    hosts.forEach((host) => observer.observe(host));
+  } else {
+    hosts.forEach(loadGiscus);
+  }
+
+  document.addEventListener('cosmic-theme-change', (event) => {
+    const cosmicTheme = event instanceof CustomEvent ? event.detail?.theme : undefined;
+    const theme = resolveGiscusTheme(cosmicTheme);
+    document.querySelectorAll<HTMLIFrameElement>('iframe.giscus-frame').forEach((frame) => {
+      frame.contentWindow?.postMessage({ giscus: { setConfig: { theme } } }, 'https://giscus.app');
+    });
+  });
+</script>
+
+<style>
+  .comments {
+    padding-top: 48px;
+    border-top: 1px solid var(--border);
+  }
+
+  .comments header h2 {
+    margin: 0;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    line-height: 1.08;
+  }
+
+  .comments header > p:last-child {
+    max-width: 680px;
+    margin: 12px 0 0;
+    color: var(--muted);
+  }
+
+  .giscus-mount {
+    min-height: 220px;
+    margin-top: 32px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: color-mix(in srgb, var(--surface) 86%, transparent);
+  }
+
+  .giscus-loading,
+  .giscus-error {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  .giscus-retry {
+    min-height: 44px;
+    margin-top: 16px;
+    padding: 0 18px;
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    color: var(--ink);
+    background: var(--surface-soft);
+    cursor: pointer;
+  }
+
+  .giscus-retry:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  .giscus-mount :global(.giscus-frame) {
+    width: 100%;
+  }
+</style>

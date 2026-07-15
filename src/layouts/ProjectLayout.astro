@@ -1,7 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 
-import Comments from '../components/Comments.astro';
+import GiscusComments from '../components/GiscusComments.astro';
 import RepositoryConstellation from '../components/RepositoryConstellation.astro';
 import TagList from '../components/TagList.astro';
 import BaseLayout from './BaseLayout.astro';
@@ -64,7 +64,7 @@ const statusLabels = { active: '持续迭代', completed: '已经完成', archiv
     </div>
 
     <div class="container comments-slot">
-      <Comments resource={`project:${project.id}`} />
+      <GiscusComments mapping="pathname" />
     </div>
   </article>
 </BaseLayout>

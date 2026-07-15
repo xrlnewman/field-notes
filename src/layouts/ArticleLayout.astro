@@ -3,8 +3,8 @@ import type { MarkdownHeading } from 'astro';
 import type { CollectionEntry } from 'astro:content';
 
 import ArticleNav from '../components/ArticleNav.astro';
-import Comments from '../components/Comments.astro';
 import ContentCard from '../components/ContentCard.astro';
+import GiscusComments from '../components/GiscusComments.astro';
 import ProseEnhancements from '../components/ProseEnhancements.astro';
 import TableOfContents from '../components/TableOfContents.astro';
 import TagList from '../components/TagList.astro';
@@ -65,7 +65,7 @@ const readingTime = estimateReadingTime(article.body ?? '');
       </section>
     )}
 
-    <div class="container comments-slot"><Comments resource={`article:${article.id}`} /></div>
+    <div class="container comments-slot"><GiscusComments mapping="pathname" /></div>
     <ProseEnhancements />
   </article>
 </BaseLayout>

@@ -1,6 +1,6 @@
 # 许汝林个人博客
 
-一个以项目作品和开源源码为核心的个人博客。网站聚合四个完整网站产品，用于展示许汝林的产品实践、技术文章和完整交付能力；内容静态生成，评论由 Cloudflare Pages Functions 与 D1 提供，可以长期免费运行。
+一个以项目作品和开源源码为核心的个人博客。网站聚合四个完整网站产品，用于展示许汝林的产品实践、技术文章和完整交付能力；内容静态生成，评论通过 Giscus 嵌入站内并由 GitHub Discussions 保存，可以长期免费运行。
 
 在线访问：[field-notes-2fi.pages.dev](https://field-notes-2fi.pages.dev)
 
@@ -9,10 +9,10 @@
 - 四个网站产品聚合展示，关联前台、运营后台、后端 API 与各自 GitHub 源码入口
 - 文章列表、文章详情、标签聚合和阅读目录
 - Pagefind 中文静态搜索
-- 无需账号的站内文章评论、项目评论、一级回复和固定全局留言板
+- GitHub 登录后的站内文章评论、项目评论、回复和固定全局留言板
 - RSS、站点地图、SEO 元信息和 404 页面
 - 深空观测站、梦幻银河、宇宙终端三套星空主题，支持主题记忆、响应式导航、键盘操作和减少动效
-- Cloudflare Pages、Functions 与 D1 免费额度部署，无需自购应用服务器
+- Cloudflare Pages 免费托管，无需自购应用服务器
 - Markdown/MDX 内容模型与构建期字段校验
 
 ## 成本
@@ -20,11 +20,11 @@
 | 服务 | 用途 | 费用 |
 |---|---|---:|
 | GitHub 公共仓库 | 代码、文章和项目 | 0 元 |
-| Cloudflare Pages / Functions | 静态网站、评论接口、HTTPS 和 `pages.dev` 子域名 | 免费额度内 0 元 |
-| Cloudflare D1 | 评论与留言数据 | 免费额度内 0 元 |
+| Cloudflare Pages | 静态网站、HTTPS 和 `pages.dev` 子域名 | 免费额度内 0 元 |
+| GitHub Discussions / Giscus | 登录、评论、回复和全局留言 | 0 元 |
 | Pagefind | 本地全文搜索 | 0 元 |
 
-网站不需要自购应用服务器或付费域名；Cloudflare 负责运行接口与数据库。
+网站不需要自购应用服务器或付费域名；Cloudflare 分发静态页面，GitHub 保存讨论数据。
 
 ## 本地运行
 
@@ -125,24 +125,18 @@ draft: false
 
 ## 配置评论和全局留言
 
-评论使用 Cloudflare D1，不要求访客注册账号。文章、项目和留言板分别使用稳定资源键，回复最多一层。
+评论使用 Giscus。访客可以直接在博客页面内阅读讨论，发布或回复前必须登录 GitHub；文章和项目按路径映射，留言板固定映射到 `global-guestbook`。
 
-首次部署时创建数据库并应用迁移：
+仓库必须保持 Discussions 开启并安装 Giscus GitHub App。当前项目已经配置好以下公开参数，通常无需修改：
 
-```bash
-npx wrangler d1 create field-notes-comments
-npx wrangler d1 migrations apply field-notes-comments --remote
+```dotenv
+PUBLIC_GISCUS_REPO=xrlnewman/field-notes
+PUBLIC_GISCUS_REPO_ID=R_kgDOTX84ug
+PUBLIC_GISCUS_CATEGORY=General
+PUBLIC_GISCUS_CATEGORY_ID=DIC_kwDOTX84us4DBKfw
 ```
 
-把命令返回的真实数据库 ID 写入 `wrangler.jsonc` 的 `d1_databases`，然后设置只存在于 Cloudflare 的哈希密钥：
-
-```bash
-node -e "process.stdout.write(require('node:crypto').randomBytes(32).toString('hex'))" | npx wrangler pages secret put COMMENT_HASH_SECRET --project-name field-notes
-```
-
-密钥用于把访问 IP 转换为不可逆的限流标识。不要把密钥写入 `.env.example`、Git、日志或部署输出。
-
-本地联调评论接口时，先执行 `npm run build`，再用 Wrangler Pages 开发服务器加载 D1 绑定；本地密钥放在 Git 忽略的 `.dev.vars` 中。
+这些值是 GitHub 公开标识，不是 OAuth 密钥。需要切换仓库或 Discussion 分类时，可以用同名 `PUBLIC_GISCUS_*` 环境变量覆盖项目默认值。
 
 ## 免费部署到 Cloudflare Pages
 
@@ -152,19 +146,19 @@ node -e "process.stdout.write(require('node:crypto').randomBytes(32).toString('h
 npm run verify
 ```
 
-再把静态产物与 Pages Functions 一起部署：
+再部署静态产物：
 
 ```bash
 npx wrangler pages deploy dist --project-name field-notes --branch main
 ```
 
-`wrangler.jsonc` 声明 D1 绑定；生产环境还必须存在 `COMMENT_HASH_SECRET`。部署成功后检查评论 GET、发布、回复和刷新持久化。
+部署成功后检查三套主题、Giscus iframe、GitHub 登录入口以及留言和回复流程。
 
 ## 备份与迁移
 
 - 文章、项目、样式和配置都在 Git 仓库中，Clone 仓库就是完整备份。
-- 评论和留言保存在 Cloudflare D1，可使用 `wrangler d1 export` 定期导出；导出文件可能包含公开留言，不要提交到仓库。
-- `dist/` 是标准静态内容；迁移到不支持 Pages Functions/D1 的平台时，需要替换评论接口。
+- 评论和留言保存在 GitHub Discussions，可通过仓库数据导出策略备份。
+- `dist/` 是标准静态内容；迁移到其他静态托管平台时，只要允许加载 Giscus 即可继续使用评论。
 - 如果不购买独立域名，迁移托管平台时免费二级域名会改变。
 
 ## 目录
@@ -177,9 +171,8 @@ src/content/projects/       项目
 src/components/             UI 与交互组件
 src/layouts/                页面布局
 src/pages/                  路由
-functions/api/comments.ts   评论接口
-migrations/                 D1 数据库迁移
-wrangler.jsonc              Pages 与 D1 绑定
+src/components/GiscusComments.astro  GitHub 登录评论组件
+wrangler.jsonc              Cloudflare Pages 部署配置
 tests/                      自动测试
 ```
 
