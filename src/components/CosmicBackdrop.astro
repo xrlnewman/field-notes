@@ -1,0 +1,270 @@
+<canvas class="cosmic-backdrop" aria-hidden="true"></canvas>
+<div class="cosmic-noise" aria-hidden="true"></div>
+<div class="cosmic-pointer-glow" aria-hidden="true"></div>
+
+<script>
+  import { resolveCosmicTheme, type CosmicTheme } from '../lib/cosmic-theme';
+  import {
+    createStar,
+    getAdaptiveStarCount,
+    getParallaxOffset,
+    getThemePalette,
+    type PointerState,
+    type Ripple,
+    type Star,
+  } from '../lib/starfield';
+
+  const setupBackdrop = (canvas: HTMLCanvasElement, pointerGlow: HTMLElement | null) => {
+    const context = canvas.getContext('2d');
+    if (!context) return;
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const coarsePointer = window.matchMedia('(pointer: coarse)');
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    let stars: Star[] = [];
+    let ripples: Ripple[] = [];
+    let theme: CosmicTheme = resolveCosmicTheme(document.documentElement.dataset.theme);
+    let pointer: PointerState = { x: 0, y: 0, active: false };
+    let frameId: number | null = null;
+
+    const projectedPosition = (star: Star) => {
+      const offset = getParallaxOffset(pointer, star.depth);
+      return { x: star.x + offset.x, y: star.y + offset.y };
+    };
+
+    const drawNebula = () => {
+      const palette = getThemePalette(theme);
+      const clouds = [
+        { x: width * 0.2, y: height * 0.25, radius: Math.max(width, height) * 0.32 },
+        { x: width * 0.78, y: height * 0.66, radius: Math.max(width, height) * 0.38 },
+      ];
+
+      clouds.forEach((cloud, index) => {
+        const gradient = context.createRadialGradient(
+          cloud.x,
+          cloud.y,
+          0,
+          cloud.x,
+          cloud.y,
+          cloud.radius,
+        );
+        gradient.addColorStop(0, index === 0 ? `${palette.glow}66` : `${palette.accent}55`);
+        gradient.addColorStop(1, 'transparent');
+        context.fillStyle = gradient;
+        context.fillRect(0, 0, width, height);
+      });
+    };
+
+    const drawTerminalGrid = () => {
+      const palette = getThemePalette(theme);
+      context.save();
+      context.globalAlpha = 0.22;
+      context.strokeStyle = palette.grid;
+      context.lineWidth = 1;
+
+      for (let x = 0.5; x < width; x += 48) {
+        context.beginPath();
+        context.moveTo(x, 0);
+        context.lineTo(x, height);
+        context.stroke();
+      }
+
+      for (let y = 0.5; y < height; y += 48) {
+        context.beginPath();
+        context.moveTo(0, y);
+        context.lineTo(width, y);
+        context.stroke();
+      }
+      context.restore();
+    };
+
+    const drawNearbyConnections = () => {
+      if (!pointer.active) return;
+
+      const palette = getThemePalette(theme);
+      const pointerX = ((pointer.x + 1) / 2) * width;
+      const pointerY = ((pointer.y + 1) / 2) * height;
+
+      stars.forEach((star) => {
+        const position = projectedPosition(star);
+        const distance = Math.hypot(position.x - pointerX, position.y - pointerY);
+        if (distance > 160) return;
+
+        context.beginPath();
+        context.moveTo(position.x, position.y);
+        context.lineTo(pointerX, pointerY);
+        context.strokeStyle = palette.line;
+        context.globalAlpha = (1 - distance / 160) * 0.28;
+        context.lineWidth = 0.7;
+        context.stroke();
+      });
+      context.globalAlpha = 1;
+    };
+
+    const drawStars = (timestamp: number) => {
+      const palette = getThemePalette(theme);
+
+      stars.forEach((star, index) => {
+        const position = projectedPosition(star);
+        const twinkle = reduceMotion.matches
+          ? 1
+          : 0.78 + Math.sin(timestamp * star.twinkleSpeed + star.twinkleOffset) * 0.22;
+        const radius = theme === 'nebula' && index % 4 === 0 ? star.radius * 0.55 : star.radius;
+
+        context.beginPath();
+        context.arc(position.x, position.y, radius, 0, Math.PI * 2);
+        context.fillStyle = index % 5 === 0 ? palette.starSecondary : palette.star;
+        context.globalAlpha = star.alpha * twinkle;
+        context.shadowBlur = theme === 'nebula' ? 10 : 4;
+        context.shadowColor = palette.glow;
+        context.fill();
+
+        if (theme === 'terminal' && index % 18 === 0) {
+          context.globalAlpha = 0.55;
+          context.shadowBlur = 0;
+          context.fillStyle = palette.label;
+          context.font = '9px ui-monospace, monospace';
+          context.fillText(
+            `${Math.round(position.x)}:${Math.round(position.y)}`,
+            position.x + 7,
+            position.y - 7,
+          );
+        }
+      });
+
+      context.globalAlpha = 1;
+      context.shadowBlur = 0;
+    };
+
+    const drawRipples = (timestamp: number) => {
+      const palette = getThemePalette(theme);
+      ripples = ripples.filter((ripple) => timestamp - ripple.startedAt <= ripple.duration);
+
+      ripples.forEach((ripple) => {
+        const progress = Math.max(0, (timestamp - ripple.startedAt) / ripple.duration);
+        context.beginPath();
+        context.arc(ripple.x, ripple.y, progress * 120, 0, Math.PI * 2);
+        context.strokeStyle = palette.accent;
+        context.globalAlpha = (1 - progress) * 0.55;
+        context.lineWidth = 2 - progress;
+        context.stroke();
+      });
+      context.globalAlpha = 1;
+    };
+
+    const drawScene = (timestamp: number) => {
+      const palette = getThemePalette(theme);
+      context.clearRect(0, 0, width, height);
+      context.fillStyle = palette.background;
+      context.fillRect(0, 0, width, height);
+
+      if (theme === 'nebula') drawNebula();
+      if (theme === 'terminal') drawTerminalGrid();
+      if (theme === 'observatory') drawNearbyConnections();
+      drawStars(timestamp);
+      drawRipples(timestamp);
+    };
+
+    const rebuildStars = () => {
+      const count = getAdaptiveStarCount(width, height, coarsePointer.matches);
+      stars = Array.from({ length: count }, (_, index) => createStar(index + 1, width, height));
+    };
+
+    const resizeCanvas = () => {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      context.setTransform(dpr, 0, 0, dpr, 0, 0);
+      rebuildStars();
+    };
+
+    const stopAnimation = () => {
+      if (frameId === null) return;
+      cancelAnimationFrame(frameId);
+      frameId = null;
+    };
+
+    const animate = (timestamp: number) => {
+      frameId = null;
+      drawScene(timestamp);
+      startAnimation();
+    };
+
+    const startAnimation = () => {
+      if (reduceMotion.matches || document.hidden || frameId !== null) return;
+      frameId = requestAnimationFrame(animate);
+    };
+
+    const updatePointer = (event: PointerEvent) => {
+      pointer = {
+        x: (event.clientX / width) * 2 - 1,
+        y: (event.clientY / height) * 2 - 1,
+        active: true,
+      };
+      pointerGlow?.style.setProperty('--pointer-x', `${event.clientX}px`);
+      pointerGlow?.style.setProperty('--pointer-y', `${event.clientY}px`);
+      pointerGlow?.style.setProperty('--pointer-opacity', '1');
+    };
+
+    const handleResize = () => {
+      resizeCanvas();
+      if (reduceMotion.matches) drawScene(0);
+    };
+
+    const handlePointerDown = (event: PointerEvent) => {
+      updatePointer(event);
+      ripples.push({ x: event.clientX, y: event.clientY, startedAt: performance.now(), duration: 900 });
+      if (reduceMotion.matches) drawScene(performance.now());
+    };
+
+    const handleThemeChange = (event: Event) => {
+      const nextTheme = event instanceof CustomEvent ? event.detail?.theme : undefined;
+      theme = resolveCosmicTheme(nextTheme);
+      if (reduceMotion.matches) drawScene(0);
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        stopAnimation();
+        return;
+      }
+
+      if (reduceMotion.matches) drawScene(0);
+      else startAnimation();
+    };
+
+    const handleMotionPreference = () => {
+      if (reduceMotion.matches) {
+        stopAnimation();
+        drawScene(0);
+      } else {
+        startAnimation();
+      }
+    };
+
+    resizeCanvas();
+    if (reduceMotion.matches) drawScene(0);
+    else startAnimation();
+
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('pointermove', updatePointer);
+    window.addEventListener('pointerdown', handlePointerDown);
+    window.addEventListener('pointerout', (event) => {
+      if (event.relatedTarget) return;
+      pointer = { x: 0, y: 0, active: false };
+      pointerGlow?.style.setProperty('--pointer-opacity', '0');
+    });
+    document.addEventListener('cosmic-theme-change', handleThemeChange);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    reduceMotion.addEventListener('change', handleMotionPreference);
+  };
+
+  const canvas = document.querySelector<HTMLCanvasElement>('canvas.cosmic-backdrop');
+  const pointerGlow = document.querySelector<HTMLElement>('.cosmic-pointer-glow');
+  if (canvas) setupBackdrop(canvas, pointerGlow);
+</script>
