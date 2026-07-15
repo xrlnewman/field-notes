@@ -109,6 +109,16 @@ describe('personal brand configuration', () => {
     expect.soft(layout).toContain('<CosmicInteractions />');
   });
 
+  it('caps the mobile hero title at the 56px design maximum', () => {
+    const home = readText('src/pages/index.astro');
+    const mobileHeroRule = home.match(
+      /@media \(max-width: 760px\) \{[\s\S]*?\.hero-studio h1 \{([^}]*)\}/,
+    )?.[1] ?? '';
+
+    expect.soft(mobileHeroRule).toContain('font-size: clamp(2.65rem, 12vw, 3.5rem);');
+    expect.soft(mobileHeroRule).not.toContain('3.8rem');
+  });
+
   it('limits cosmic card motion and reveals content once on capable pointers', () => {
     const interactions = readOptional('src/components/CosmicInteractions.astro');
     const pendingRevealRule = interactions.match(/html\.cosmic-interactions-ready \[data-reveal\] \{([^}]*)\}/)?.[1] ?? '';

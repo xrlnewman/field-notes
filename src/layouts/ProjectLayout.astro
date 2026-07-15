@@ -12,6 +12,7 @@ interface Props {
 
 const { project } = Astro.props;
 const { data } = project;
+const hasMultipleRepositories = (data.repositories?.length ?? 0) > 1;
 const date = new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' }).format(data.publishedAt);
 const statusLabels = { active: '持续迭代', completed: '已经完成', archived: '已归档' } as const;
 ---
@@ -46,7 +47,11 @@ const statusLabels = { active: '持续迭代', completed: '已经完成', archiv
       <div class="project-panorama__heading">
         <p class="eyebrow">ONE PRODUCT · CONNECTED CODEBASES</p>
         <h2 id="product-panorama-title">产品全景</h2>
-        <p>一个产品，按用户前台、运营后台和服务端拆分职责，并通过清晰的源码节点保持关联。</p>
+        <p>
+          {hasMultipleRepositories
+            ? '一个产品，按用户前台、运营后台和服务端拆分职责，并通过清晰的源码节点保持关联。'
+            : '一个产品，由一个仓库完整维护产品与源码，主仓库入口位于页面首屏。'}
+        </p>
       </div>
       <RepositoryConstellation repositories={data.repositories ?? []} />
     </section>

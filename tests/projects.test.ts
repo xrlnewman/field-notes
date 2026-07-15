@@ -208,6 +208,25 @@ describe('project category helpers', () => {
     expect.soft(constellation).toContain('rel="noopener noreferrer"');
   });
 
+  it('describes single and multi-repository products without contradicting their structure', () => {
+    const layout = readFileSync('src/layouts/ProjectLayout.astro', 'utf8');
+
+    expect.soft(layout).toContain(
+      'const hasMultipleRepositories = (data.repositories?.length ?? 0) > 1;',
+    );
+    expect.soft(layout).toContain('hasMultipleRepositories');
+    expect.soft(layout).toContain('按用户前台、运营后台和服务端拆分职责');
+    expect.soft(layout).toContain('由一个仓库完整维护产品与源码');
+  });
+
+  it('treats a missing or explicitly empty repositories list as the primary repository', () => {
+    const card = readFileSync('src/components/ProjectCard.astro', 'utf8');
+
+    expect.soft(card).toContain('const repositoryCount = repositories?.length || 1;');
+    expect.soft(card).not.toContain('repositories?.length ?? 1');
+    expect.soft(card.match(/repositoryCount/g)).toHaveLength(3);
+  });
+
   it('keeps product descriptions readable instead of truncating them to one line', () => {
     const card = readFileSync('src/components/ProjectCard.astro', 'utf8');
     const descriptionRule = card.match(/\.project-card__description\s*\{([^}]*)\}/)?.[1] ?? '';
