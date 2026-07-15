@@ -56,6 +56,9 @@ describe('personal brand configuration', () => {
     expect(layout).toContain("import '@fontsource-variable/inter/wght.css';");
     expect(layout).toContain("import '@fontsource-variable/noto-sans-sc/wght.css';");
     expect(globalStyles).toContain(':focus-visible {\n  outline: 3px solid var(--focus-ring);');
+    expect(globalStyles).toContain('.skip-link:focus-visible {');
+    expect(globalStyles).not.toContain('.skip-link:focus {');
+    expect(globalStyles).toContain(':not(.cosmic-pointer-glow):not(.skip-link)');
     expect(header).toContain('<ThemeToggle />');
     expect(header).toContain('backdrop-filter: blur(');
     expect(footer).toContain('backdrop-filter: blur(');
