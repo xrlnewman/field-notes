@@ -64,7 +64,6 @@ const statusLabels = { active: '持续迭代', completed: '已经完成', archiv
     max-width: 950px;
     margin: 0;
     font-size: clamp(3.5rem, 10vw, 8rem);
-    letter-spacing: -0.075em;
     line-height: 0.95;
   }
 
@@ -106,14 +105,14 @@ const statusLabels = { active: '持续迭代', completed: '已经完成', archiv
 
   dt {
     color: var(--muted);
-    font-family: 'Geist Mono', ui-monospace, monospace;
+    font-family: var(--font-sans);
     font-size: 0.72rem;
     text-transform: uppercase;
   }
 
   dd {
     margin: 8px 0 0;
-    font-weight: 620;
+    font-weight: 600;
   }
 
   .project-body-grid {
@@ -134,7 +133,7 @@ const statusLabels = { active: '持续迭代', completed: '已经完成', archiv
     border-radius: 50%;
     color: var(--canvas);
     background: var(--ink);
-    font-family: 'Geist Mono', ui-monospace, monospace;
+    font-family: var(--font-sans);
     font-size: 0.76rem;
   }
 
@@ -147,7 +146,6 @@ const statusLabels = { active: '持续迭代', completed: '已经完成', archiv
   .prose :global(h2) {
     margin: 2.5em 0 0.7em;
     font-size: 1.8rem;
-    letter-spacing: -0.035em;
   }
 
   .prose :global(h2:first-child) {

@@ -80,7 +80,6 @@ const readingTime = estimateReadingTime(article.body ?? '');
   .article-hero h1 {
     margin: 0;
     font-size: clamp(3rem, 8vw, 6.4rem);
-    letter-spacing: -0.07em;
     line-height: 1;
   }
 
@@ -120,7 +119,6 @@ const readingTime = estimateReadingTime(article.body ?? '');
   .prose :global(h2),
   .prose :global(h3) {
     scroll-margin-top: 100px;
-    letter-spacing: -0.035em;
     line-height: 1.25;
   }
 
@@ -148,7 +146,7 @@ const readingTime = estimateReadingTime(article.body ?? '');
     border: 1px solid var(--border);
     border-radius: 5px;
     background: var(--surface-soft);
-    font-family: 'Geist Mono', ui-monospace, monospace;
+    font-family: var(--font-sans);
     font-size: 0.86em;
   }
 
@@ -187,7 +185,7 @@ const readingTime = estimateReadingTime(article.body ?? '');
     border-top: 1px solid var(--border);
   }
 
-  .related h2 { margin: 0 0 28px; font-size: 2.3rem; letter-spacing: -0.05em; }
+  .related h2 { margin: 0 0 28px; font-size: 2.3rem; }
   .related-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
   .comments-slot { max-width: var(--prose); padding-bottom: 100px; }
 
