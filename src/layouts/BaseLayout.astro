@@ -43,7 +43,12 @@ const socialImage = image ? new URL(image, Astro.site) : undefined;
     <title>{pageTitle}</title>
     <script is:inline>
       (() => {
-        const stored = localStorage.getItem('cosmic-theme');
+        let stored = null;
+        try {
+          stored = localStorage.getItem('cosmic-theme');
+        } catch {
+          stored = null;
+        }
         const theme = ['observatory', 'nebula', 'terminal'].includes(stored)
           ? stored
           : 'observatory';

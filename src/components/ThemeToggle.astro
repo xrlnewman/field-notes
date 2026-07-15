@@ -1,5 +1,5 @@
 ---
-import { cosmicThemes, DEFAULT_COSMIC_THEME } from '../lib/cosmic-theme';
+import { cosmicThemes } from '../lib/cosmic-theme';
 ---
 
 <div class="theme-toggle" role="group" aria-label="星空主题" data-theme-toggle>
@@ -8,7 +8,7 @@ import { cosmicThemes, DEFAULT_COSMIC_THEME } from '../lib/cosmic-theme';
       <button
         type="button"
         aria-label={theme.label}
-        aria-pressed={theme.id === DEFAULT_COSMIC_THEME ? 'true' : 'false'}
+        aria-pressed="false"
         data-theme={theme.id}
         title={theme.description}
       >
@@ -17,6 +17,16 @@ import { cosmicThemes, DEFAULT_COSMIC_THEME } from '../lib/cosmic-theme';
     ))
   }
 </div>
+
+<script is:inline>
+  (() => {
+    const toggle = document.currentScript?.previousElementSibling;
+    const theme = document.documentElement.dataset.theme;
+    toggle?.querySelectorAll('button[data-theme]').forEach((button) => {
+      button.setAttribute('aria-pressed', String(button.getAttribute('data-theme') === theme));
+    });
+  })();
+</script>
 
 <script>
   import {
@@ -41,7 +51,11 @@ import { cosmicThemes, DEFAULT_COSMIC_THEME } from '../lib/cosmic-theme';
       const theme = resolveCosmicTheme(button.dataset.theme);
       document.documentElement.dataset.theme = theme;
       document.documentElement.style.colorScheme = 'dark';
-      localStorage.setItem(COSMIC_THEME_STORAGE_KEY, theme);
+      try {
+        localStorage.setItem(COSMIC_THEME_STORAGE_KEY, theme);
+      } catch {
+        // 存储不可用时仍保留当前页面主题。
+      }
       updateButtons(theme);
       document.dispatchEvent(new CustomEvent('cosmic-theme-change', { detail: { theme } }));
     });
@@ -69,7 +83,9 @@ import { cosmicThemes, DEFAULT_COSMIC_THEME } from '../lib/cosmic-theme';
     cursor: pointer;
   }
 
-  .theme-toggle button[aria-pressed='true'] {
+  :global(:root[data-theme='observatory']) .theme-toggle button[data-theme='observatory'],
+  :global(:root[data-theme='nebula']) .theme-toggle button[data-theme='nebula'],
+  :global(:root[data-theme='terminal']) .theme-toggle button[data-theme='terminal'] {
     color: var(--canvas);
     background: var(--accent);
   }

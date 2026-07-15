@@ -44,6 +44,26 @@ describe('cosmic theme startup and controls', () => {
     expect(layout).toContain("document.documentElement.style.colorScheme = 'dark';");
   });
 
+  it('falls back to the default theme when reading storage throws', () => {
+    const layout = readText('src/layouts/BaseLayout.astro');
+    const startupScript = layout.match(/<script is:inline>\s*([\s\S]*?)\s*<\/script>/)?.[1];
+    const root = {
+      dataset: {} as Record<string, string>,
+      style: {} as Record<string, string>,
+    };
+    const storage = {
+      getItem: () => {
+        throw new Error('storage unavailable');
+      },
+    };
+
+    expect(startupScript).toBeDefined();
+    const runStartup = Function('localStorage', 'document', startupScript ?? '');
+    expect(() => runStartup(storage, { documentElement: root })).not.toThrow();
+    expect(root.dataset.theme).toBe('observatory');
+    expect(root.style.colorScheme).toBe('dark');
+  });
+
   it('renders one accessible button for each cosmic theme', () => {
     const toggle = readText('src/components/ThemeToggle.astro');
 
@@ -53,5 +73,30 @@ describe('cosmic theme startup and controls', () => {
     expect(toggle).toContain('type="button"');
     expect(toggle).toContain('aria-pressed');
     expect(toggle).toContain('data-theme={theme.id}');
+  });
+
+  it('selects and synchronizes the stored theme before first paint', () => {
+    const toggle = readText('src/components/ThemeToggle.astro');
+    const inlineSync = toggle.indexOf('<script is:inline>');
+    const interactiveScript = toggle.indexOf('<script>', inlineSync + 1);
+
+    expect(toggle).not.toContain('DEFAULT_COSMIC_THEME');
+    expect(toggle).toContain('aria-pressed="false"');
+    expect(inlineSync).toBeGreaterThan(toggle.indexOf('</div>'));
+    expect(interactiveScript).toBeGreaterThan(inlineSync);
+    expect(toggle).toContain('document.currentScript?.previousElementSibling');
+    for (const theme of cosmicThemes) {
+      expect(toggle).toContain(
+        `:global(:root[data-theme='${theme.id}']) .theme-toggle button[data-theme='${theme.id}']`,
+      );
+    }
+  });
+
+  it('updates controls and emits the theme event when writing storage throws', () => {
+    const toggle = readText('src/components/ThemeToggle.astro');
+
+    expect(toggle).toMatch(
+      /try\s*{\s*localStorage\.setItem\(COSMIC_THEME_STORAGE_KEY, theme\);\s*}\s*catch\s*{[^}]*}\s*updateButtons\(theme\);\s*document\.dispatchEvent/s,
+    );
   });
 });
