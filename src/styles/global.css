@@ -1,8 +1,9 @@
 :root {
   color-scheme: dark;
   --content: 1200px;
+  --content-narrow: 960px;
   --prose: 760px;
-  --header-height: 72px;
+  --header-height: 68px;
   --radius-sm: 10px;
   --radius-md: 14px;
   --radius-lg: 18px;
@@ -112,6 +113,18 @@ body {
   line-height: 1.75;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+p,
+li {
+  text-wrap: pretty;
 }
 
 .cosmic-backdrop,

@@ -11,7 +11,7 @@
     "build": "astro build && pagefind --site dist",
     "preview": "astro preview",
     "check": "astro check",
-    "test": "vitest run tests/content.test.ts tests/brand.test.ts tests/cosmic-theme.test.ts tests/cosmic-interactions.test.ts tests/starfield.test.ts tests/projects.test.ts tests/giscus.test.ts tests/showcase.test.ts tests/showcase-database-security.test.ts tests/showcase-toolkit-bridge.test.ts tests/showcase-inventory-install.test.ts tests/showcase-web-security.test.ts tests/showcase-runtime.test.ts",
+    "test": "vitest run tests/content.test.ts tests/brand.test.ts tests/layout-contract.test.ts tests/cosmic-theme.test.ts tests/cosmic-interactions.test.ts tests/starfield.test.ts tests/projects.test.ts tests/giscus.test.ts tests/showcase.test.ts tests/showcase-database-security.test.ts tests/showcase-toolkit-bridge.test.ts tests/showcase-inventory-install.test.ts tests/showcase-web-security.test.ts tests/showcase-runtime.test.ts",
     "test:build": "npm run build && vitest run tests/build-smoke.test.ts",
     "verify": "npm test && npm run check && npm run test:build"
   },
