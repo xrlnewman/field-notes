@@ -5,19 +5,21 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 <BaseLayout title="留言板" description="讨论文章、交换想法，或者留下你正在做的项目。">
   <div class="container guestbook-page" data-pagefind-body>
-    <header>
-      <p class="eyebrow">GLOBAL GUESTBOOK</p>
-      <h1>
-        <span class="guestbook-title-line">登录 GitHub，</span>
-        <span class="guestbook-title-line">留下消息。</span>
-      </h1>
-      <p>可以讨论文章、分享项目，也可以只是打个招呼。登录后直接在本页留言和回复。</p>
-    </header>
+    <div class="guestbook-intro">
+      <header>
+        <p class="eyebrow">GLOBAL GUESTBOOK</p>
+        <h1>
+          <span class="guestbook-title-line">登录 GitHub，</span>
+          <span class="guestbook-title-line">留下消息。</span>
+        </h1>
+        <p>可以讨论文章、分享项目，也可以只是打个招呼。登录后直接在本页留言和回复。</p>
+      </header>
 
-    <div class="guestbook-rules">
-      <span>01 / 尊重不同观点</span>
-      <span>02 / 不发布隐私信息</span>
-      <span>03 / 广告与垃圾链接会被删除</span>
+      <div class="guestbook-rules">
+        <span>01 / 尊重不同观点</span>
+        <span>02 / 不发布隐私信息</span>
+        <span>03 / 广告与垃圾链接会被删除</span>
+      </div>
     </div>
 
     <GiscusComments mapping="specific" term="global-guestbook" title="全局留言" />
@@ -25,12 +27,22 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 </BaseLayout>
 
 <style>
-  .guestbook-page { max-width: 900px; padding-block: clamp(72px, 10vw, 128px) 120px; }
-  header h1 { max-width: 820px; margin: 0; font-size: clamp(3.4rem, 9vw, 7rem); line-height: 0.96; }
+  .guestbook-page {
+    max-width: var(--content-narrow);
+    display: grid;
+    grid-template-columns: minmax(240px, 4fr) minmax(0, 8fr);
+    gap: clamp(40px, 6vw, 72px);
+    align-items: start;
+    padding-block: clamp(72px, 9vw, 104px) 96px;
+  }
+  .guestbook-page header h1 { margin: 0; font-size: clamp(3rem, 5vw, 4rem); line-height: 1.02; }
   .guestbook-title-line { display: block; }
-  header > p:last-child { max-width: 650px; margin: 24px 0 0; color: var(--muted); font-size: 1.12rem; }
-  .guestbook-rules { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-block: 54px 80px; }
+  .guestbook-page header > p:last-child { margin: 24px 0 0; color: var(--muted); font-size: 1.12rem; }
+  .guestbook-rules { display: grid; grid-template-columns: 1fr; gap: 14px; margin-top: 36px; }
   .guestbook-rules span { padding-top: 13px; border-top: 1px solid var(--border); color: var(--muted); font-family: var(--font-sans); font-size: 0.72rem; }
-  @media (max-width: 680px) { .guestbook-rules { grid-template-columns: 1fr; } }
+  @media (max-width: 760px) {
+    .guestbook-page { grid-template-columns: 1fr; }
+    .guestbook-page header h1 { font-size: clamp(2.5rem, 10vw, 2.75rem); }
+  }
 </style>
 

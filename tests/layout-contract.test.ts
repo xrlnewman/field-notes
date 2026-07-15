@@ -41,4 +41,37 @@ describe('editorial cosmic layout', () => {
     expect(page).toContain('grid-template-columns: minmax(0, 1fr) auto;');
     expect(gallery).toContain('grid-template-columns: repeat(2, minmax(0, 1fr));');
   });
+
+  it('uses a restrained split project hero and prose-aligned comments', () => {
+    const layout = read('src/layouts/ProjectLayout.astro');
+
+    expect(layout).toContain('grid-template-columns: minmax(0, 8fr) minmax(280px, 4fr);');
+    expect(layout).toContain('font-size: clamp(3.25rem, 6vw, 4.5rem);');
+    expect(layout).toContain('max-width: var(--prose);');
+    expect(layout).toContain('<GiscusComments mapping="pathname" />');
+  });
+
+  it('caps the project detail title at 44px on narrow screens', () => {
+    const layout = read('src/layouts/ProjectLayout.astro');
+    const mobile = layout.slice(layout.indexOf('@media (max-width: 760px) {'));
+
+    expect(mobile).toContain('font-size: clamp(2.5rem, 10vw, 2.75rem);');
+  });
+
+  it('integrates the guestbook explanation and GitHub discussion in one split layout', () => {
+    const guestbook = read('src/pages/guestbook.astro');
+    const comments = read('src/components/GiscusComments.astro');
+
+    expect(guestbook).toContain('grid-template-columns: minmax(240px, 4fr) minmax(0, 8fr);');
+    expect(guestbook).toContain('font-size: clamp(3rem, 5vw, 4rem);');
+    expect(guestbook).toContain('mapping="specific" term="global-guestbook"');
+    expect(comments).toContain('登录 GitHub 后即可参与');
+  });
+
+  it('caps the guestbook title at 44px on narrow screens', () => {
+    const guestbook = read('src/pages/guestbook.astro');
+    const mobile = guestbook.slice(guestbook.indexOf('@media (max-width: 760px) {'));
+
+    expect(mobile).toContain('font-size: clamp(2.5rem, 10vw, 2.75rem);');
+  });
 });
