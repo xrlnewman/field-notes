@@ -146,6 +146,25 @@ describe('project publishing rules', () => {
     },
   );
 
+  it.each(['linli-community', 'skyboom-corporate'])(
+    '%s publishes five existing real screenshots',
+    (slug) => {
+      const frontmatter = readProjectFrontmatter(slug);
+      const screenshots = frontmatter.screenshots as Array<{
+        src: string;
+        width: number;
+        height: number;
+      }>;
+
+      expect(screenshots).toHaveLength(5);
+      for (const screenshot of screenshots) {
+        expect(existsSync(`public${screenshot.src}`), screenshot.src).toBe(true);
+        expect(screenshot.width).toBeGreaterThan(0);
+        expect(screenshot.height).toBeGreaterThan(0);
+      }
+    },
+  );
+
   it('pins the exact nine public repositories to an auditable root snapshot', () => {
     const expected = [
       ['linli-admin', '3d056d8'],

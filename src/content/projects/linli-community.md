@@ -23,6 +23,42 @@ repositories:
     description: 为小程序和后台管理端提供服务的后端 API。
     tech: [Laravel 12, PHP 8.3, MySQL, Redis]
     url: https://github.com/xrlnewman/linli-server
+screenshots:
+  - src: /images/projects/linli-community/home-mobile.png
+    alt: 邻里社区小程序首页的社区团购与便民服务入口
+    title: 居民端首页
+    caption: 聚合社区团购、同城跑腿和搭子服务，让居民从一个移动入口发现附近服务。
+    viewport: mobile
+    width: 390
+    height: 844
+  - src: /images/projects/linli-community/groupbuy-detail-mobile.png
+    alt: 邻里社区小程序的社区团购商品详情页
+    title: 团购详情
+    caption: 在移动端集中呈现团购商品、价格与购买信息，承接居民从浏览到下单的决策。
+    viewport: mobile
+    width: 390
+    height: 844
+  - src: /images/projects/linli-community/leader-dashboard-mobile.png
+    alt: 邻里社区团长工作台的数据概览页面
+    title: 团长工作台
+    caption: 汇总订单、销售与佣金等经营指标，帮助团长掌握社区团购进度。
+    viewport: desktop
+    width: 988
+    height: 557
+  - src: /images/projects/linli-community/products-admin.png
+    alt: 邻里社区运营后台的商品管理列表
+    title: 商品管理
+    caption: 支持运营人员集中查看和维护社区团购商品，衔接居民端的商品供给。
+    viewport: desktop
+    width: 1264
+    height: 569
+  - src: /images/projects/linli-community/orders-admin.png
+    alt: 邻里社区运营后台包含真实业务数据的订单管理列表
+    title: 订单管理
+    caption: 通过有数据的订单列表展示运营筛选、履约跟进与订单状态管理能力。
+    viewport: desktop
+    width: 1500
+    height: 980
 featured: true
 draft: false
 ---
