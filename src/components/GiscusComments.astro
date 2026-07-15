@@ -1,7 +1,6 @@
 ---
 import {
-  defaultGiscusConfig,
-  readGiscusConfig,
+  resolveGiscusConfig,
   resolveGiscusTheme,
 } from '../lib/giscus';
 
@@ -12,7 +11,7 @@ interface Props {
 }
 
 const { mapping, term, title = '评论与回复' } = Astro.props;
-const config = readGiscusConfig(import.meta.env) ?? defaultGiscusConfig;
+const config = resolveGiscusConfig(import.meta.env);
 ---
 
 <section
@@ -148,12 +147,12 @@ const config = readGiscusConfig(import.meta.env) ?? defaultGiscusConfig;
   }
 
   .giscus-loading,
-  .giscus-error {
+  :global(.giscus-error) {
     margin: 0;
     color: var(--muted);
   }
 
-  .giscus-retry {
+  :global(.giscus-retry) {
     min-height: 44px;
     margin-top: 16px;
     padding: 0 18px;
@@ -164,7 +163,7 @@ const config = readGiscusConfig(import.meta.env) ?? defaultGiscusConfig;
     cursor: pointer;
   }
 
-  .giscus-retry:focus-visible {
+  :global(.giscus-retry:focus-visible) {
     outline: 2px solid var(--accent);
     outline-offset: 3px;
   }

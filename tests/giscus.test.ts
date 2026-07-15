@@ -9,6 +9,7 @@ describe('giscus configuration', () => {
     const {
       defaultGiscusConfig,
       readGiscusConfig,
+      resolveGiscusConfig,
       resolveGiscusTheme,
     } = await import('../src/lib/giscus');
 
@@ -30,6 +31,10 @@ describe('giscus configuration', () => {
       category: 'Comments',
       categoryId: 'DIC_1',
     });
+    expect(resolveGiscusConfig({})).toEqual(defaultGiscusConfig);
+    expect(() => resolveGiscusConfig({
+      PUBLIC_GISCUS_REPO: 'staging/repo',
+    })).toThrow('Giscus 环境变量必须四项同时配置且格式正确');
     expect(resolveGiscusTheme('observatory')).toBe('transparent_dark');
     expect(resolveGiscusTheme('nebula')).toBe('dark');
     expect(resolveGiscusTheme('terminal')).toBe('dark_high_contrast');

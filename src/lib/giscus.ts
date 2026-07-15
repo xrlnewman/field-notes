@@ -34,6 +34,26 @@ export function readGiscusConfig(environment: GiscusEnvironment): GiscusConfig |
   return { repo, repoId, category, categoryId };
 }
 
+export function resolveGiscusConfig(environment: GiscusEnvironment): GiscusConfig {
+  const overrides = [
+    environment.PUBLIC_GISCUS_REPO,
+    environment.PUBLIC_GISCUS_REPO_ID,
+    environment.PUBLIC_GISCUS_CATEGORY,
+    environment.PUBLIC_GISCUS_CATEGORY_ID,
+  ];
+
+  if (overrides.every((value) => value === undefined)) {
+    return defaultGiscusConfig;
+  }
+
+  const config = readGiscusConfig(environment);
+  if (!config) {
+    throw new Error('Giscus 环境变量必须四项同时配置且格式正确');
+  }
+
+  return config;
+}
+
 export function resolveGiscusTheme(theme: unknown): GiscusTheme {
   if (theme === 'nebula') return 'dark';
   if (theme === 'terminal') return 'dark_high_contrast';
