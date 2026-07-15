@@ -253,7 +253,7 @@ git commit -m "feat(gallery): 增加项目截图浏览与大图查看"
 
 **Interfaces:**
 - Consumes: Task 1 的 `screenshots` 内容模型。
-- Produces: 两个项目各五张真实截图，邻里社区使用有数据的后台商品页作为列表封面。
+- Produces: 两个项目各五张真实截图，邻里社区使用有数据的后台订单页作为列表封面。
 
 - [ ] **Step 1: 写失败测试**
 
@@ -294,7 +294,7 @@ Copy-Item (Join-Path $workspace 'linli-mp\docs\screenshots\mp-04-groupbuy-detail
 Copy-Item (Join-Path $workspace 'linli-mp\docs\screenshots\mp-leader-01-dashboard.png') public\images\projects\linli-community\leader-dashboard-mobile.png
 Copy-Item (Join-Path $workspace 'linli-admin\docs\screenshots\admin-06-products.png') public\images\projects\linli-community\products-admin.png
 Copy-Item (Join-Path $workspace 'linli-admin\docs\screenshots\admin-08-orders.png') public\images\projects\linli-community\orders-admin.png
-Copy-Item (Join-Path $workspace 'linli-admin\docs\screenshots\admin-06-products.png') public\images\projects\linli-community.png -Force
+Copy-Item (Join-Path $workspace 'linli-admin\docs\screenshots\admin-08-orders.png') public\images\projects\linli-community.png -Force
 Copy-Item public\images\projects\skyboom-corporate.png public\images\projects\skyboom-corporate\home-desktop.png
 Copy-Item (Join-Path $workspace 'skyboom-web\docs\screenshots\qa-02-products-zh-desktop.png') public\images\projects\skyboom-corporate\products-desktop.png
 Copy-Item (Join-Path $workspace 'skyboom-web\docs\screenshots\qa-10-about-zh-desktop.png') public\images\projects\skyboom-corporate\about-desktop.png

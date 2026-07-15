@@ -31,7 +31,7 @@
 4. 后台商品管理。
 5. 后台订单管理。
 
-已有 `linli-mp/docs/screenshots` 与 `linli-admin/docs/screenshots` 中的真实验收截图直接复用，项目卡片封面改为有真实数据的后台商品页。
+已有 `linli-mp/docs/screenshots` 与 `linli-admin/docs/screenshots` 中的真实验收截图直接复用，项目卡片封面改为有真实业务数据的后台订单页。
 
 ### 多商户商城
 
