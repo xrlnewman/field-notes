@@ -24,30 +24,45 @@ describe('personal brand configuration', () => {
     expect(siteConfig.social.email).toBe('');
   });
 
-  it('uses the warm studio catalog visual contract', () => {
+  it('uses the three-theme cosmic visual contract with local Chinese-ready fonts', () => {
+    const packageJson = JSON.parse(readText('package.json')) as {
+      dependencies?: Record<string, string>;
+    };
     const globalStyles = readText('src/styles/global.css');
-    const homePage = readText('src/pages/index.astro');
-    const projectsPage = readText('src/pages/projects/index.astro');
-    const projectCard = readText('src/components/ProjectCard.astro');
+    const layout = readText('src/layouts/BaseLayout.astro');
     const header = readText('src/components/Header.astro');
-    const searchPanel = readText('src/components/SearchPanel.astro');
+    const footer = readText('src/components/Footer.astro');
+    const styledSources = [globalStyles, header, footer].join('\n');
+    const themeTokens = (theme: string) =>
+      globalStyles.match(new RegExp(`\\[data-theme='${theme}'\\]\\s*\\{([^}]*)\\}`))?.[1];
 
-    expect(globalStyles).toContain('--canvas: #f5f0e7');
-    expect(globalStyles).toContain('--accent: #b63b17');
-    expect(globalStyles).toContain('--secondary: #167c75');
-    expect(globalStyles).toContain('--focus-ring: #0b6b5a');
-    expect(globalStyles).toContain('--focus-ring: #63d8c2');
+    expect(packageJson.dependencies).toMatchObject({
+      '@fontsource-variable/inter': '5.2.8',
+      '@fontsource-variable/noto-sans-sc': '5.2.10',
+    });
+    expect(layout).toContain("import '@fontsource-variable/inter/wght.css';");
+    expect(layout).toContain("import '@fontsource-variable/noto-sans-sc/wght.css';");
+    expect(globalStyles).toContain(
+      "font-family: 'Inter Variable', 'Noto Sans SC Variable', 'PingFang SC', 'Microsoft YaHei', sans-serif;",
+    );
+    expect(globalStyles).toContain(":root,\n[data-theme='observatory'] {");
+
+    expect(themeTokens('observatory')).toContain('--space-0: #050816');
+    expect(themeTokens('observatory')).toContain('--ink: #eef4ff');
+    expect(themeTokens('observatory')).toContain('--accent: #8fb7ff');
+    expect(themeTokens('nebula')).toContain('--space-0: #090412');
+    expect(themeTokens('nebula')).toContain('--ink: #fff1ff');
+    expect(themeTokens('nebula')).toContain('--accent: #e879f9');
+    expect(themeTokens('terminal')).toContain('--space-0: #020806');
+    expect(themeTokens('terminal')).toContain('--ink: #d8ffe9');
+    expect(themeTokens('terminal')).toContain('--accent: #4dff9b');
+
+    expect(styledSources).not.toMatch(/font-family:\s*['"]?Geist/);
+    expect(styledSources).not.toMatch(/font-weight:\s*(?:560|620|650|680|720)\b/);
+    expect(globalStyles).toContain(':where(h1, h2, h3, h4, h5, h6) {\n  letter-spacing: normal !important;');
     expect(globalStyles).toContain(':focus-visible {\n  outline: 3px solid var(--focus-ring);');
-    expect(globalStyles).toContain('color: var(--canvas);\n  background: var(--ink);');
-    expect(homePage).toContain('class="hero-studio"');
-    expect(homePage).toContain('projectCategories.length');
-    expect(homePage).toContain('data-project-count');
-    expect(projectsPage).toContain('data-project-catalog');
-    expect(projectsPage).toContain('level="h1"');
-    expect(projectCard).toContain('查看详情');
-    expect(projectCard).toContain('源码 ↗');
-    expect(header).toContain('class="brand-copy"');
-    expect(searchPanel).toContain('min-width: 44px;');
-    expect(searchPanel).toContain('min-height: 44px;');
+    expect(header).toContain('<ThemeToggle />');
+    expect(header).toContain('backdrop-filter: blur(');
+    expect(footer).toContain('backdrop-filter: blur(');
   });
 });
