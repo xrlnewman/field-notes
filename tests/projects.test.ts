@@ -96,6 +96,38 @@ describe('project publishing rules', () => {
       expect(projectSchema.safeParse(frontmatter).success).toBe(true);
     },
   );
+
+  it('pins the exact nine public repositories to an auditable root snapshot', () => {
+    const expected = [
+      ['linli-admin', '3d056d8'],
+      ['linli-mp', '318421a'],
+      ['linli-server', '693e779'],
+      ['mall-admin', 'f87f004'],
+      ['mall-h5', 'ebfffbf'],
+      ['mall-system', '1020d07'],
+      ['skyboom-admin', '47c717b'],
+      ['skyboom-server', 'cb01d5e'],
+      ['skyboom-web', 'b006d02'],
+    ] as const;
+    const actualUrls = ['multi-merchant-mall', 'linli-community', 'skyboom-corporate']
+      .flatMap((slug) => {
+        const frontmatter = readProjectFrontmatter(slug);
+        return (frontmatter.repositories as Array<{ url: string }>).map(({ url }) => url);
+      })
+      .toSorted();
+    const expectedUrls = expected
+      .map(([repository]) => `https://github.com/xrlnewman/${repository}`)
+      .toSorted();
+    const audit = readOptional('docs/public-website-repositories-audit.md');
+
+    expect(actualUrls).toEqual(expectedUrls);
+    for (const [repository, commit] of expected) {
+      expect(audit).toContain(`https://github.com/xrlnewman/${repository}`);
+      expect(audit).toContain(commit);
+    }
+    expect(audit).toContain('无父提交的源码快照');
+    expect(audit).toContain('private=false');
+  });
 });
 
 describe('project category helpers', () => {
