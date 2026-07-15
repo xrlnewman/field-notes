@@ -2,6 +2,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { extname, join } from 'node:path';
 
 import { describe, expect, it } from 'vitest';
+import { parse as parseYaml } from 'yaml';
 
 const publicProjects = [
   {
@@ -66,6 +67,22 @@ function listHtmlFiles(root: string): string[] {
   });
 }
 
+function readProjectFrontmatter(slug: string): Record<string, unknown> {
+  const markdown = readFileSync(`src/content/projects/${slug}.md`, 'utf8');
+  const match = markdown.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+
+  if (!match?.[1]) throw new Error(`${slug} 缺少 YAML frontmatter`);
+  return parseYaml(match[1]) as Record<string, unknown>;
+}
+
+function expectValidPng(path: string, label: string) {
+  const bytes = readFileSync(path);
+
+  expect([...bytes.subarray(0, 8)], `${label} must be a PNG`).toEqual(pngSignature);
+  expect(bytes.readUInt32BE(16), `${label} width`).toBeGreaterThan(0);
+  expect(bytes.readUInt32BE(20), `${label} height`).toBeGreaterThan(0);
+}
+
 describe('static site build', () => {
   it('builds the home and 404 pages with three themes and the free promise', () => {
     expect(existsSync('dist/index.html')).toBe(true);
@@ -101,15 +118,25 @@ describe('static site build', () => {
 
       expect(existsSync(detailPath), detailPath).toBe(true);
       expect(existsSync(`dist/images/projects/${cover}`), cover).toBe(true);
-      const coverBytes = readFileSync(`dist/images/projects/${cover}`);
-      expect([...coverBytes.subarray(0, 8)], `${cover} must be a PNG`).toEqual(pngSignature);
-      expect(coverBytes.readUInt32BE(16), `${cover} width`).toBe(1440);
-      expect(coverBytes.readUInt32BE(20), `${cover} height`).toBe(900);
+      expectValidPng(`dist/images/projects/${cover}`, cover);
       const detail = readFileSync(detailPath, 'utf8');
       expect(projects).toContain(title);
       expect(projects).toContain(`/images/projects/${cover}`);
       expect(detail).toContain('project-showcase');
       expect(detail).toContain(`/images/projects/${cover}`);
+      expect(detail).toContain('data-project-screenshots');
+      expect(detail).toContain('data-screenshot-dialog');
+      expect(detail.match(/data-screenshot-thumbnail/g)?.length ?? 0).toBeGreaterThanOrEqual(4);
+
+      const frontmatter = readProjectFrontmatter(slug);
+      const screenshots = frontmatter.screenshots as Array<{ src: string }>;
+      for (const screenshot of screenshots) {
+        const screenshotPath = join('dist', screenshot.src.replace(/^\//, ''));
+
+        expect(existsSync(screenshotPath), screenshot.src).toBe(true);
+        expectValidPng(screenshotPath, screenshot.src);
+        expect(detail).toContain(screenshot.src);
+      }
       repositories.forEach((repository) => expect(detail).toContain(repository));
     }
 

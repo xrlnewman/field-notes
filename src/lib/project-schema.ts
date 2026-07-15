@@ -59,6 +59,14 @@ export const projectSchema = z.object({
       message: '公开项目必须提供 GitHub 源码地址',
     });
   }
+
+  if (!project.screenshots) {
+    context.addIssue({
+      code: 'custom',
+      path: ['screenshots'],
+      message: '公开项目必须提供 4 到 6 张真实页面截图',
+    });
+  }
 });
 
 export type ProjectData = z.infer<typeof projectSchema>;

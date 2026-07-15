@@ -398,7 +398,18 @@ const initialProgress = `01 / ${String(screenshots.length).padStart(2, '0')}`;
     }
 
     .project-screenshots__thumbnails {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: none;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(132px, 44vw);
+      max-width: 100%;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      scroll-snap-type: x proximity;
+      overscroll-behavior-inline: contain;
+    }
+
+    .project-screenshots__thumbnail {
+      scroll-snap-align: start;
     }
 
     .project-screenshots__dialog-panel {

@@ -61,6 +61,15 @@ describe('published project content', () => {
     tech: ['Astro'],
     cover: '/images/projects/example.png',
     repoUrl: 'https://github.com/xrlnewman/example',
+    screenshots: Array.from({ length: 4 }, (_, index) => ({
+      src: `/images/projects/example/screen-${index + 1}.png`,
+      alt: `默认公开项目页面 ${index + 1}`,
+      title: `页面 ${index + 1}`,
+      caption: '用于验证内容模型默认值的合法截图元数据。',
+      viewport: 'desktop',
+      width: 1440,
+      height: 900,
+    })),
   };
 
   it('treats an omitted draft flag as production-visible after schema defaults', () => {

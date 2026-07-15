@@ -67,6 +67,20 @@ describe('editorial cosmic layout', () => {
     expect(mobile).toContain('font-size: clamp(2.5rem, 10vw, 2.75rem);');
   });
 
+  it('keeps screenshot galleries readable on desktop and mobile', () => {
+    const gallery = read('src/components/ProjectScreenshots.astro');
+    const mobile = gallery.slice(gallery.indexOf('@media (max-width: 760px) {'));
+
+    expect(gallery).toContain('grid-template-columns: minmax(220px, 4fr) minmax(0, 8fr);');
+    expect(gallery).toContain('max-width: 390px;');
+    expect(mobile).toMatch(/\.project-screenshots \{[^}]*grid-template-columns: 1fr;/);
+    expect(mobile).toMatch(/\.project-screenshots__thumbnails \{[^}]*grid-auto-flow: column;/);
+    expect(mobile).toMatch(/\.project-screenshots__thumbnails \{[^}]*grid-auto-columns: minmax\(132px, 44vw\);/);
+    expect(mobile).toMatch(/\.project-screenshots__thumbnails \{[^}]*overflow-x: auto;/);
+    expect(mobile).toMatch(/\.project-screenshots__thumbnails \{[^}]*scroll-snap-type: x proximity;/);
+    expect(mobile).toMatch(/\.project-screenshots__thumbnail \{[^}]*scroll-snap-align: start;/);
+  });
+
   it('integrates the guestbook explanation and GitHub discussion in one split layout', () => {
     const guestbook = read('src/pages/guestbook.astro');
     const comments = read('src/components/GiscusComments.astro');

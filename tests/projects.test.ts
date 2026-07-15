@@ -34,6 +34,13 @@ const screenshot = {
   height: 900,
 };
 
+function createScreenshots(count: number) {
+  return Array.from({ length: count }, (_, index) => ({
+    ...screenshot,
+    src: `/images/projects/example/screen-${index + 1}.png`,
+  }));
+}
+
 function readProjectFrontmatter(slug: string): Record<string, unknown> {
   const markdown = readFileSync(`src/content/projects/${slug}.md`, 'utf8');
   const match = markdown.match(/^---\r?\n([\s\S]*?)\r?\n---/);
@@ -68,28 +75,53 @@ describe('project publishing rules', () => {
       ...baseProject,
       cover: '/images/projects/example.png',
       repoUrl: 'https://github.com/xrlnewman/example',
+      screenshots: createScreenshots(4),
     });
     expect(result.success).toBe(true);
   });
 
-  it('accepts four to six typed project screenshots when provided', () => {
+  it('rejects a public project without screenshots while drafts may omit them', () => {
     const publicProject = {
       ...baseProject,
       cover: '/images/projects/example.png',
       repoUrl: 'https://github.com/xrlnewman/example',
     };
 
-    expect(projectSchema.safeParse(publicProject).success).toBe(true);
+    expect(projectSchema.safeParse(publicProject).success).toBe(false);
+    expect(projectSchema.safeParse({ ...publicProject, draft: true }).success).toBe(true);
+  });
+
+  it('accepts the four and six screenshot publishing boundaries', () => {
+    const publicProject = {
+      ...baseProject,
+      cover: '/images/projects/example.png',
+      repoUrl: 'https://github.com/xrlnewman/example',
+    };
+
     expect(projectSchema.safeParse({
       ...publicProject,
-      screenshots: Array.from({ length: 4 }, (_, index) => ({
-        ...screenshot,
-        src: `/images/projects/example/screen-${index + 1}.png`,
-      })),
+      screenshots: createScreenshots(4),
     }).success).toBe(true);
     expect(projectSchema.safeParse({
       ...publicProject,
-      screenshots: Array.from({ length: 7 }, () => screenshot),
+      screenshots: createScreenshots(6),
+    }).success).toBe(true);
+  });
+
+  it('rejects the three and seven screenshot publishing boundaries', () => {
+    const publicProject = {
+      ...baseProject,
+      cover: '/images/projects/example.png',
+      repoUrl: 'https://github.com/xrlnewman/example',
+    };
+
+    expect(projectSchema.safeParse({
+      ...publicProject,
+      screenshots: createScreenshots(3),
+    }).success).toBe(false);
+    expect(projectSchema.safeParse({
+      ...publicProject,
+      screenshots: createScreenshots(7),
     }).success).toBe(false);
   });
 
@@ -99,6 +131,7 @@ describe('project publishing rules', () => {
       ...baseProject,
       cover: '/images/projects/example.png',
       repoUrl: 'https://github.com/xrlnewman/example',
+      screenshots: createScreenshots(4),
     };
 
     expect(projectSchema.safeParse({
@@ -124,18 +157,21 @@ describe('project publishing rules', () => {
       ...baseProject,
       cover: '/images/projects/example.png',
       repoUrl: 'https://github.com/xrlnewman/example',
+      screenshots: createScreenshots(4),
       repositories: [validRepository],
     }).success).toBe(true);
     expect(projectSchema.safeParse({
       ...baseProject,
       cover: '/images/projects/example.png',
       repoUrl: 'https://github.com/xrlnewman/example',
+      screenshots: createScreenshots(4),
       repositories: [{ ...validRepository, url: 'http://github.com/xrlnewman/example-web' }],
     }).success).toBe(false);
     expect(projectSchema.safeParse({
       ...baseProject,
       cover: '/images/projects/example.png',
       repoUrl: 'https://github.com/xrlnewman/example',
+      screenshots: createScreenshots(4),
       repositories: [{ ...validRepository, url: 'https://example.com/example-web' }],
     }).success).toBe(false);
   });
