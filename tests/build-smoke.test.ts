@@ -6,6 +6,15 @@ import { parse as parseYaml } from 'yaml';
 
 const publicProjects = [
   {
+    slug: 'homeflow-platform',
+    title: 'HomeFlow 到家云服务平台',
+    cover: 'homeflow-platform/home-mobile.png',
+    repositories: [
+      'https://github.com/xrlnewman/homeflow-miniapp',
+      'https://github.com/xrlnewman/homeflow-admin',
+    ],
+  },
+  {
     slug: 'field-notes',
     title: '许汝林个人博客',
     cover: 'field-notes.png',
@@ -55,6 +64,7 @@ const obsoleteProjectSlugs = [
 ] as const;
 
 const pngSignature = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
+const jpegSignature = [0xff, 0xd8, 0xff];
 
 function listHtmlFiles(root: string): string[] {
   return readdirSync(root, { withFileTypes: true }).flatMap((entry) => {
@@ -75,12 +85,16 @@ function readProjectFrontmatter(slug: string): Record<string, unknown> {
   return parseYaml(match[1]) as Record<string, unknown>;
 }
 
-function expectValidPng(path: string, label: string) {
+function expectValidImage(path: string, label: string) {
   const bytes = readFileSync(path);
 
-  expect([...bytes.subarray(0, 8)], `${label} must be a PNG`).toEqual(pngSignature);
-  expect(bytes.readUInt32BE(16), `${label} width`).toBeGreaterThan(0);
-  expect(bytes.readUInt32BE(20), `${label} height`).toBeGreaterThan(0);
+  const isPng = [...bytes.subarray(0, 8)].every((value, index) => value === pngSignature[index]);
+  const isJpeg = jpegSignature.every((value, index) => bytes[index] === value);
+  expect(isPng || isJpeg, `${label} must be a PNG or JPEG`).toBe(true);
+  if (isPng) {
+    expect(bytes.readUInt32BE(16), `${label} width`).toBeGreaterThan(0);
+    expect(bytes.readUInt32BE(20), `${label} height`).toBeGreaterThan(0);
+  }
 }
 
 function countOpeningTagsWithAttribute(html: string, tag: string, attribute: string): number {
@@ -124,7 +138,7 @@ describe('static site build', () => {
     expect(home).toContain('https://field-notes-2fi.pages.dev');
   });
 
-  it('builds only the four public project details with their real covers and repositories', () => {
+  it('builds only the five public project details with their real covers and repositories', () => {
     expect(existsSync('dist/projects/index.html')).toBe(true);
 
     const projects = readFileSync('dist/projects/index.html', 'utf8');
@@ -141,7 +155,7 @@ describe('static site build', () => {
 
       expect(existsSync(detailPath), detailPath).toBe(true);
       expect(existsSync(`dist/images/projects/${cover}`), cover).toBe(true);
-      expectValidPng(`dist/images/projects/${cover}`, cover);
+      expectValidImage(`dist/images/projects/${cover}`, cover);
       const detail = readFileSync(detailPath, 'utf8');
       expect(projects).toContain(title);
       expect(projects).toContain(`/images/projects/${cover}`);
@@ -159,7 +173,7 @@ describe('static site build', () => {
         const screenshotPath = join('dist', screenshot.src.replace(/^\//, ''));
 
         expect(existsSync(screenshotPath), screenshot.src).toBe(true);
-        expectValidPng(screenshotPath, screenshot.src);
+        expectValidImage(screenshotPath, screenshot.src);
         expect(detail).toContain(screenshot.src);
       }
       repositories.forEach((repository) => expect(detail).toContain(repository));
@@ -170,8 +184,8 @@ describe('static site build', () => {
     });
   });
 
-  it('builds the expected 19 HTML pages', () => {
-    expect(listHtmlFiles('dist')).toHaveLength(19);
+  it('builds the expected 20 HTML pages', () => {
+    expect(listHtmlFiles('dist')).toHaveLength(20);
   });
 
   it('builds article details and tag indexes', () => {
@@ -221,7 +235,7 @@ describe('static site build', () => {
     expect(projects).toContain('五个可运行的网站产品');
     expect(projects).toContain('<h1');
     expect(projects.match(/data-project-filter=/g)).toHaveLength(5);
-    const filterCounts = [5, 1, 2, 1, 1];
+    const filterCounts = [5, 1, 1, 2, 1];
     ['全部', ...categories].forEach((category, index) => {
       const buttonStart = projects.indexOf(`data-project-filter="${category}"`);
       const filterButton = projects.slice(buttonStart, projects.indexOf('</button>', buttonStart));

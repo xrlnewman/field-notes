@@ -6,7 +6,7 @@ updatedAt: 2026-07-16
 status: active
 category: 社区服务
 tech: [uni-app, Vue 3, TypeScript, Go 1.25, Gin, MySQL 8.4, Redis 8, Docker Compose]
-cover: /images/projects/homeflow-platform/admin-dashboard.jpg
+cover: /images/projects/homeflow-platform/home-mobile.png
 repoUrl: https://github.com/xrlnewman/homeflow-admin
 repositories:
   - name: homeflow-miniapp
