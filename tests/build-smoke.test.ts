@@ -8,7 +8,7 @@ const publicProjects = [
   {
     slug: 'homeflow-platform',
     title: 'HomeFlow 到家云服务平台',
-    cover: 'homeflow-platform/admin-dashboard.jpg',
+    cover: 'homeflow-platform/admin-dashboard-v2.png',
     repositories: [
       'https://github.com/xrlnewman/homeflow-miniapp',
       'https://github.com/xrlnewman/homeflow-admin',
@@ -48,6 +48,15 @@ const publicProjects = [
       'https://github.com/xrlnewman/skyboom-web',
       'https://github.com/xrlnewman/skyboom-admin',
       'https://github.com/xrlnewman/skyboom-server',
+    ],
+  },
+  {
+    slug: 'storeflow-platform',
+    title: 'StoreFlow 门店预约与会员经营平台',
+    cover: 'storeflow-platform/admin-dashboard.png',
+    repositories: [
+      'https://github.com/xrlnewman/storeflow-miniapp',
+      'https://github.com/xrlnewman/storeflow-admin',
     ],
   },
 ] as const;
@@ -138,7 +147,7 @@ describe('static site build', () => {
     expect(home).toContain('https://field-notes-2fi.pages.dev');
   });
 
-  it('builds only the five public project details with their real covers and repositories', () => {
+  it('builds only the six public project details with their real covers and repositories', () => {
     expect(existsSync('dist/projects/index.html')).toBe(true);
 
     const projects = readFileSync('dist/projects/index.html', 'utf8');
@@ -184,8 +193,8 @@ describe('static site build', () => {
     });
   });
 
-  it('builds the expected 20 HTML pages', () => {
-    expect(listHtmlFiles('dist')).toHaveLength(20);
+  it('builds the expected 21 HTML pages', () => {
+    expect(listHtmlFiles('dist')).toHaveLength(21);
   });
 
   it('builds article details and tag indexes', () => {
@@ -208,7 +217,7 @@ describe('static site build', () => {
     expect(home).not.toContain('Field Notes');
   });
 
-  it('puts the four real project cards in the home product catalog', () => {
+  it('puts all real project cards in the home product catalog', () => {
     const home = readFileSync('dist/index.html', 'utf8');
 
     expect(home).toMatch(
@@ -225,17 +234,17 @@ describe('static site build', () => {
     }
   });
 
-  it('builds the five product category filters on the projects page', () => {
+  it('builds the six product category filters on the projects page', () => {
     const home = readFileSync('dist/index.html', 'utf8');
     const projects = readFileSync('dist/projects/index.html', 'utf8');
-    const categories = ['个人品牌', '电商平台', '社区服务', '企业官网'];
+    const categories = ['个人品牌', '电商平台', '社区服务', '企业官网', '门店经营'];
 
-    expect(home).toMatch(/data-project-count="5"[^>]*>5<\/strong>[\s\S]*?个网站产品/);
+    expect(home).toMatch(/data-project-count="6"[^>]*>6<\/strong>[\s\S]*?个网站产品/);
     expect(projects).toContain('data-project-catalog');
-    expect(projects).toContain('五个可运行的网站产品');
+    expect(projects).toContain('六个可运行的网站产品');
     expect(projects).toContain('<h1');
-    expect(projects.match(/data-project-filter=/g)).toHaveLength(5);
-    const filterCounts = [5, 1, 1, 2, 1];
+    expect(projects.match(/data-project-filter=/g)).toHaveLength(6);
+    const filterCounts = [6, 1, 1, 2, 1, 1];
     ['全部', ...categories].forEach((category, index) => {
       const buttonStart = projects.indexOf(`data-project-filter="${category}"`);
       const filterButton = projects.slice(buttonStart, projects.indexOf('</button>', buttonStart));

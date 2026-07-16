@@ -83,7 +83,7 @@ describe('published project content', () => {
     })).toThrow();
   });
 
-  it('publishes exactly the five website products', () => {
+  it('publishes exactly the six website products', () => {
     const projectIds = readdirSync('src/content/projects', { withFileTypes: true })
       .filter((entry) => entry.isFile() && ['.md', '.mdx'].includes(extname(entry.name)))
       .filter((entry) => {
@@ -102,6 +102,7 @@ describe('published project content', () => {
       'linli-community',
       'multi-merchant-mall',
       'skyboom-corporate',
+      'storeflow-platform',
     ]);
   });
 
