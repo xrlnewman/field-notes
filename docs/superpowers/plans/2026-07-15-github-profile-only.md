@@ -117,7 +117,7 @@ git commit -m "fix(profile): 恢复博客上一版个人信息布局"
 ### Task 3: 生成并更新 GitHub 专用头像
 
 **Files:**
-- Create: `E:/project/artifacts/github-profile/xu-rulin-github-avatar.png`
+- Create outside the repository: `artifacts/github-profile/xu-rulin-github-avatar.png`
 
 **Interfaces:**
 - Consumes: 设计规格中的头像方向。
