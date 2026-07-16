@@ -206,6 +206,7 @@ describe('project publishing rules', () => {
     ['multi-merchant-mall', 5],
     ['skyboom-corporate', 5],
     ['storeflow-platform', 4],
+    ['stockflow-platform', 4],
   ] as const)(
     '%s publishes its complete real screenshot set',
     (slug, count) => {
@@ -277,13 +278,14 @@ describe('project category helpers', () => {
       '社区服务',
       '企业官网',
       '门店经营',
+      '供应链管理',
     ]);
   });
 
   it('introduces the directory as a constellation of complete products', () => {
     const projectsPage = readFileSync('src/pages/projects/index.astro', 'utf8');
 
-      expect(projectsPage).toContain('六个可运行的网站产品');
+    expect(projectsPage).toContain('七个可运行的网站产品');
     expect(projectsPage).toContain('前台、运营后台与服务端之间的关联');
   });
 
@@ -306,6 +308,7 @@ describe('project category helpers', () => {
       { category: '社区服务', count: 0 },
       { category: '企业官网', count: 0 },
       { category: '门店经营', count: 0 },
+      { category: '供应链管理', count: 0 },
     ]);
   });
 

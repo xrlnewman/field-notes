@@ -18,9 +18,9 @@
 ### Task 1: 建立两个独立仓库骨架
 
 **Files:**
-- Create: `E:/project/stockflow-miniapp/package.json`, `src/`, `tests/`, `README.md`
-- Create: `E:/project/stockflow-admin/go.mod`, `server/`, `web/`, `README.md`
-- Test: `E:/project/stockflow-miniapp/tests/stockflow.test.ts`
+- Create: `stockflow-miniapp/package.json`, `src/`, `tests/`, `README.md`
+- Create: `stockflow-admin/go.mod`, `server/`, `web/`, `README.md`
+- Test: `stockflow-miniapp/tests/stockflow.test.ts`
 
 - [ ] **Step 1: 从 StoreFlow 已验证提交复制源码，排除 `.git`、`node_modules`、`dist` 和运行日志。**
 - [ ] **Step 2: 全量替换包名、README、标题、环境变量和仓库链接，确保源码中不再出现 StoreFlow/HomeFlow 产品文案。**
@@ -30,10 +30,10 @@
 ### Task 2: 实现 StockFlow API 与库存闭环
 
 **Files:**
-- Modify: `E:/project/stockflow-admin/server/internal/transport/httpapi/router.go`
-- Create: `E:/project/stockflow-admin/server/internal/app/inventory/service.go`
-- Create: `E:/project/stockflow-admin/server/tests/stockflow_test.go`
-- Modify: `E:/project/stockflow-admin/server/.env.example`, `README.md`
+- Modify: `stockflow-admin/server/internal/transport/httpapi/router.go`
+- Create: `stockflow-admin/server/internal/app/inventory/service.go`
+- Create: `stockflow-admin/server/tests/stockflow_test.go`
+- Modify: `stockflow-admin/server/.env.example`, `README.md`
 
 - [ ] **Step 1: 先写接口测试，覆盖 dashboard、warehouses、products、stock alerts、purchase receive、sales ship 和 movements。**
 - [ ] **Step 2: 实现内存演示服务与分页结构，真实数据库/Redis 适配保留在 platform 层；库存变更在服务层生成流水并做幂等检查。**
@@ -43,10 +43,10 @@
 ### Task 3: 实现小程序库存工作台
 
 **Files:**
-- Modify: `E:/project/stockflow-miniapp/src/styles/theme.scss`
-- Modify: `E:/project/stockflow-miniapp/src/api/client.ts`
-- Modify: `E:/project/stockflow-miniapp/src/pages/index/index.vue`, `src/pages/workbench/workbench.vue`, `src/pages/service/service.vue`
-- Create: `E:/project/stockflow-miniapp/tests/stockflow.test.ts`
+- Modify: `stockflow-miniapp/src/styles/theme.scss`
+- Modify: `stockflow-miniapp/src/api/client.ts`
+- Modify: `stockflow-miniapp/src/pages/index/index.vue`, `src/pages/workbench/workbench.vue`, `src/pages/service/service.vue`
+- Create: `stockflow-miniapp/tests/stockflow.test.ts`
 
 - [ ] **Step 1: 写颜色令牌、库存数字格式化、预警等级和演示数据测试。**
 - [ ] **Step 2: 将首页改为“今日库存 / 待入库 / 待发货 / 低库存”，加入商品搜索、仓库切换、扫码入库和销售出库入口。**
@@ -56,10 +56,10 @@
 ### Task 4: 实现运营后台与视觉系统
 
 **Files:**
-- Modify: `E:/project/stockflow-admin/web/src/App.vue`
-- Modify: `E:/project/stockflow-admin/web/src/styles.css`
-- Modify: `E:/project/stockflow-admin/web/src/domain/order-state.js`
-- Create: `E:/project/stockflow-admin/web/tests/stockflow.test.js`
+- Modify: `stockflow-admin/web/src/App.vue`
+- Modify: `stockflow-admin/web/src/styles.css`
+- Modify: `stockflow-admin/web/src/domain/order-state.js`
+- Create: `stockflow-admin/web/tests/stockflow.test.js`
 
 - [ ] **Step 1: 先写后台令牌、单据状态和 API envelope 测试。**
 - [ ] **Step 2: 将 dashboard、商品、仓库、采购、销售、低库存和流水页面替换为 StockFlow 业务文案。**
@@ -69,8 +69,8 @@
 ### Task 5: 公开仓库与博客项目页
 
 **Files:**
-- Create: `E:/project/field-notes/.worktrees/stockflow-product/public/images/projects/stockflow-platform/*.png`
-- Create: `E:/project/field-notes/.worktrees/stockflow-product/src/content/projects/stockflow-platform.md`
+- Create: `public/images/projects/stockflow-platform/*.png`
+- Create: `src/content/projects/stockflow-platform.md`
 - Modify: `src/lib/projects.ts`, `src/pages/projects/index.astro`, `tests/content.test.ts`, `tests/projects.test.ts`, `tests/build-smoke.test.ts`
 
 - [ ] **Step 1: 用真实可运行页面或生成的统一视觉素材制作后台、库存首页、商品列表、预警和流水截图，记录准确尺寸并检查不含密钥。**
