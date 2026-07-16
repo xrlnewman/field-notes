@@ -19,7 +19,7 @@
 ### Task 1: 初始化患者端仓库
 
 **Files:**
-- Create: `E:\project\careflow-miniapp\package.json`, `src\pages\*.vue`, `src\api\client.ts`, `tests\careflow.test.ts`, `README.md`
+- Create: `careflow-miniapp/package.json`, `src/pages/*.vue`, `src/api/client.ts`, `tests/careflow.test.ts`, `README.md`
 
 - [ ] 写失败测试：验证预约首页包含科室/医生号源，预约提交带幂等键，网络失败回退演示数据。
 - [ ] 实现首页科室、预约、候诊、健康档案 4 个页面；显示预约状态、候诊号和随访任务。
@@ -29,9 +29,9 @@
 ### Task 2: 初始化诊所后台与 API 仓库
 
 **Files:**
-- Create: `E:\project\careflow-admin\web\src\App.vue`, `web\src\styles.css`, `web\tests\careflow.test.js`
-- Create: `E:\project\careflow-admin\server\cmd\api\main.go`, `server\internal\app\clinic\`, `server\internal\transport\httpapi\`, `server\internal\platform\cache\`, `server\internal\config\`
-- Create: `E:\project\careflow-admin\deploy\docker-compose.yml`, `README.md`
+- Create: `careflow-admin/web/src/App.vue`, `web/src/styles.css`, `web/tests/careflow.test.js`
+- Create: `careflow-admin/server/cmd/api/main.go`, `server/internal/app/clinic/`, `server/internal/transport/httpapi/`, `server/internal/platform/cache/`, `server/internal/config/`
+- Create: `careflow-admin/deploy/docker-compose.yml`, `README.md`
 
 - [ ] 先写 Go handler/service 测试，覆盖 `/healthz`、`/api/v1/dashboard`、`/departments`、`/doctors`、`/appointments`、`/patients`、`/followups`。
 - [ ] 实现总览、预约队列、医生排班、患者档案、随访任务 5 个后台视图；使用热力/进度/状态组件呈现运营数据。

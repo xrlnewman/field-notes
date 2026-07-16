@@ -19,7 +19,7 @@
 ### Task 1: 初始化司机端仓库
 
 **Files:**
-- Create: `E:\project\fleetflow-miniapp\package.json`, `src\pages\*.vue`, `src\api\client.ts`, `tests\fleetflow.test.ts`, `README.md`
+- Create: `fleetflow-miniapp/package.json`, `src/pages/*.vue`, `src/api/client.ts`, `tests/fleetflow.test.ts`, `README.md`
 
 - [ ] 写失败测试：验证离线 dashboard 有 128 运单、待派车和准时率字段，派单请求带幂等键。
 - [ ] 实现最小 uni-app 页面：运单首页、运单池、运单详情、我的；接口失败回退到固定演示数据。
@@ -29,9 +29,9 @@
 ### Task 2: 初始化调度后台与 API 仓库
 
 **Files:**
-- Create: `E:\project\fleetflow-admin\web\src\App.vue`, `web\src\styles.css`, `web\tests\fleetflow.test.js`
-- Create: `E:\project\fleetflow-admin\server\cmd\api\main.go`, `server\internal\app\dispatch\`, `server\internal\transport\httpapi\`, `server\internal\platform\cache\`, `server\internal\config\`
-- Create: `E:\project\fleetflow-admin\deploy\docker-compose.yml`, `README.md`
+- Create: `fleetflow-admin/web/src/App.vue`, `web/src/styles.css`, `web/tests/fleetflow.test.js`
+- Create: `fleetflow-admin/server/cmd/api/main.go`, `server/internal/app/dispatch/`, `server/internal/transport/httpapi/`, `server/internal/platform/cache/`, `server/internal/config/`
+- Create: `fleetflow-admin/deploy/docker-compose.yml`, `README.md`
 
 - [ ] 先写 Go handler/service 测试，覆盖 `/healthz`、`/api/v1/dashboard`、`/shipments`、`/drivers`、`/exceptions`、`/settlements`。
 - [ ] 实现总览、运单调度、车辆司机、异常中心、对账 5 个后台视图；使用真实感 seed 数据和图表占位组件。
