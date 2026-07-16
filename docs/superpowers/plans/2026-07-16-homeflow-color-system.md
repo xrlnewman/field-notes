@@ -19,8 +19,8 @@
 ### Task 1: 小程序全局色彩令牌
 
 **Files:**
-- Modify: `E:/project/homeflow-miniapp/.worktrees/feature-homeflow/src/styles/theme.scss`
-- Test: `E:/project/homeflow-miniapp/.worktrees/feature-homeflow/tests/theme.test.ts`
+- Modify: `homeflow-miniapp/.worktrees/feature-homeflow/src/styles/theme.scss`
+- Test: `homeflow-miniapp/.worktrees/feature-homeflow/tests/theme.test.ts`
 
 **Interfaces:**
 - Produces CSS variables `--ink`, `--ink-soft`, `--muted`, `--brand`, `--brand-soft`, `--action`, `--action-dark`, `--success`, `--success-soft`, `--warning`, `--danger`, `--canvas`, `--card`, `--line` for all page styles.
@@ -81,12 +81,12 @@ git commit -m "refactor(theme): 建立 HomeFlow 多色彩令牌"
 ### Task 2: 小程序页面语义色替换
 
 **Files:**
-- Modify: `E:/project/homeflow-miniapp/.worktrees/feature-homeflow/src/pages/index/index.vue`
-- Modify: `E:/project/homeflow-miniapp/.worktrees/feature-homeflow/src/pages/booking/booking.vue`
-- Modify: `E:/project/homeflow-miniapp/.worktrees/feature-homeflow/src/pages/orders/orders.vue`
-- Modify: `E:/project/homeflow-miniapp/.worktrees/feature-homeflow/src/pages/workbench/workbench.vue`
-- Modify: `E:/project/homeflow-miniapp/.worktrees/feature-homeflow/src/pages/profile/profile.vue`
-- Test: `E:/project/homeflow-miniapp/.worktrees/feature-homeflow/tests/color-usage.test.ts`
+- Modify: `homeflow-miniapp/.worktrees/feature-homeflow/src/pages/index/index.vue`
+- Modify: `homeflow-miniapp/.worktrees/feature-homeflow/src/pages/booking/booking.vue`
+- Modify: `homeflow-miniapp/.worktrees/feature-homeflow/src/pages/orders/orders.vue`
+- Modify: `homeflow-miniapp/.worktrees/feature-homeflow/src/pages/workbench/workbench.vue`
+- Modify: `homeflow-miniapp/.worktrees/feature-homeflow/src/pages/profile/profile.vue`
+- Test: `homeflow-miniapp/.worktrees/feature-homeflow/tests/color-usage.test.ts`
 
 **Interfaces:** 页面继续消费 Task 1 的 CSS 变量，不新增组件参数或接口字段。
 
@@ -141,9 +141,8 @@ git commit -m "fix(ui): 统一 HomeFlow 小程序语义色"
 ### Task 3: 管理后台品牌、操作与图表配色
 
 **Files:**
-- Modify: `E:/project/homeflow-admin/.worktrees/feature-homeflow/web/src/styles.css`
-- Modify: `E:/project/homeflow-admin/.worktrees/feature-homeflow/web/src/App.vue`
-- Test: `E:/project/homeflow-admin/.worktrees/feature-homeflow/web/tests/color-usage.test.js`
+- Modify: `homeflow-admin/.worktrees/feature-homeflow/web/src/styles.css`
+- Test: `homeflow-admin/.worktrees/feature-homeflow/web/tests/color-usage.test.js`
 
 **Interfaces:** Reactivity、API 调用、后台登录状态和离线演示数据保持不变。
 
@@ -198,15 +197,19 @@ git commit -m "fix(web): 统一后台多色彩视觉系统"
 ### Task 4: 更新博客 HomeFlow 首页展示截图
 
 **Files:**
-- Create: `E:/project/field-notes/.worktrees/homeflow-color-next/public/images/projects/homeflow-platform/home-mobile-v4.png`
-- Modify: `E:/project/field-notes/.worktrees/homeflow-color-next/src/content/projects/homeflow-platform.md`
-- Test: `E:/project/field-notes/.worktrees/homeflow-color-next/tests/project-screenshots.test.ts`
+- Create: `field-notes/.worktrees/homeflow-color-next/public/images/projects/homeflow-platform/admin-dashboard-v2.png`
+- Create: `field-notes/.worktrees/homeflow-color-next/public/images/projects/homeflow-platform/home-mobile-v4.png`
+- Create: `field-notes/.worktrees/homeflow-color-next/public/images/projects/homeflow-platform/booking-mobile-v2.png`
+- Create: `field-notes/.worktrees/homeflow-color-next/public/images/projects/homeflow-platform/orders-mobile-v2.png`
+- Create: `field-notes/.worktrees/homeflow-color-next/public/images/projects/homeflow-platform/workbench-mobile-v2.png`
+- Modify: `field-notes/.worktrees/homeflow-color-next/src/content/projects/homeflow-platform.md`
+- Test: `field-notes/.worktrees/homeflow-color-next/tests/project-screenshots.test.ts`
 
 **Interfaces:** frontmatter 继续使用 `viewport`, `width`, `height`，只替换首页截图资源和尺寸。
 
 - [ ] **Step 1: Generate a palette-adjusted screenshot from `home-mobile-v3.png`**
 
-Use the existing screenshot as the edit source. Preserve every Chinese label, card layout and navigation item. Change only the visual tokens: deep petrol hero `#183B43`, warm orange action and price `#F08A5D`, light mint/sky/peach service tiles, warm-white canvas, and deep petrol active tab. Do not add a phone frame or second home indicator.
+Use the existing HomeFlow screenshots as edit sources. Preserve every Chinese label, card layout, data value and navigation item. Change only the visual tokens: deep petrol hero/sidebar `#183B43`, warm orange action and price `#F08A5D`, light mint/sky/peach service tiles, warm-white canvas, and deep petrol active tab. Do not add a phone frame or second home indicator.
 
 - [ ] **Step 2: Inspect dimensions and text**
 
@@ -229,7 +232,7 @@ Expected: 400+ tests pass, Astro reports 0 errors/warnings/hints, and 20 pages b
 - [ ] **Step 5: Commit, push and deploy**
 
 ```bash
-git add public/images/projects/homeflow-platform/home-mobile-v4.png src/content/projects/homeflow-platform.md
+git add public/images/projects/homeflow-platform/*-v2.png public/images/projects/homeflow-platform/home-mobile-v4.png src/content/projects/homeflow-platform.md
 git commit -m "fix(blog): 更新 HomeFlow 多色彩展示截图"
 git push origin feat/homeflow-color-next
 npx wrangler pages deploy dist --project-name field-notes --commit-dirty=true
@@ -238,9 +241,9 @@ npx wrangler pages deploy dist --project-name field-notes --commit-dirty=true
 ### Task 5: 交付检查
 
 **Files:**
-- Verify: `E:/project/field-notes/.worktrees/homeflow-color-next/src/content/projects/homeflow-platform.md`
-- Verify: `E:/project/homeflow-miniapp/.worktrees/feature-homeflow/src/styles/theme.scss`
-- Verify: `E:/project/homeflow-admin/.worktrees/feature-homeflow/web/src/styles.css`
+- Verify: `field-notes/.worktrees/homeflow-color-next/src/content/projects/homeflow-platform.md`
+- Verify: `homeflow-miniapp/.worktrees/feature-homeflow/src/styles/theme.scss`
+- Verify: `homeflow-admin/.worktrees/feature-homeflow/web/src/styles.css`
 
 - [ ] **Step 1: Confirm git state**
 

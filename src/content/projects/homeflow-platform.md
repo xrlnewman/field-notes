@@ -6,7 +6,7 @@ updatedAt: 2026-07-16
 status: active
 category: 社区服务
 tech: [uni-app, Vue 3, TypeScript, Go 1.25, Gin, MySQL 8.4, Redis 8, Docker Compose]
-cover: /images/projects/homeflow-platform/admin-dashboard.jpg
+cover: /images/projects/homeflow-platform/admin-dashboard-v2.png
 repoUrl: https://github.com/xrlnewman/homeflow-admin
 repositories:
   - name: homeflow-miniapp
@@ -20,41 +20,41 @@ repositories:
     tech: [Vue 3, Vite, Element Plus, ECharts, Go, Gin]
     url: https://github.com/xrlnewman/homeflow-admin
 screenshots:
-  - src: /images/projects/homeflow-platform/admin-dashboard.jpg
+  - src: /images/projects/homeflow-platform/admin-dashboard-v2.png
     alt: HomeFlow 到家云运营后台总览，展示经营指标与订单调度
     title: 运营总览
     caption: 后台以订单调度为核心，串联经营数据、提醒、服务团队、趋势和服务质量。
     viewport: desktop
-    width: 1280
-    height: 900
-  - src: /images/projects/homeflow-platform/home-mobile-v3.png
+    width: 1495
+    height: 1052
+  - src: /images/projects/homeflow-platform/home-mobile-v4.png
     alt: HomeFlow 到家云小程序首页，展示热门到家服务
     title: 客户端首页
     caption: 以“快速预约”和热门服务为入口，清晰呈现服务价格、时长与服务范围。
     viewport: mobile
     width: 853
     height: 1844
-  - src: /images/projects/homeflow-platform/booking-mobile.jpg
+  - src: /images/projects/homeflow-platform/booking-mobile-v2.png
     alt: HomeFlow 到家云小程序预约表单页
     title: 预约表单
     caption: 选择服务、上门地址与可用时段，预约提交带幂等键并进入订单履约链路。
     viewport: mobile
-    width: 390
-    height: 844
-  - src: /images/projects/homeflow-platform/orders-mobile.jpg
+    width: 853
+    height: 1844
+  - src: /images/projects/homeflow-platform/orders-mobile-v2.png
     alt: HomeFlow 到家云小程序订单列表页
     title: 订单时间线
     caption: 客户可以按状态查看订单，并在服务完成后确认与评价。
     viewport: mobile
-    width: 390
-    height: 844
-  - src: /images/projects/homeflow-platform/workbench-mobile.jpg
+    width: 853
+    height: 1844
+  - src: /images/projects/homeflow-platform/workbench-mobile-v2.png
     alt: HomeFlow 到家云服务人员工作台
     title: 师傅工作台
     caption: 服务人员按“前往、到达、开始服务、完成”推进状态，并上传履约凭证。
     viewport: mobile
-    width: 390
-    height: 844
+    width: 853
+    height: 1844
 featured: true
 draft: false
 ---
