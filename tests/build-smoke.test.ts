@@ -68,6 +68,15 @@ const publicProjects = [
       'https://github.com/xrlnewman/stockflow-admin',
     ],
   },
+  {
+    slug: 'eduflow-platform',
+    title: 'EduFlow 教培课程与学员管理平台',
+    cover: 'eduflow-platform/admin-dashboard.png',
+    repositories: [
+      'https://github.com/xrlnewman/eduflow-miniapp',
+      'https://github.com/xrlnewman/eduflow-admin',
+    ],
+  },
 ] as const;
 
 const obsoleteProjectSlugs = [
@@ -156,7 +165,7 @@ describe('static site build', () => {
     expect(home).toContain('https://field-notes-2fi.pages.dev');
   });
 
-  it('builds only the seven public project details with their real covers and repositories', () => {
+  it('builds only the eight public project details with their real covers and repositories', () => {
     expect(existsSync('dist/projects/index.html')).toBe(true);
 
     const projects = readFileSync('dist/projects/index.html', 'utf8');
@@ -202,8 +211,8 @@ describe('static site build', () => {
     });
   });
 
-  it('builds the expected 22 HTML pages', () => {
-    expect(listHtmlFiles('dist')).toHaveLength(22);
+  it('builds the expected 23 HTML pages', () => {
+    expect(listHtmlFiles('dist')).toHaveLength(23);
   });
 
   it('builds article details and tag indexes', () => {
@@ -243,17 +252,17 @@ describe('static site build', () => {
     }
   });
 
-  it('builds the seven product category filters on the projects page', () => {
+  it('builds the eight product category filters on the projects page', () => {
     const home = readFileSync('dist/index.html', 'utf8');
     const projects = readFileSync('dist/projects/index.html', 'utf8');
-    const categories = ['个人品牌', '电商平台', '社区服务', '企业官网', '门店经营', '供应链管理'];
+    const categories = ['个人品牌', '电商平台', '社区服务', '企业官网', '门店经营', '供应链管理', '教育培训'];
 
-    expect(home).toMatch(/data-project-count="7"[^>]*>7<\/strong>[\s\S]*?个网站产品/);
+    expect(home).toMatch(/data-project-count="8"[^>]*>8<\/strong>[\s\S]*?个网站产品/);
     expect(projects).toContain('data-project-catalog');
-    expect(projects).toContain('七个可运行的网站产品');
+    expect(projects).toContain('八个可运行的网站产品');
     expect(projects).toContain('<h1');
-    expect(projects.match(/data-project-filter=/g)).toHaveLength(7);
-    const filterCounts = [7, 1, 1, 2, 1, 1, 1];
+    expect(projects.match(/data-project-filter=/g)).toHaveLength(8);
+    const filterCounts = [8, 1, 1, 2, 1, 1, 1, 1];
     ['全部', ...categories].forEach((category, index) => {
       const buttonStart = projects.indexOf(`data-project-filter="${category}"`);
       const filterButton = projects.slice(buttonStart, projects.indexOf('</button>', buttonStart));
