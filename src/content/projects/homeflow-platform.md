@@ -6,7 +6,7 @@ updatedAt: 2026-07-16
 status: active
 category: 社区服务
 tech: [uni-app, Vue 3, TypeScript, Go 1.25, Gin, MySQL 8.4, Redis 8, Docker Compose]
-cover: /images/projects/homeflow-platform/home-mobile.png
+cover: /images/projects/homeflow-platform/admin-dashboard.jpg
 repoUrl: https://github.com/xrlnewman/homeflow-admin
 repositories:
   - name: homeflow-miniapp
@@ -20,6 +20,13 @@ repositories:
     tech: [Vue 3, Vite, Element Plus, ECharts, Go, Gin]
     url: https://github.com/xrlnewman/homeflow-admin
 screenshots:
+  - src: /images/projects/homeflow-platform/admin-dashboard.jpg
+    alt: HomeFlow 到家云运营后台总览，展示经营指标与订单调度
+    title: 运营总览
+    caption: 后台以订单调度为核心，串联经营数据、提醒、服务团队、趋势和服务质量。
+    viewport: desktop
+    width: 1280
+    height: 900
   - src: /images/projects/homeflow-platform/home-mobile.png
     alt: HomeFlow 到家云小程序首页，展示热门到家服务
     title: 客户端首页
@@ -48,13 +55,6 @@ screenshots:
     viewport: mobile
     width: 390
     height: 844
-  - src: /images/projects/homeflow-platform/admin-dashboard.jpg
-    alt: HomeFlow 到家云运营后台总览，展示经营指标与订单调度
-    title: 运营总览
-    caption: 后台以订单调度为核心，串联经营数据、提醒、服务团队、趋势和服务质量。
-    viewport: desktop
-    width: 1280
-    height: 900
 featured: true
 draft: false
 ---

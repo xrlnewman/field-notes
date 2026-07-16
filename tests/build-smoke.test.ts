@@ -8,7 +8,7 @@ const publicProjects = [
   {
     slug: 'homeflow-platform',
     title: 'HomeFlow 到家云服务平台',
-    cover: 'homeflow-platform/home-mobile.png',
+    cover: 'homeflow-platform/admin-dashboard.jpg',
     repositories: [
       'https://github.com/xrlnewman/homeflow-miniapp',
       'https://github.com/xrlnewman/homeflow-admin',

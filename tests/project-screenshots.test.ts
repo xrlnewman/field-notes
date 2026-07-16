@@ -10,6 +10,8 @@ describe('project screenshot gallery', () => {
 
     expect(gallery).toContain('data-project-screenshots');
     expect(gallery).toContain('data-screenshot-stage');
+    expect(gallery).toContain('--screenshot-ratio:');
+    expect(gallery).toContain("data-viewport={firstScreenshot.viewport}");
     expect(gallery).toContain('aria-current');
     expect(gallery).toContain('<dialog');
     expect(gallery).toContain('aria-label="上一张截图"');
@@ -20,6 +22,15 @@ describe('project screenshot gallery', () => {
     expect(gallery).toContain('@media (prefers-reduced-motion: reduce)');
     expect(layout).toContain('<ProjectScreenshots');
     expect(layout.indexOf('<ProjectScreenshots')).toBeLessThan(layout.indexOf('project-panorama'));
+  });
+
+  it('keeps desktop stages proportional while framing mobile captures as devices', () => {
+    const gallery = read('src/components/ProjectScreenshots.astro');
+
+    expect(gallery).toContain("stage.style.setProperty('--screenshot-ratio'");
+    expect(gallery).toContain(".project-screenshots__stage[data-viewport='mobile'] .project-screenshots__media::before");
+    expect(gallery).toContain(".project-screenshots__stage[data-viewport='mobile'] .project-screenshots__media::after");
+    expect(gallery).toContain('grid-template-columns: repeat(auto-fit, minmax(108px, 1fr));');
   });
 
   it('keeps the current screenshot explanation in the left column before the visual stage', () => {

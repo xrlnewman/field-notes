@@ -73,7 +73,10 @@ describe('editorial cosmic layout', () => {
     const mobile = gallery.slice(gallery.indexOf('@media (max-width: 760px) {'));
 
     expect(gallery).toContain('grid-template-columns: minmax(220px, 4fr) minmax(0, 8fr);');
-    expect(gallery).toContain('max-width: 390px;');
+    expect(gallery).toContain('max-width: 430px;');
+    expect(gallery).toContain('grid-template-columns: repeat(auto-fit, minmax(108px, 1fr));');
+    expect(gallery).toContain('aspect-ratio: var(--screenshot-ratio, 16 / 10);');
+    expect(gallery).toContain('border: 10px solid #101d32;');
     expect(mobile).toMatch(/\.project-screenshots \{[^}]*grid-template-columns: 1fr;/);
     expect(mobile).toMatch(/\.project-screenshots__thumbnails \{[^}]*grid-auto-flow: column;/);
     expect(mobile).toMatch(/\.project-screenshots__thumbnails \{[^}]*grid-auto-columns: minmax\(132px, 44vw\);/);
