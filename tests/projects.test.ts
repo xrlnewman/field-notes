@@ -281,13 +281,15 @@ describe('project category helpers', () => {
       '门店经营',
       '供应链管理',
       '教育培训',
+      '物流运输',
+      '医疗健康',
     ]);
   });
 
   it('introduces the directory as a constellation of complete products', () => {
     const projectsPage = readFileSync('src/pages/projects/index.astro', 'utf8');
 
-    expect(projectsPage).toContain('八个可运行的网站产品');
+    expect(projectsPage).toContain('十个可运行的网站产品');
     expect(projectsPage).toContain('前台、运营后台与服务端之间的关联');
   });
 
@@ -312,6 +314,8 @@ describe('project category helpers', () => {
       { category: '门店经营', count: 0 },
       { category: '供应链管理', count: 0 },
       { category: '教育培训', count: 0 },
+      { category: '物流运输', count: 0 },
+      { category: '医疗健康', count: 0 },
     ]);
   });
 

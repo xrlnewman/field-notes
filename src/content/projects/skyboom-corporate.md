@@ -50,12 +50,12 @@ screenshots:
     title: 联系我们
     caption: 将联系方式与询盘入口整合在同一页面，缩短潜在客户的咨询路径。
     viewport: desktop
-    width: 1264
-    height: 569
+    width: 1440
+    height: 900
   - src: /images/projects/skyboom-corporate/home-mobile.png
-    alt: 天舶重工企业官网移动端首页
-    title: 移动端首页
-    caption: 在 390 像素移动画布上保持品牌内容和导航层级，验证官网的响应式体验。
+    alt: 天舶重工企业官网移动端联系页面
+    title: 移动端联系页
+    caption: 在 390 像素移动画布上完整呈现联系信息、地图占位与在线留言入口，验证官网的响应式体验。
     viewport: mobile
     width: 390
     height: 844

@@ -77,6 +77,24 @@ const publicProjects = [
       'https://github.com/xrlnewman/eduflow-admin',
     ],
   },
+  {
+    slug: 'fleetflow-platform',
+    title: 'FleetFlow 同城配送调度平台',
+    cover: 'fleetflow-platform/admin-dashboard.png',
+    repositories: [
+      'https://github.com/xrlnewman/fleetflow-miniapp',
+      'https://github.com/xrlnewman/fleetflow-admin',
+    ],
+  },
+  {
+    slug: 'careflow-platform',
+    title: 'CareFlow 诊所预约与健康随访平台',
+    cover: 'careflow-platform/admin-dashboard.png',
+    repositories: [
+      'https://github.com/xrlnewman/careflow-miniapp',
+      'https://github.com/xrlnewman/careflow-admin',
+    ],
+  },
 ] as const;
 
 const obsoleteProjectSlugs = [
@@ -211,8 +229,8 @@ describe('static site build', () => {
     });
   });
 
-  it('builds the expected 23 HTML pages', () => {
-    expect(listHtmlFiles('dist')).toHaveLength(23);
+  it('builds the expected 25 HTML pages', () => {
+    expect(listHtmlFiles('dist')).toHaveLength(25);
   });
 
   it('builds article details and tag indexes', () => {
@@ -252,17 +270,17 @@ describe('static site build', () => {
     }
   });
 
-  it('builds the eight product category filters on the projects page', () => {
+  it('builds the ten product category filters on the projects page', () => {
     const home = readFileSync('dist/index.html', 'utf8');
     const projects = readFileSync('dist/projects/index.html', 'utf8');
-    const categories = ['个人品牌', '电商平台', '社区服务', '企业官网', '门店经营', '供应链管理', '教育培训'];
+    const categories = ['个人品牌', '电商平台', '社区服务', '企业官网', '门店经营', '供应链管理', '教育培训', '物流运输', '医疗健康'];
 
-    expect(home).toMatch(/data-project-count="8"[^>]*>8<\/strong>[\s\S]*?个网站产品/);
+    expect(home).toMatch(/data-project-count="10"[^>]*>10<\/strong>[\s\S]*?个网站产品/);
     expect(projects).toContain('data-project-catalog');
-    expect(projects).toContain('八个可运行的网站产品');
+    expect(projects).toContain('十个可运行的网站产品');
     expect(projects).toContain('<h1');
-    expect(projects.match(/data-project-filter=/g)).toHaveLength(8);
-    const filterCounts = [8, 1, 1, 2, 1, 1, 1, 1];
+    expect(projects.match(/data-project-filter=/g)).toHaveLength(10);
+    const filterCounts = [10, 1, 1, 2, 1, 1, 1, 1, 1, 1];
     ['全部', ...categories].forEach((category, index) => {
       const buttonStart = projects.indexOf(`data-project-filter="${category}"`);
       const filterButton = projects.slice(buttonStart, projects.indexOf('</button>', buttonStart));
