@@ -27,13 +27,13 @@ screenshots:
     viewport: desktop
     width: 1280
     height: 900
-  - src: /images/projects/homeflow-platform/home-mobile.png
+  - src: /images/projects/homeflow-platform/home-mobile-v3.png
     alt: HomeFlow 到家云小程序首页，展示热门到家服务
     title: 客户端首页
     caption: 以“快速预约”和热门服务为入口，清晰呈现服务价格、时长与服务范围。
     viewport: mobile
-    width: 390
-    height: 844
+    width: 853
+    height: 1844
   - src: /images/projects/homeflow-platform/booking-mobile.jpg
     alt: HomeFlow 到家云小程序预约表单页
     title: 预约表单
