@@ -1,4 +1,4 @@
-export const projectCategories = ['个人品牌', '电商平台', '社区服务', '企业官网', '门店经营', '供应链管理', '教育培训', '物流运输', '医疗健康'] as const;
+export const projectCategories = ['个人品牌', '电商平台', '社区服务', '企业官网', '门店经营', '供应链管理', '教育培训', '物流运输', '医疗健康', '人力资源', '财务管理', '销售管理', '合同管理', '物业服务', '客户服务', '文体活动', '零售餐饮', '生活服务', '工业能源'] as const;
 
 export type ProjectCategory = typeof projectCategories[number];
 export type ProjectCategoryFilter = '全部' | ProjectCategory;

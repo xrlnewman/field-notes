@@ -95,6 +95,96 @@ const publicProjects = [
       'https://github.com/xrlnewman/careflow-admin',
     ],
   },
+  {
+    slug: 'hireflow-platform',
+    title: 'HireFlow 招聘协同平台',
+    cover: 'hireflow-platform/shot-1.png',
+    repositories: [
+      'https://github.com/xrlnewman/hireflow-miniapp',
+      'https://github.com/xrlnewman/hireflow-admin',
+    ],
+  },
+  {
+    slug: 'feeflow-platform',
+    title: 'FeeFlow 企业费控平台',
+    cover: 'feeflow-platform/shot-1.png',
+    repositories: [
+      'https://github.com/xrlnewman/feeflow-miniapp',
+      'https://github.com/xrlnewman/feeflow-admin',
+    ],
+  },
+  {
+    slug: 'crmflow-platform',
+    title: 'CRMFlow 销售协同平台',
+    cover: 'crmflow-platform/shot-1.png',
+    repositories: [
+      'https://github.com/xrlnewman/crmflow-miniapp',
+      'https://github.com/xrlnewman/crmflow-admin',
+    ],
+  },
+  {
+    slug: 'contractflow-platform',
+    title: 'ContractFlow 合同管理平台',
+    cover: 'contractflow-platform/shot-1.png',
+    repositories: [
+      'https://github.com/xrlnewman/contractflow-miniapp',
+      'https://github.com/xrlnewman/contractflow-admin',
+    ],
+  },
+  {
+    slug: 'propertyflow-platform',
+    title: 'PropertyFlow 物业工单平台',
+    cover: 'propertyflow-platform/shot-1.png',
+    repositories: [
+      'https://github.com/xrlnewman/propertyflow-miniapp',
+      'https://github.com/xrlnewman/propertyflow-admin',
+    ],
+  },
+  {
+    slug: 'helpdeskflow-platform',
+    title: 'HelpdeskFlow 客服工单平台',
+    cover: 'helpdeskflow-platform/shot-1.png',
+    repositories: [
+      'https://github.com/xrlnewman/helpdeskflow-miniapp',
+      'https://github.com/xrlnewman/helpdeskflow-admin',
+    ],
+  },
+  {
+    slug: 'eventflow-platform',
+    title: 'EventFlow 活动票务平台',
+    cover: 'eventflow-platform/shot-1.png',
+    repositories: [
+      'https://github.com/xrlnewman/eventflow-miniapp',
+      'https://github.com/xrlnewman/eventflow-admin',
+    ],
+  },
+  {
+    slug: 'retailflow-platform',
+    title: 'RetailFlow 门店经营平台',
+    cover: 'retailflow-platform/shot-1.png',
+    repositories: [
+      'https://github.com/xrlnewman/retailflow-miniapp',
+      'https://github.com/xrlnewman/retailflow-admin',
+    ],
+  },
+  {
+    slug: 'petflow-platform',
+    title: 'PetFlow 宠物门店预约平台',
+    cover: 'petflow-platform/shot-1.png',
+    repositories: [
+      'https://github.com/xrlnewman/petflow-miniapp',
+      'https://github.com/xrlnewman/petflow-admin',
+    ],
+  },
+  {
+    slug: 'energyflow-platform',
+    title: 'EnergyFlow 能源巡检平台',
+    cover: 'energyflow-platform/shot-1.png',
+    repositories: [
+      'https://github.com/xrlnewman/energyflow-miniapp',
+      'https://github.com/xrlnewman/energyflow-admin',
+    ],
+  },
 ] as const;
 
 const obsoleteProjectSlugs = [
@@ -183,7 +273,7 @@ describe('static site build', () => {
     expect(home).toContain('https://field-notes-2fi.pages.dev');
   });
 
-  it('builds only the eight public project details with their real covers and repositories', () => {
+  it('builds all twenty public project details with their real covers and repositories', () => {
     expect(existsSync('dist/projects/index.html')).toBe(true);
 
     const projects = readFileSync('dist/projects/index.html', 'utf8');
@@ -229,8 +319,8 @@ describe('static site build', () => {
     });
   });
 
-  it('builds the expected 25 HTML pages', () => {
-    expect(listHtmlFiles('dist')).toHaveLength(25);
+  it('builds the expected 35 HTML pages', () => {
+    expect(listHtmlFiles('dist')).toHaveLength(35);
   });
 
   it('builds article details and tag indexes', () => {
@@ -270,17 +360,21 @@ describe('static site build', () => {
     }
   });
 
-  it('builds the ten product category filters on the projects page', () => {
+  it('builds the nineteen product category filters on the projects page', () => {
     const home = readFileSync('dist/index.html', 'utf8');
     const projects = readFileSync('dist/projects/index.html', 'utf8');
-    const categories = ['个人品牌', '电商平台', '社区服务', '企业官网', '门店经营', '供应链管理', '教育培训', '物流运输', '医疗健康'];
+    const categories = [
+      '个人品牌', '电商平台', '社区服务', '企业官网', '门店经营', '供应链管理', '教育培训',
+      '物流运输', '医疗健康', '人力资源', '财务管理', '销售管理', '合同管理', '物业服务',
+      '客户服务', '文体活动', '零售餐饮', '生活服务', '工业能源',
+    ];
 
-    expect(home).toMatch(/data-project-count="10"[^>]*>10<\/strong>[\s\S]*?个网站产品/);
+    expect(home).toMatch(/data-project-count="20"[^>]*>20<\/strong>[\s\S]*?个网站产品/);
     expect(projects).toContain('data-project-catalog');
-    expect(projects).toContain('十个可运行的网站产品');
+    expect(projects).toContain('二十个可运行的网站产品');
     expect(projects).toContain('<h1');
-    expect(projects.match(/data-project-filter=/g)).toHaveLength(10);
-    const filterCounts = [10, 1, 1, 2, 1, 1, 1, 1, 1, 1];
+    expect(projects.match(/data-project-filter=/g)).toHaveLength(20);
+    const filterCounts = [20, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
     ['全部', ...categories].forEach((category, index) => {
       const buttonStart = projects.indexOf(`data-project-filter="${category}"`);
       const filterButton = projects.slice(buttonStart, projects.indexOf('</button>', buttonStart));

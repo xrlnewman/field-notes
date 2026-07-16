@@ -283,13 +283,23 @@ describe('project category helpers', () => {
       '教育培训',
       '物流运输',
       '医疗健康',
+      '人力资源',
+      '财务管理',
+      '销售管理',
+      '合同管理',
+      '物业服务',
+      '客户服务',
+      '文体活动',
+      '零售餐饮',
+      '生活服务',
+      '工业能源',
     ]);
   });
 
   it('introduces the directory as a constellation of complete products', () => {
     const projectsPage = readFileSync('src/pages/projects/index.astro', 'utf8');
 
-    expect(projectsPage).toContain('十个可运行的网站产品');
+    expect(projectsPage).toContain('二十个可运行的网站产品');
     expect(projectsPage).toContain('前台、运营后台与服务端之间的关联');
   });
 
@@ -316,6 +326,16 @@ describe('project category helpers', () => {
       { category: '教育培训', count: 0 },
       { category: '物流运输', count: 0 },
       { category: '医疗健康', count: 0 },
+      { category: '人力资源', count: 0 },
+      { category: '财务管理', count: 0 },
+      { category: '销售管理', count: 0 },
+      { category: '合同管理', count: 0 },
+      { category: '物业服务', count: 0 },
+      { category: '客户服务', count: 0 },
+      { category: '文体活动', count: 0 },
+      { category: '零售餐饮', count: 0 },
+      { category: '生活服务', count: 0 },
+      { category: '工业能源', count: 0 },
     ]);
   });
 
