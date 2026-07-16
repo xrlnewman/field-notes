@@ -83,7 +83,7 @@ describe('published project content', () => {
     })).toThrow();
   });
 
-  it('publishes exactly the eight website products', () => {
+  it('publishes exactly the ten website products', () => {
     const projectIds = readdirSync('src/content/projects', { withFileTypes: true })
       .filter((entry) => entry.isFile() && ['.md', '.mdx'].includes(extname(entry.name)))
       .filter((entry) => {
@@ -97,8 +97,10 @@ describe('published project content', () => {
       .toSorted();
 
     expect(projectIds).toEqual([
+      'careflow-platform',
       'eduflow-platform',
       'field-notes',
+      'fleetflow-platform',
       'homeflow-platform',
       'linli-community',
       'multi-merchant-mall',
