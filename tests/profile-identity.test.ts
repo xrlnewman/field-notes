@@ -25,6 +25,9 @@ describe('personal profile contract', () => {
 
   it('keeps the blog site config free of profile-only avatar data', () => {
     expect(siteSource).not.toContain('avatarSrc');
+    expect(siteSource).not.toContain('availability');
+    expect(siteSource).not.toContain('skills');
+    expect(existsSync(resolve(root, 'public/images/profile/xu-rulin-avatar.png'))).toBe(false);
   });
 
   it('removes the reusable profile component from the blog', () => {

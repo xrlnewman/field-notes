@@ -18,8 +18,9 @@ describe('editorial cosmic layout', () => {
   it('keeps the home hero compact and every product in one shared grid', () => {
     const home = read('src/pages/index.astro');
     const card = read('src/components/ProjectCard.astro');
+    const heroRule = home.match(/\.hero-studio\s*\{([^}]*)\}/)?.[1] ?? '';
 
-    expect(home).toContain('max-height: 620px;');
+    expect(heroRule).toContain('max-height: 620px;');
     expect(home).toContain('grid-template-columns: minmax(0, 7fr) minmax(320px, 5fr);');
     expect(home).toContain('font-size: clamp(3.25rem, 5vw, 4rem);');
     expect(card).not.toContain('grid-column: 1 / -1;');
