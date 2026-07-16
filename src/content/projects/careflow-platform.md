@@ -11,7 +11,7 @@ repoUrl: https://github.com/xrlnewman/careflow-admin
 repositories:
   - name: careflow-miniapp
     role: frontend
-    description: 患者预约工作台，覆盖创建预约、签到、候诊、接诊进度和随访提醒。
+    description: 患者预约工作台，覆盖创建预约、签到、候诊、接诊进度和随访任务完成。
     tech: [Vite, TypeScript, Responsive UI]
     url: https://github.com/xrlnewman/careflow-miniapp
   - name: careflow-admin
