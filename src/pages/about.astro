@@ -1,5 +1,4 @@
 ---
-import ProfileIdentity from '../components/ProfileIdentity.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { siteConfig } from '../config/site';
 ---
@@ -14,8 +13,6 @@ import { siteConfig } from '../config/site';
       <h1>我不只写代码，也负责让产品落地。</h1>
       <p>{siteConfig.author.bio}</p>
     </header>
-
-    <ProfileIdentity variant="full" />
 
     <div class="profile-facts" aria-label="个人简介">
       <div>
@@ -62,9 +59,8 @@ import { siteConfig } from '../config/site';
 <style>
   .about-page { padding-block: clamp(72px, 10vw, 130px) 120px; }
   header { max-width: 900px; }
-  header h1 { margin: 0; font-size: clamp(2.5rem, 6vw, 4.2rem); line-height: 1.02; }
-  header > p:last-child { max-width: 620px; margin: 20px 0 0; color: var(--muted); font-size: 1.1rem; }
-  .about-page > :global([data-profile-identity]) { margin-top: 36px; }
+  header h1 { margin: 0; font-size: clamp(3.4rem, 9vw, 7.4rem); line-height: 0.97; }
+  header > p:last-child { max-width: 620px; margin: 28px 0 0; color: var(--muted); font-size: 1.2rem; }
   .profile-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 72px; border-block: 1px solid var(--border); }
   .profile-facts > div { display: flex; flex-direction: column; gap: 8px; padding: 26px 24px; }
   .profile-facts > div + div { border-left: 1px solid var(--border); }
