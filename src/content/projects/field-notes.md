@@ -15,7 +15,7 @@ screenshots:
     width: 1440
     height: 900
   - src: /images/projects/field-notes/projects.png
-    alt: 许汝林个人博客项目目录按类别展示四个网站产品
+    alt: 许汝林个人博客项目目录按类别展示五个网站产品
     title: 项目分类目录
     caption: 按个人品牌、电商平台、社区服务和企业官网筛选完整网站产品。
     viewport: desktop

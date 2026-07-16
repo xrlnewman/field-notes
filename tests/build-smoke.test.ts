@@ -211,17 +211,17 @@ describe('static site build', () => {
     }
   });
 
-  it('builds the four product category filters on the projects page', () => {
+  it('builds the five product category filters on the projects page', () => {
     const home = readFileSync('dist/index.html', 'utf8');
     const projects = readFileSync('dist/projects/index.html', 'utf8');
     const categories = ['个人品牌', '电商平台', '社区服务', '企业官网'];
 
-    expect(home).toMatch(/data-project-count="4"[^>]*>4<\/strong>[\s\S]*?个网站产品/);
+    expect(home).toMatch(/data-project-count="5"[^>]*>5<\/strong>[\s\S]*?个网站产品/);
     expect(projects).toContain('data-project-catalog');
-    expect(projects).toContain('四个可运行的网站产品');
+    expect(projects).toContain('五个可运行的网站产品');
     expect(projects).toContain('<h1');
     expect(projects.match(/data-project-filter=/g)).toHaveLength(5);
-    const filterCounts = [4, 1, 1, 1, 1];
+    const filterCounts = [5, 1, 2, 1, 1];
     ['全部', ...categories].forEach((category, index) => {
       const buttonStart = projects.indexOf(`data-project-filter="${category}"`);
       const filterButton = projects.slice(buttonStart, projects.indexOf('</button>', buttonStart));
