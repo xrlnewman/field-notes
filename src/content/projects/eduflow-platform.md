@@ -1,8 +1,8 @@
 ---
 title: EduFlow 教培课程与学员管理平台
 description: 面向小型教培机构的免费开源课程与学员管理产品，包含学员小程序、Vue 教务后台与 Go Gin API。
-publishedAt: 2026-07-16
-updatedAt: 2026-07-16
+publishedAt: 2026-07-16T12:00:00-05:00
+updatedAt: 2026-07-16T12:00:00-05:00
 status: active
 category: 教育培训
 tech: [uni-app, Vue 3, TypeScript, Go 1.25, Gin, MySQL 8.4, Redis 8, Docker Compose]
