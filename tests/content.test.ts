@@ -83,7 +83,7 @@ describe('published project content', () => {
     })).toThrow();
   });
 
-  it('publishes exactly the four website products', () => {
+  it('publishes exactly the five website products', () => {
     const projectIds = readdirSync('src/content/projects', { withFileTypes: true })
       .filter((entry) => entry.isFile() && ['.md', '.mdx'].includes(extname(entry.name)))
       .filter((entry) => {
@@ -98,6 +98,7 @@ describe('published project content', () => {
 
     expect(projectIds).toEqual([
       'field-notes',
+      'homeflow-platform',
       'linli-community',
       'multi-merchant-mall',
       'skyboom-corporate',
