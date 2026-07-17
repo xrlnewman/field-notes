@@ -71,6 +71,6 @@ draft: false
 
 前台和后台均采用 Vue 3 与 Vite，分别使用 Vant 和 Element Plus；后端采用 Laravel 12 与 PHP 8.3。
 
-## 开源方式
+## 仓库与运行范围
 
 三个组成仓库均提供独立的 GitHub 源码入口，便于按前台、后台和后端职责分别查看。

@@ -1,6 +1,6 @@
 ---
 title: SupplyFlow 采购供应链平台
-description: 免费开源的采购申请、供应商询价、比价审批、到货验收与结算一体化供应链平台，适合成长型企业规范采购流程。
+description: 采购申请、供应商询价、比价审批、到货验收与结算一体化供应链平台，适合成长型企业规范采购流程。
 publishedAt: 2026-07-16T14:10:00-05:00
 updatedAt: 2026-07-16T14:10:00-05:00
 status: active
@@ -96,10 +96,10 @@ featured: false
 draft: false
 ---
 
-## 完整闭环
+## 采购流程
 
 采购申请 → 多供应商询价 → 比价审批 → 采购下单 → 到货验收 → 入库 → 发票结算；重复操作按业务键幂等，节点事件可追溯。
 
-## 仓库关联与免费边界
+## 仓库关联与运行范围
 
-`supplyflow-miniapp` 提供采购与仓库移动动作，`supplyflow-admin` 提供后台、Go API、MySQL 8.4 和 Redis 8。项目免费公开，供应商、报价和订单均为虚构演示数据。
+`supplyflow-miniapp` 提供采购与仓库移动动作，`supplyflow-admin` 提供后台、Go API、MySQL 8.4 和 Redis 8。两端共享申请、询价、审批、到货、质检和入库状态；供应商、报价和订单均为虚构演示数据。

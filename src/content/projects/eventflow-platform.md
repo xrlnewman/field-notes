@@ -1,6 +1,6 @@
 ---
 title: EventFlow 活动票务平台
-description: 免费开源的活动创建、售票、核销、现场服务与结算平台，适合课程、展会、社群和小型演出快速上线。
+description: 活动创建、售票、核销、现场服务与结算平台，适合课程、展会、社群和小型演出快速上线。
 publishedAt: 2026-07-16T13:30:00-05:00
 updatedAt: 2026-07-16T13:30:00-05:00
 status: active
@@ -52,10 +52,10 @@ featured: false
 draft: false
 ---
 
-## 完整闭环
+## 票务流程
 
 创建活动 → 配置票档 → 售票 → 核销入场 → 现场服务 → 活动结算；订单和核销写入均带幂等键。
 
-## 仓库关联与免费边界
+## 仓库关联与运行范围
 
-`eventflow-miniapp` 面向购票人和现场人员，`eventflow-admin` 负责活动运营、API、数据库和 Redis 锁。源码免费，自带的票务、用户和金额均为虚构数据。
+`eventflow-miniapp` 面向购票人和现场人员，`eventflow-admin` 负责活动运营、API、数据库和 Redis 锁。两端共享售票、核销、现场服务和结算状态；票务、用户和金额均为虚构数据。

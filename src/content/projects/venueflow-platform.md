@@ -1,6 +1,6 @@
 ---
 title: VenueFlow 场馆运营平台
-description: 免费开源的场地配置、预约售票、入场核销、活动执行、会员与日结分析一体化场馆运营平台。
+description: 场地配置、预约售票、入场核销、活动执行、会员与日结分析一体化场馆运营平台。
 publishedAt: 2026-07-16T14:45:00-05:00
 updatedAt: 2026-07-16T14:45:00-05:00
 status: active
@@ -52,10 +52,10 @@ featured: false
 draft: false
 ---
 
-## 完整闭环
+## 场馆流程
 
 场地配置 → 场次发布 → 用户购票 → 入场核销 → 现场服务 → 会员评价 → 日结分析；票务库存和核销动作支持幂等。
 
-## 仓库关联与免费边界
+## 仓库关联与运行范围
 
-`venueflow-miniapp` 面向用户与现场人员，`venueflow-admin` 提供场馆后台、Go API、MySQL 8.4 与 Redis 8。项目免费公开，场馆、场次和票务均为虚构演示数据。
+`venueflow-miniapp` 面向用户与现场人员，`venueflow-admin` 提供场馆后台、Go API、MySQL 8.4 与 Redis 8。两端共享场馆、场次、票务、核销和日结状态；场馆、场次和票务均为虚构演示数据。

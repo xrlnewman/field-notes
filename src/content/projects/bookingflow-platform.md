@@ -1,6 +1,6 @@
 ---
 title: BookingFlow 预约排班平台
-description: 免费开源的服务配置、预约、排班、到店核销、评价与复购提醒一体化预约平台，适合美容、健身和咨询门店。
+description: 服务配置、预约、排班、到店核销、评价与复购提醒一体化预约平台，适合美容、健身和咨询门店。
 publishedAt: 2026-07-16T14:20:00-05:00
 updatedAt: 2026-07-16T14:20:00-05:00
 status: active
@@ -94,10 +94,10 @@ featured: false
 draft: false
 ---
 
-## 完整闭环
+## 业务流程
 
 服务配置 → 顾客预约 → 员工排班 → 到店签到 → 服务完成 → 评价回访 → 复购提醒；预约占位和核销动作支持幂等。
 
-## 仓库关联与免费边界
+## 仓库关联与运行范围
 
-`bookingflow-miniapp` 面向顾客与前台，`bookingflow-admin` 负责门店运营、Go API、MySQL 8.4 与 Redis 8。项目免费公开，服务、会员和预约均为虚构演示数据。
+`bookingflow-miniapp` 面向顾客与前台，`bookingflow-admin` 负责门店运营、Go API、MySQL 8.4 与 Redis 8。两端共享预约、容量、退款和评价状态；服务、会员和预约均为虚构演示数据。

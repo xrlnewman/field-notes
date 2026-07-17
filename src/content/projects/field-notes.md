@@ -1,6 +1,6 @@
 ---
 title: 许汝林个人博客
-description: 一个永久免费、零成本部署、完全开源，并通过 GitHub 登录在站内完成评论和留言的个人博客。
+description: 面向项目作品、技术文章和站内交流的个人作品集，支持项目分类、源码关联、全文检索与 GitHub 登录评论留言。
 publishedAt: 2026-07-13
 status: active
 category: 个人品牌
@@ -8,9 +8,9 @@ tech: [Astro, TypeScript, Pagefind, Giscus]
 cover: /images/projects/field-notes.png
 screenshots:
   - src: /images/projects/field-notes/home.png
-    alt: 许汝林个人博客首页展示工程师定位和永久免费开源承诺
+    alt: 许汝林个人博客首页展示工程师定位、项目目录和站内互动入口
     title: 个人首页
-    caption: 星空主题首屏集中呈现七年工程经验、网站项目入口与永久免费开源承诺。
+    caption: 星空主题首屏集中呈现七年工程经验、网站项目入口、文章入口和站内互动入口。
     viewport: desktop
     width: 1440
     height: 900
@@ -43,7 +43,7 @@ draft: false
 
 ## 项目目标
 
-把项目、文章和公开交流放到一个真正属于自己的空间，并坚持永久免费、零成本部署和完全开源。
+把项目、文章和公开交流放到一个可持续维护的个人工作台，让访客能从项目概览一路查看功能、截图、技术栈、源码和讨论记录。
 
 ## 解决方案
 
@@ -61,7 +61,7 @@ draft: false
 - 固定全局留言板；
 - RSS、站点地图和完整部署说明。
 
-## 取舍
+## 运行边界
 
-评论依赖 GitHub 登录，减少匿名垃圾内容；讨论数据由 GitHub Discussions 保存，博客本身不维护用户密码、会话或评论数据库。
+评论依赖 GitHub 登录，减少匿名垃圾内容；讨论数据由 GitHub Discussions 保存，博客本身不维护用户密码、会话或评论数据库。项目详情页展示前台、后台和接口仓库的职责边界，演示账号与示例数据不代表真实客户数据。
 

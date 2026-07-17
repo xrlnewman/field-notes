@@ -356,7 +356,7 @@ describe('static site build', () => {
     for (const theme of ['observatory', 'nebula', 'terminal']) {
       expect(home).toContain(`data-theme="${theme}"`);
     }
-    expect(home).toContain('永久免费 · 零成本部署 · 完全开源');
+    expect(home).toContain('项目工作台 · 技术文章 · 站内讨论');
     for (const { slug } of publicProjects) {
       expect(home).toContain(`/projects/${slug}/`);
     }

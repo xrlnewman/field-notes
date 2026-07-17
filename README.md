@@ -1,30 +1,30 @@
 # 许汝林个人博客
 
-一个以项目作品和开源源码为核心的个人博客。网站聚合七个完整网站产品，用于展示许汝林的产品实践、技术文章和完整交付能力；内容静态生成，评论通过 Giscus 嵌入站内并由 GitHub Discussions 保存，可以长期免费运行。
+一个以项目作品、技术文章和站内交流为核心的个人博客。网站聚合三十个网站产品，用于展示许汝林的产品实践和交付能力；内容静态生成，评论通过 Giscus 嵌入站内并由 GitHub Discussions 保存。
 
 在线访问：[field-notes-2fi.pages.dev](https://field-notes-2fi.pages.dev)
 
 ## 功能
 
-- 七个网站产品聚合展示，关联前台、运营后台、后端 API 与各自 GitHub 源码入口
+- 三十个网站产品聚合展示，关联前台、运营后台、后端 API 与各自 GitHub 仓库入口
 - 文章列表、文章详情、标签聚合和阅读目录
 - Pagefind 中文静态搜索
 - GitHub 登录后的站内文章评论、项目评论、回复和固定全局留言板
 - RSS、站点地图、SEO 元信息和 404 页面
 - 深空观测站、梦幻银河、宇宙终端三套星空主题，支持主题记忆、响应式导航、键盘操作和减少动效
-- Cloudflare Pages 免费托管，无需自购应用服务器
+- Cloudflare Pages 静态托管，无需维护应用服务器
 - Markdown/MDX 内容模型与构建期字段校验
 
-## 成本
+## 部署与数据
 
-| 服务 | 用途 | 费用 |
-|---|---|---:|
-| GitHub 公共仓库 | 代码、文章和项目 | 0 元 |
-| Cloudflare Pages | 静态网站、HTTPS 和 `pages.dev` 子域名 | 免费额度内 0 元 |
-| GitHub Discussions / Giscus | 登录、评论、回复和全局留言 | 0 元 |
-| Pagefind | 本地全文搜索 | 0 元 |
+| 服务 | 用途 |
+|---|---|
+| GitHub 仓库 | 代码、文章和项目版本管理 |
+| Cloudflare Pages | 静态网站、HTTPS 和 `pages.dev` 子域名 |
+| GitHub Discussions / Giscus | 登录、评论、回复和全局留言 |
+| Pagefind | 构建阶段生成中文全文搜索索引 |
 
-网站不需要自购应用服务器或付费域名；Cloudflare 分发静态页面，GitHub 保存讨论数据。
+网站由 Cloudflare 分发静态页面，GitHub 保存讨论数据；自定义域名、托管套餐和 GitHub 配置按实际账号与平台策略执行。
 
 ## 本地运行
 
@@ -108,7 +108,7 @@ draft: false
 
 项目发布遵守以下约束：
 
-- 单仓项目使用 `repoUrl` 记录唯一公开源码入口；多仓项目使用 `repositories` 列出用户前台、运营后台和服务端，并保留 `repoUrl` 作为首要仓库入口；
+- 单仓项目使用 `repoUrl` 记录唯一代码仓库入口；多仓项目使用 `repositories` 列出用户前台、运营后台和服务端，并保留 `repoUrl` 作为首要仓库入口；
 - 每个仓库 URL 必须指向实际公开位置，源码入口包含 README 和足以理解、运行核心功能的源码；配置方式写入文档，真实环境文件和凭据不入库；
 - 发布前检查密钥、客户信息、内部地址、业务数据、构建产物和提交历史；子目录快照按文件白名单更新；
 - 未完成源码整理或安全检查时保留 `draft: true`，不在作品库公开。
@@ -138,7 +138,7 @@ PUBLIC_GISCUS_CATEGORY_ID=DIC_kwDOTX84us4DBKfw
 
 这些值是 GitHub 公开标识，不是 OAuth 密钥。需要切换仓库或 Discussion 分类时，可以用同名 `PUBLIC_GISCUS_*` 环境变量覆盖项目默认值。
 
-## 免费部署到 Cloudflare Pages
+## 部署到 Cloudflare Pages
 
 当前项目使用 Wrangler 直接部署，避免在控制台重复维护绑定。先完成验证：
 
@@ -159,7 +159,7 @@ npx wrangler pages deploy dist --project-name field-notes --branch main
 - 文章、项目、样式和配置都在 Git 仓库中，Clone 仓库就是完整备份。
 - 评论和留言保存在 GitHub Discussions，可通过仓库数据导出策略备份。
 - `dist/` 是标准静态内容；迁移到其他静态托管平台时，只要允许加载 Giscus 即可继续使用评论。
-- 如果不购买独立域名，迁移托管平台时免费二级域名会改变。
+- 如果不配置独立域名，迁移托管平台时 `pages.dev` 二级域名会改变。
 
 ## 目录
 

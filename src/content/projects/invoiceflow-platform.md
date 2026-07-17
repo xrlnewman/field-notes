@@ -1,6 +1,6 @@
 ---
 title: InvoiceFlow 企业开票与收款平台
-description: 免费开源的开票申请、审核、收款核销、对账与归档一体化企业财务平台，适合中小团队建立可追踪的回款流程。
+description: 开票申请、审核、收款核销、对账与归档一体化企业财务平台，适合中小团队建立可追踪的回款流程。
 publishedAt: 2026-07-16T14:00:00-05:00
 updatedAt: 2026-07-16T14:00:00-05:00
 status: active
@@ -96,10 +96,10 @@ featured: false
 draft: false
 ---
 
-## 完整闭环
+## 财务流程
 
 开票申请 → 财务审核 → 开票登记 → 收款确认 → 自动核销 → 对账归档；重复提交使用幂等键，状态变化写入财务事件。
 
-## 仓库关联与免费边界
+## 仓库关联与运行范围
 
-`invoiceflow-miniapp` 提供销售与财务移动体验，`invoiceflow-admin` 提供后台、Go API、MySQL 8.4 和 Redis 8。项目免费公开，客户、发票和金额均为虚构演示数据。
+`invoiceflow-miniapp` 提供销售与财务移动体验，`invoiceflow-admin` 提供后台、Go API、MySQL 8.4 和 Redis 8。两端共享开票、回款、核销和对账状态；客户、发票和金额均为虚构演示数据。

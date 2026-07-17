@@ -1,6 +1,6 @@
 ---
 title: CreatorFlow 内容排期与数据平台
-description: 免费开源的选题、脚本、制作、审核、发布、评论监控与数据复盘一体化内容团队平台，适合个人创作者和小型工作室。
+description: 选题、脚本、制作、审核、发布、评论监控与数据复盘一体化内容团队平台，适合个人创作者和小型工作室。
 publishedAt: 2026-07-16T14:35:00-05:00
 updatedAt: 2026-07-16T14:35:00-05:00
 status: active
@@ -52,10 +52,10 @@ featured: false
 draft: false
 ---
 
-## 完整闭环
+## 内容流程
 
 灵感记录 → 选题评审 → 脚本制作 → 审核排期 → 多渠道发布 → 评论互动 → 数据复盘；内容状态和发布动作可幂等重试。
 
-## 仓库关联与免费边界
+## 仓库关联与运行范围
 
-`creatorflow-miniapp` 面向创作者与编辑，`creatorflow-admin` 提供内容运营、Go API、MySQL 8.4 与 Redis 8。项目免费公开，账号、内容和指标均为虚构演示数据。
+`creatorflow-miniapp` 面向创作者与编辑，`creatorflow-admin` 提供内容运营、Go API、MySQL 8.4 与 Redis 8。两端共享选题、审核、发布和数据复盘状态；账号、内容和指标均为虚构演示数据。

@@ -1,6 +1,6 @@
 ---
 title: LegalFlow 法务案件协同平台
-description: 免费开源的委托登记、立案、任务协同、节点提醒、材料归档与结案复盘一体化法务平台，适合企业法务和小型律所。
+description: 委托登记、立案、任务协同、节点提醒、材料归档与结案复盘一体化法务平台，适合企业法务和小型律所。
 publishedAt: 2026-07-16T14:40:00-05:00
 updatedAt: 2026-07-16T14:40:00-05:00
 status: active
@@ -52,10 +52,10 @@ featured: false
 draft: false
 ---
 
-## 完整闭环
+## 案件流程
 
 委托登记 → 立案 → 任务拆解 → 材料收集 → 节点提醒 → 客户确认 → 结案归档；案件状态推进和材料变更均写入事件记录。
 
-## 仓库关联与免费边界
+## 仓库关联与运行范围
 
-`legalflow-miniapp` 服务律师与客户移动协同，`legalflow-admin` 提供法务后台、Go API、MySQL 8.4 与 Redis 8。源码免费公开，案件、客户和材料均为虚构演示数据。
+`legalflow-miniapp` 服务律师与客户移动协同，`legalflow-admin` 提供法务后台、Go API、MySQL 8.4 与 Redis 8。两端共享案件节点、任务、材料和结案状态；案件、客户和材料均为虚构演示数据。

@@ -1,6 +1,6 @@
 ---
 title: RetailFlow 门店经营平台
-description: 免费开源的商品、订单、备货、配送、自提、会员与日结一体化门店经营系统，适合零售和餐饮小店。
+description: 商品、订单、备货、配送、自提、会员与日结一体化门店经营系统，适合零售和餐饮小店。
 publishedAt: 2026-07-16T13:35:00-05:00
 updatedAt: 2026-07-16T13:35:00-05:00
 status: active
@@ -52,10 +52,10 @@ featured: false
 draft: false
 ---
 
-## 完整闭环
+## 门店流程
 
 商品上架 → 顾客下单 → 店员备货 → 配送或自提 → 会员积分 → 日结复盘；库存和订单更新使用幂等写入。
 
-## 仓库关联与免费边界
+## 仓库关联与运行范围
 
-`retailflow-miniapp` 提供顾客/店员移动端，`retailflow-admin` 提供后台、API、MySQL 8.4 和 Redis 8。项目免费公开，商品、订单和金额全部是演示数据。
+`retailflow-miniapp` 提供顾客/店员移动端，`retailflow-admin` 提供后台、API、MySQL 8.4 和 Redis 8。两端共享商品、订单、备货、配送、自提和日结状态；商品、订单和金额全部是演示数据。

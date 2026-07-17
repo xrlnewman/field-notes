@@ -1,6 +1,6 @@
 ---
 title: PetFlow 宠物门店预约平台
-description: 免费开源的宠物门店预约、服务排班、宠物档案、会员次卡与回访一体化平台，覆盖从预约到复购的服务闭环。
+description: 宠物门店预约、服务排班、宠物档案、会员次卡与回访一体化平台，覆盖从预约到复购的服务流程。
 publishedAt: 2026-07-16T13:40:00-05:00
 updatedAt: 2026-07-16T13:40:00-05:00
 status: active
@@ -52,10 +52,10 @@ featured: false
 draft: false
 ---
 
-## 完整闭环
+## 服务流程
 
 预约 → 到店签到 → 排队与服务 → 完成归档 → 次卡扣减 → 回访与复购；预约状态事件和回访完成记录都能在 API 中回放。
 
-## 仓库关联与免费边界
+## 仓库关联与运行范围
 
-`petflow-miniapp` 是宠物主人端，`petflow-admin` 是门店后台和 Go API，MySQL 8.4 持久化、Redis 8 处理幂等锁。源码免费公开，宠物信息和订单为虚构演示。
+`petflow-miniapp` 是宠物主人端，`petflow-admin` 是门店后台和 Go API，MySQL 8.4 持久化、Redis 8 处理幂等锁。两端共享预约、排班、次卡和回访状态；宠物信息和订单为虚构演示。

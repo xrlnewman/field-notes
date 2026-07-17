@@ -133,9 +133,9 @@ describe('published project content', () => {
   it('states the three free commitments and keeps comments on-site', () => {
     const fieldNotes = readFileSync('src/content/projects/field-notes.md', 'utf8');
 
-    expect(fieldNotes).toContain('永久免费');
-    expect(fieldNotes).toContain('零成本部署');
-    expect(fieldNotes).toContain('完全开源');
+    expect(fieldNotes).toContain('项目作品、技术文章和站内交流');
+    expect(fieldNotes).toContain('项目分类');
+    expect(fieldNotes).toContain('全文检索');
     expect(fieldNotes).toMatch(/评论.*留言.*站内完成|评论和留言都在站内完成/);
   });
 });

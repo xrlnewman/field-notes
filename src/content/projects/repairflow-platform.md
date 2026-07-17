@@ -1,6 +1,6 @@
 ---
 title: RepairFlow 售后维修协同平台
-description: 免费开源的报修、诊断、报价、派工、维修验收和回访一体化售后服务平台，适合设备与家电服务团队。
+description: 报修、诊断、报价、派工、维修验收和回访一体化售后服务平台，适合设备与家电服务团队。
 publishedAt: 2026-07-16T14:05:00-05:00
 updatedAt: 2026-07-16T14:05:00-05:00
 status: active
@@ -96,10 +96,10 @@ featured: false
 draft: false
 ---
 
-## 完整闭环
+## 售后流程
 
 客户报修 → 客服诊断 → 报价确认 → 派工上门 → 维修记录 → 客户验收 → 回访评价；配件与人工费用全部保留可审计节点。
 
-## 仓库关联与免费边界
+## 仓库关联与运行范围
 
-`repairflow-miniapp` 面向客户和一线师傅，`repairflow-admin` 负责售后运营、Go API、MySQL 8.4 与 Redis 8。源码免费公开，设备、工单和费用均为虚构演示数据。
+`repairflow-miniapp` 面向客户和一线师傅，`repairflow-admin` 负责售后运营、Go API、MySQL 8.4 与 Redis 8。两端共享诊断、报价、派工、验收和质保状态；设备、工单和费用均为虚构演示数据。

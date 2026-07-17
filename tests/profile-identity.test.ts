@@ -16,7 +16,7 @@ describe('personal profile contract', () => {
   it('restores the three studio stats on the home page', () => {
     expect(homeSource).toContain('class="hero-studio__stats"');
     expect(homeSource).toContain('7 年经验');
-    expect(homeSource).toContain('永久免费');
+    expect(homeSource).toContain('站内互动');
   });
 
   it('keeps the shared profile component out of the about page', () => {

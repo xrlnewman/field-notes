@@ -1,6 +1,6 @@
 ---
 title: TravelFlow 旅行酒店预订平台
-description: 免费开源的旅行产品、询价预订、支付确认、出行服务、售后与结算一体化平台，适合旅行社和精品酒店团队。
+description: 旅行产品、询价预订、支付确认、出行服务、售后与结算一体化平台，适合旅行社和精品酒店团队。
 publishedAt: 2026-07-16T14:30:00-05:00
 updatedAt: 2026-07-16T14:30:00-05:00
 status: active
@@ -52,10 +52,10 @@ featured: false
 draft: false
 ---
 
-## 完整闭环
+## 预订流程
 
 旅行产品上架 → 询价预订 → 库存锁定 → 确认出行 → 入住服务 → 评价售后 → 供应商结算；订单状态与库存变更可审计。
 
-## 仓库关联与免费边界
+## 仓库关联与运行范围
 
-`travelflow-miniapp` 面向旅客与前台，`travelflow-admin` 负责旅行运营、Go API、MySQL 8.4 与 Redis 8。源码免费公开，行程、房型和订单均为虚构演示数据。
+`travelflow-miniapp` 面向旅客与前台，`travelflow-admin` 负责旅行运营、Go API、MySQL 8.4 与 Redis 8。两端共享行程、房型、预订、售后和结算状态；行程、房型和订单均为虚构演示数据。

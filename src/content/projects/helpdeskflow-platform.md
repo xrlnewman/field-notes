@@ -1,6 +1,6 @@
 ---
 title: HelpdeskFlow 客服工单平台
-description: 免费开源的客服创建、分派、回复、解决与满意度一体化工单系统，为小团队提供可量化的服务台。
+description: 客服创建、分派、回复、解决与满意度一体化工单系统，为小团队提供可量化的服务台。
 publishedAt: 2026-07-16T13:25:00-05:00
 updatedAt: 2026-07-16T13:25:00-05:00
 status: active
@@ -52,10 +52,10 @@ featured: false
 draft: false
 ---
 
-## 完整闭环
+## 服务流程
 
 客户创建 → 自动分派 → 客服回复 → 标记解决 → 客户评价；SLA 和审计事件让服务质量可量化。
 
-## 仓库关联与免费边界
+## 仓库关联与运行范围
 
-`helpdeskflow-miniapp` 和 `helpdeskflow-admin` 共享 Go API、MySQL 8.4、Redis 8 和幂等写入。源码免费公开，客户对话和联系人只使用虚构数据。
+`helpdeskflow-miniapp` 和 `helpdeskflow-admin` 共享 Go API、MySQL 8.4、Redis 8 和幂等写入。两端共享工单状态、回复记录和满意度结果；客户对话和联系人只使用虚构数据。

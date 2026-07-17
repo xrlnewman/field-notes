@@ -1,6 +1,6 @@
 ---
 title: EnergyFlow 能源巡检平台
-description: 免费开源的能源设备建档、计划巡检、派单、复核、告警闭环与节能复盘平台，适合园区和工厂的设备运营团队。
+description: 能源设备建档、计划巡检、派单、复核、告警处理与节能复盘平台，适合园区和工厂的设备运营团队。
 publishedAt: 2026-07-16T13:45:00-05:00
 updatedAt: 2026-07-16T13:45:00-05:00
 status: active
@@ -43,7 +43,7 @@ screenshots:
     height: 844
   - src: /images/projects/energyflow-platform/shot-4.png
     alt: EnergyFlow 移动告警处理
-    title: 告警闭环
+    title: 告警处理
     caption: 告警处理、设备状态和巡检事件在同一张卡片里完成，避免现场人员切换多个系统。
     viewport: mobile
     width: 390
@@ -52,10 +52,10 @@ featured: false
 draft: false
 ---
 
-## 完整闭环
+## 巡检流程
 
 设备建档 → 计划巡检 → 派单 → 现场记录 → 待复核 → 已归档 → 告警处理 → 节能复盘；每次状态推进写入事件时间线。
 
-## 仓库关联与免费边界
+## 仓库关联与运行范围
 
-`energyflow-miniapp` 面向巡检员，`energyflow-admin` 负责运营后台、Go API、MySQL 8.4 与 Redis 8 Compose。源码免费公开，设备、区域和能耗数据均为虚构演示。
+`energyflow-miniapp` 面向巡检员，`energyflow-admin` 负责运营后台、Go API、MySQL 8.4 与 Redis 8 Compose。两端共享设备、计划、告警和能耗记录；设备、区域和能耗数据均为虚构演示。

@@ -1,6 +1,6 @@
 ---
 title: PayrollFlow 薪酬绩效管理平台
-description: 免费开源的员工档案、绩效目标、薪资核算、审批发放和月度归档一体化人力平台，适合中小企业建立透明的人事流程。
+description: 员工档案、绩效目标、薪资核算、审批发放和月度归档一体化人力平台，适合中小企业建立透明的人事流程。
 publishedAt: 2026-07-16T14:15:00-05:00
 updatedAt: 2026-07-16T14:15:00-05:00
 status: active
@@ -96,10 +96,10 @@ featured: false
 draft: false
 ---
 
-## 完整闭环
+## 薪资流程
 
 员工入职 → 目标确认 → 月度绩效 → 薪资核算 → 主管审批 → 发放确认 → 月度归档；薪资批次和审批事件可回放。
 
-## 仓库关联与免费边界
+## 仓库关联与运行范围
 
-`payrollflow-miniapp` 提供员工与主管移动体验，`payrollflow-admin` 提供人力后台、Go API、MySQL 8.4 与 Redis 8。源码免费公开，员工、考勤和薪资数据均为虚构演示数据。
+`payrollflow-miniapp` 提供员工与主管移动体验，`payrollflow-admin` 提供人力后台、Go API、MySQL 8.4 与 Redis 8。两端共享考勤、核算、复核、发放和归档状态；员工、考勤和薪资数据均为虚构演示数据。

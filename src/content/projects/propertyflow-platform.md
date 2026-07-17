@@ -1,6 +1,6 @@
 ---
 title: PropertyFlow 物业工单平台
-description: 免费开源的报修、派单、上门、验收与评价一体化物业工单系统，适合社区和园区建立透明的服务闭环。
+description: 报修、派单、上门、验收与评价一体化物业工单系统，适合社区和园区建立透明的服务流程。
 publishedAt: 2026-07-16T13:20:00-05:00
 updatedAt: 2026-07-16T13:20:00-05:00
 status: active
@@ -52,10 +52,10 @@ featured: false
 draft: false
 ---
 
-## 完整闭环
+## 工单流程
 
 住户报修 → 物业派单 → 师傅上门 → 处理记录 → 住户验收 → 满意度评价；每个状态都有事件记录和幂等写入。
 
-## 仓库关联与免费边界
+## 仓库关联与运行范围
 
-`propertyflow-miniapp` 负责住户和一线人员体验，`propertyflow-admin` 负责运营、API、MySQL 8.4 与 Redis 8。源码可免费自部署，地址、住户和工单均为虚构数据。
+`propertyflow-miniapp` 负责住户和一线人员体验，`propertyflow-admin` 负责运营、API、MySQL 8.4 与 Redis 8。两端共享报修、派单、验收和评价状态；地址、住户和工单均为虚构数据。
