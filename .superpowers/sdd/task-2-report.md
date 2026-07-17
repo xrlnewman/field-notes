@@ -20,7 +20,9 @@
 | `travelflow-admin/web` `npm run build` | 通过 |
 | `travelflow-miniapp` `npm test` | 3 tests passed |
 | `travelflow-miniapp` `npm run build` | 通过 |
-| `field-notes` `npm test` | 448 tests passed |
+| `field-notes` `npm test` | 449 tests passed |
+| `field-notes` `npm run check` | 0 errors / 0 warnings / 0 hints |
+| `field-notes` `npm run build` | 通过 |
 | `field-notes` `npx vitest run tests/productization-phase2.test.ts` | 4 tests passed |
 
 ## 分支与提交
@@ -29,4 +31,12 @@
 - miniapp：`feat/travelflow-miniapp-booking-after-sale`
 - blog：沿用 `feat/productization-phase2`
 
-各仓库仅提交本任务相关变更，未 push。旅行预订创建初始状态为 `待确认`，确认动作推进到 `已预订`，与当前公开 API 的单次确认动作保持一致；`草稿` 作为产品编辑态未暴露为订单动作。
+各仓库仅提交本任务相关变更，未 push。旅行产品和预订均从 `草稿` 开始；一次确认动作记录 `草稿 → 待确认 → 已预订`，保持公开 API 的单次确认体验。
+
+## 审查修复（第二轮）
+
+- 产品与预订补充 `草稿` 边界：产品创建草稿、发布后可预订；预订草稿确认时记录 `草稿 → 待确认 → 已预订` 事件。
+- 新增结构化 `Payment` 与 `AfterSale` 记录；售后仅允许 `已支付` / `已完成`，在同一内存锁或 MySQL 事务中按唯一 booking 记录只释放一次库存。
+- 负价格（含 `-0.50`）、整数溢出、负容量/数量均返回 HTTP 400；SQL 列表扫描和详情查询错误不再静默吞掉；Redis 锁按 token 校验后释放。
+- 管理端新增产品日历、产品/预订详情、事件时间线和售后原因表单；移动端调用产品详情、预订详情/事件 API，并提供旅客、人数、联系方式、售后原因表单，成功后刷新。
+- 重新生成四张真实页面截图：管理端总览/产品队列（1440×960），移动端产品/预订状态（390×844）；四张 SHA-256 均不重复，并同步更新图注。

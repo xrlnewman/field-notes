@@ -23,10 +23,12 @@ describe('LabFlow 第二阶段样本送检与报告闭环', () => {
 describe('TravelFlow 第二阶段旅行预订与售后闭环', () => {
   it('documents inventory-safe booking states and idempotent endpoints', () => {
     const source = read('src/content/projects/travelflow-platform.md');
-    for (const status of ['待确认', '已预订', '已支付', '出行中', '已完成', '售后中']) expect(source).toContain(status);
+    for (const status of ['草稿', '待确认', '已预订', '已支付', '出行中', '已完成', '售后中']) expect(source).toContain(status);
     for (const endpoint of ['/travel-products', '/bookings', '/bookings/:id/confirm', '/bookings/:id/pay', '/bookings/:id/after-sale']) expect(source).toContain(endpoint);
     expect(source).toContain('Idempotency-Key');
     expect(source).toContain('库存');
+    expect(source).toContain('Payment');
+    expect(source).toContain('AfterSale');
   });
 
   it('keeps the miniapp and admin repositories linked', () => {

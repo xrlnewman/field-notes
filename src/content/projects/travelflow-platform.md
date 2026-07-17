@@ -23,28 +23,28 @@ screenshots:
   - src: /images/projects/travelflow-platform/shot-1.png
     alt: TravelFlow 旅行总览
     title: 旅行运营总览
-    caption: 待确认订单、入住率、热门目的地和售后工单以旅行运营节奏呈现。
+    caption: 管理端展示七日履约指标、调度队列和客服异常，作为旅行运营入口。
     viewport: desktop
     width: 1440
     height: 960
   - src: /images/projects/travelflow-platform/shot-2.png
     alt: TravelFlow 预订订单列表
-    title: 预订与库存
-    caption: 行程、日期、房型、客户和确认状态集中展示，库存变化可追踪。
+    title: 产品日历与预订队列
+    caption: 管理端按出发日期查看产品库存、预订状态、支付结果和售后入口。
     viewport: desktop
     width: 1440
     height: 960
   - src: /images/projects/travelflow-platform/shot-3.png
     alt: TravelFlow 移动行程页面
-    title: 移动行程
-    caption: 旅客在手机上查看行程、入住提醒和服务联系人，信息层级保持清爽。
+    title: 移动端旅行产品
+    caption: 移动端以产品卡展示目的地、日期、价格和实时余量，预订入口保持单手可达。
     viewport: mobile
     width: 390
     height: 844
   - src: /images/projects/travelflow-platform/shot-4.png
     alt: TravelFlow 移动订单确认
-    title: 订单确认与售后
-    caption: 预订确认、改期申请和评价入口按状态排列，售后结果回到运营后台。
+    title: 移动端订单状态与售后
+    caption: 旅客订单显示支付状态、出行人数与售后入口，操作结果回到运营后台事件时间线。
     viewport: mobile
     width: 390
     height: 844
@@ -54,7 +54,7 @@ draft: false
 
 ## 预订与售后流程
 
-旅行产品上架后，运营可以按目的地、出发日期和库存筛选产品。旅客提交 `/bookings` 会在 MySQL 事务中锁定库存并生成事件时间线，订单状态严格按照 `待确认 → 已预订 → 已支付 → 出行中 → 已完成` 推进；已支付或已完成订单可以通过 `/bookings/:id/after-sale` 进入 `售后中`，售后原因、操作人和每一步时间都会落入事件时间线。重复写请求必须携带 `Idempotency-Key`，重复提交只回放第一次结果。
+旅行产品创建先进入 `草稿`，运营发布后才可被预订；旅客提交 `/bookings` 会生成预订草稿并锁定库存，确认动作补齐 `待确认 → 已预订` 事件。订单状态严格按照 `草稿 → 待确认 → 已预订 → 已支付 → 出行中 → 已完成` 推进；已支付或已完成订单可以通过 `/bookings/:id/after-sale` 进入 `售后中`，出行中的订单不允许直接售后。支付和售后分别生成结构化 `Payment` / `AfterSale` 记录，售后在同一事务内只释放一次库存。重复写请求必须携带 `Idempotency-Key`，重复提交只回放第一次结果。
 
 核心 API：`GET /travel-products`、`GET /travel-products/:id`、`POST /travel-products`、`GET /bookings`、`GET /bookings/:id/events`、`POST /bookings`、`POST /bookings/:id/confirm`、`POST /bookings/:id/pay`、`POST /bookings/:id/complete`、`POST /bookings/:id/after-sale`。日期范围、金额（分）、数量和库存均由后端校验，超卖、越级支付和无售后原因会被拒绝。
 
