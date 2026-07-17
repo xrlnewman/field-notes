@@ -55,3 +55,20 @@ describe('CreatorFlow 第三阶段内容排期与发布复盘闭环', () => {
     for (const shot of ['shot-1.png', 'shot-2.png', 'shot-3.png', 'shot-4.png']) expect(source).toContain(shot);
   });
 });
+
+describe('LegalFlow 第四阶段案件协同与结案闭环', () => {
+  it('documents alias-only matter states, deadline validation, checksum and close gate', () => {
+    const source = read('src/content/projects/legalflow-platform.md');
+    for (const status of ['待委托', '已立案', '协同中', '待结案', '已结案']) expect(source).toContain(status);
+    for (const endpoint of ['/matters', '/matters/:id/assign', '/matters/:id/file', '/matters/:id/close']) expect(source).toContain(endpoint);
+    for (const field of ['subjectAlias', 'deadline', 'checksum', 'Idempotency-Key', '事件时间线']) expect(source).toContain(field);
+    expect(source).toContain('只有待结案案件可以提交结案摘要');
+  });
+
+  it('links both repositories and four matter workflow screenshots', () => {
+    const source = read('src/content/projects/legalflow-platform.md');
+    expect(source).toContain('https://github.com/xrlnewman/legalflow-admin');
+    expect(source).toContain('https://github.com/xrlnewman/legalflow-miniapp');
+    for (const shot of ['shot-1.png', 'shot-2.png', 'shot-3.png', 'shot-4.png']) expect(source).toContain(shot);
+  });
+});
