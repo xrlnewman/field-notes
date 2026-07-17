@@ -23,11 +23,11 @@
 ### Task 1: LabFlow 样本送检与报告闭环
 
 **Files:**
-- Modify: `E:/project/labflow-admin/server/types.go`, `service.go`, `store.go`, `main.go`, `deploy/mysql/init.sql`
-- Modify: `E:/project/labflow-admin/web/src/api.js`, `main.js`, `tests/api.test.js`, `tests/careflow.test.js`
-- Modify: `E:/project/labflow-miniapp/api.js`, `main.js`, `styles.css`, `tests/api.test.js`, `tests/careflow.test.js`
-- Modify: `E:/project/field-notes/src/content/projects/labflow-platform.md`
-- Test: `E:/project/field-notes/tests/productization-phase2.test.ts`
+- Modify: `labflow-admin/server/types.go`, `service.go`, `store.go`, `main.go`, `deploy/mysql/init.sql`
+- Modify: `labflow-admin/web/src/api.js`, `main.js`, `tests/api.test.js`, `tests/careflow.test.js`
+- Modify: `labflow-miniapp/api.js`, `main.js`, `styles.css`, `tests/api.test.js`, `tests/careflow.test.js`
+- Modify: `field-notes/src/content/projects/labflow-platform.md`
+- Test: `field-notes/tests/productization-phase2.test.ts`
 
 **Interfaces:**
 - `GET /samples?page=1&pageSize=20&status=&keyword=` 返回样本列表分页。
@@ -37,7 +37,7 @@
 - `POST /samples/:id/report` 输入 `{result,remark}`，只能从“检验中”进入“待复核”。
 
 - [ ] **Step 1: Write failing tests** for missing subject alias, empty tests, illegal review before testing, duplicate idempotency key, event ordering and report archive.
-- [ ] **Step 2: Run `go test ./...` in `E:/project/labflow-admin`** and record the expected missing-domain failures.
+- [ ] **Step 2: Run `go test ./...` in `labflow-admin`** and record the expected missing-domain failures.
 - [ ] **Step 3: Add Sample/Test/Report/Event/Idempotency types and SQL tables** with status constants and indexes; keep the old appointment handlers unchanged.
 - [ ] **Step 4: Implement service state transitions and handlers** with context propagation, envelope response and idempotent event writes.
 - [ ] **Step 5: Add admin list/detail/review UI** with status filter, sample detail timeline, report review form, empty/error state and fictional-data label.
@@ -47,11 +47,11 @@
 ### Task 2: TravelFlow 旅行预订与售后闭环
 
 **Files:**
-- Modify: `E:/project/travelflow-admin/server/domain.go`, `store.go`, `sql_store.go`, `main.go`, `deploy/mysql/init.sql`
-- Modify: `E:/project/travelflow-admin/web/src/api.js`, `main.js`, `tests/api.test.js`, `tests/careflow.test.js`
-- Modify: `E:/project/travelflow-miniapp/api.js`, `main.js`, `styles.css`, `tests/api.test.js`, `tests/careflow.test.js`
-- Modify: `E:/project/field-notes/src/content/projects/travelflow-platform.md`
-- Test: `E:/project/field-notes/tests/productization-phase2.test.ts`
+- Modify: `travelflow-admin/server/domain.go`, `store.go`, `sql_store.go`, `main.go`, `deploy/mysql/init.sql`
+- Modify: `travelflow-admin/web/src/api.js`, `main.js`, `tests/api.test.js`, `tests/careflow.test.js`
+- Modify: `travelflow-miniapp/api.js`, `main.js`, `styles.css`, `tests/api.test.js`, `tests/careflow.test.js`
+- Modify: `field-notes/src/content/projects/travelflow-platform.md`
+- Test: `field-notes/tests/productization-phase2.test.ts`
 
 **Interfaces:**
 - `GET /travel-products`、`GET /travel-products/:id`、`GET /bookings`、`GET /bookings/:id/events`。
@@ -71,11 +71,11 @@
 ### Task 3: CreatorFlow 内容排期与发布闭环
 
 **Files:**
-- Modify: `E:/project/creatorflow-admin/server/types.go`, `service.go`, `store.go`, `main.go`, `deploy/mysql/init.sql`
-- Modify: `E:/project/creatorflow-admin/web/src/api.js`, `main.js`, `tests/api.test.js`, `tests/careflow.test.js`
-- Modify: `E:/project/creatorflow-miniapp/api.js`, `main.js`, `styles.css`, `tests/api.test.js`, `tests/careflow.test.js`
-- Modify: `E:/project/field-notes/src/content/projects/creatorflow-platform.md`
-- Test: `E:/project/field-notes/tests/productization-phase2.test.ts`
+- Modify: `creatorflow-admin/server/types.go`, `service.go`, `store.go`, `main.go`, `deploy/mysql/init.sql`
+- Modify: `creatorflow-admin/web/src/api.js`, `main.js`, `tests/api.test.js`, `tests/careflow.test.js`
+- Modify: `creatorflow-miniapp/api.js`, `main.js`, `styles.css`, `tests/api.test.js`, `tests/careflow.test.js`
+- Modify: `field-notes/src/content/projects/creatorflow-platform.md`
+- Test: `field-notes/tests/productization-phase2.test.ts`
 
 **Interfaces:**
 - `GET /content-items`、`GET /content-items/:id`、`GET /content-items/:id/events` 支持状态、负责人和发布日期筛选。
@@ -95,11 +95,11 @@
 ### Task 4: LegalFlow 法务案件协同闭环
 
 **Files:**
-- Modify: `E:/project/legalflow-admin/server/types.go`, `service.go`, `store.go`, `main.go`, `deploy/mysql/init.sql`
-- Modify: `E:/project/legalflow-admin/web/src/api.js`, `main.js`, `tests/api.test.js`, `tests/careflow.test.js`
-- Modify: `E:/project/legalflow-miniapp/api.js`, `main.js`, `styles.css`, `tests/api.test.js`, `tests/careflow.test.js`
-- Modify: `E:/project/field-notes/src/content/projects/legalflow-platform.md`
-- Test: `E:/project/field-notes/tests/productization-phase2.test.ts`
+- Modify: `legalflow-admin/server/types.go`, `service.go`, `store.go`, `main.go`, `deploy/mysql/init.sql`
+- Modify: `legalflow-admin/web/src/api.js`, `main.js`, `tests/api.test.js`, `tests/careflow.test.js`
+- Modify: `legalflow-miniapp/api.js`, `main.js`, `styles.css`, `tests/api.test.js`, `tests/careflow.test.js`
+- Modify: `field-notes/src/content/projects/legalflow-platform.md`
+- Test: `field-notes/tests/productization-phase2.test.ts`
 
 **Interfaces:**
 - `GET /matters`、`GET /matters/:id`、`GET /matters/:id/events` 支持案件状态和负责人筛选。
@@ -119,11 +119,11 @@
 ### Task 5: VenueFlow 场馆预约售票与日结闭环
 
 **Files:**
-- Modify: `E:/project/venueflow-admin/server/domain.go`, `store.go`, `sql_store.go`, `main.go`, `deploy/mysql/init.sql`
-- Modify: `E:/project/venueflow-admin/web/src/api.js`, `main.js`, `tests/api.test.js`, `tests/careflow.test.js`
-- Modify: `E:/project/venueflow-miniapp/api.js`, `main.js`, `styles.css`, `tests/api.test.js`, `tests/careflow.test.js`
-- Modify: `E:/project/field-notes/src/content/projects/venueflow-platform.md`
-- Test: `E:/project/field-notes/tests/productization-phase2.test.ts`
+- Modify: `venueflow-admin/server/domain.go`, `store.go`, `sql_store.go`, `main.go`, `deploy/mysql/init.sql`
+- Modify: `venueflow-admin/web/src/api.js`, `main.js`, `tests/api.test.js`, `tests/careflow.test.js`
+- Modify: `venueflow-miniapp/api.js`, `main.js`, `styles.css`, `tests/api.test.js`, `tests/careflow.test.js`
+- Modify: `field-notes/src/content/projects/venueflow-platform.md`
+- Test: `field-notes/tests/productization-phase2.test.ts`
 
 **Interfaces:**
 - `GET /venues`、`GET /sessions`、`GET /sessions/:id`、`GET /sessions/:id/events`。
@@ -144,27 +144,27 @@
 ### Task 6: 博客内容、截图与五个详情页
 
 **Files:**
-- Modify: `E:/project/field-notes/src/content/projects/labflow-platform.md`
-- Modify: `E:/project/field-notes/src/content/projects/travelflow-platform.md`
-- Modify: `E:/project/field-notes/src/content/projects/creatorflow-platform.md`
-- Modify: `E:/project/field-notes/src/content/projects/legalflow-platform.md`
-- Modify: `E:/project/field-notes/src/content/projects/venueflow-platform.md`
-- Create/replace verified assets: `E:/project/field-notes/public/images/projects/{labflow,travelflow,creatorflow,legalflow,venueflow}/shot-{1..4}.png`
-- Test: `E:/project/field-notes/tests/productization-phase2.test.ts`
+- Modify: `field-notes/src/content/projects/labflow-platform.md`
+- Modify: `field-notes/src/content/projects/travelflow-platform.md`
+- Modify: `field-notes/src/content/projects/creatorflow-platform.md`
+- Modify: `field-notes/src/content/projects/legalflow-platform.md`
+- Modify: `field-notes/src/content/projects/venueflow-platform.md`
+- Create/replace verified assets: `field-notes/public/images/projects/{labflow,travelflow,creatorflow,legalflow,venueflow}/shot-{1..4}.png`
+- Test: `field-notes/tests/productization-phase2.test.ts`
 
 - [ ] **Step 1: Add failing content assertions** for each product's modules, roles, workflow, metrics, integrations, two repository URLs and four screenshots.
 - [ ] **Step 2: Run the targeted Vitest file and verify it fails before content is updated.**
 - [ ] **Step 3: Add domain-specific frontmatter and concise Markdown sections**; mark medical/travel data as fictional and preserve existing screenshot paths.
 - [ ] **Step 4: Capture screenshots only after each product passes its browser checks; verify dimensions, no overflow, correct title and no broken assets.**
-- [ ] **Step 5: Run `npm test`, `npm run check`, `npm run build` in `E:/project/field-notes` and commit `feat(blog): 更新第二批产品能力展示`.
+- [ ] **Step 5: Run `npm test`, `npm run check`, `npm run build` in the `field-notes` workspace and commit `feat(blog): 更新第二批产品能力展示`.
 
 ### Task 7: 跨仓库验收与上线
 
 **Files:**
-- Create: `E:/project/.audit/productization-phase2-browser-check.mjs`
+- Create: `.audit/productization-phase2-browser-check.mjs`
 - Modify only intentional files in the 10 product repositories and `field-notes`.
 
-- [ ] **Step 1: Run every admin/API `go test ./...` and `go vet ./...`; run every miniapp `npm test` and `npm run build`.**
+- [ ] **Step 1: From the workspace root, run every admin/API `go test ./...` and `go vet ./...`; run every miniapp `npm test` and `npm run build`.**
 - [ ] **Step 2: Start representative admin and miniapp builds on unique ports; use Playwright to load home/list/detail, perform one legal action, one illegal action and verify visible error plus no console errors.**
 - [ ] **Step 3: Run `git fetch` in every repository, inspect status and push only the approved feature branches; do not force-push.**
 - [ ] **Step 4: Deploy `field-notes` with `npx wrangler pages deploy dist --project-name field-notes --branch main`.**
