@@ -39,13 +39,13 @@
 ### Task 3: 博客内容和分类
 
 **Files:**
-- Create: `E:\project\field-notes\src\content\projects\{invoice,repair,supply,payroll,booking,lab,travel,creator,legal,venue}flow-platform.md`
-- Modify: `E:\project\field-notes\src\lib\projects.ts`
-- Modify: `E:\project\field-notes\src\pages\projects\index.astro`
-- Modify: `E:\project\field-notes\tests\content.test.ts`
-- Modify: `E:\project\field-notes\tests\projects.test.ts`
-- Modify: `E:\project\field-notes\tests\build-smoke.test.ts`
-- Create: `E:\project\field-notes\public\images\projects\<slug>\shot-{1..4}.png`
+- Create: `src/content/projects/{invoice,repair,supply,payroll,booking,lab,travel,creator,legal,venue}flow-platform.md`
+- Modify: `src/lib/projects.ts`
+- Modify: `src/pages/projects/index.astro`
+- Modify: `tests/content.test.ts`
+- Modify: `tests/projects.test.ts`
+- Modify: `tests/build-smoke.test.ts`
+- Create: `public/images/projects/<slug>/shot-{1..4}.png`
 
 - [ ] 将博客项目数和标题文案更新为 30 个，并新增 `售后服务`、`采购供应链`、`旅游住宿`、`内容创作`、`法律服务`、`场馆运营` 六个分类。
 - [ ] 每个内容文件写入准确标题、闭环、技术栈、双仓库链接、4 张截图与免费开源边界。

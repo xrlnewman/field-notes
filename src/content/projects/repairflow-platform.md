@@ -1,0 +1,61 @@
+---
+title: RepairFlow 售后维修协同平台
+description: 免费开源的报修、诊断、报价、派工、维修验收和回访一体化售后服务平台，适合设备与家电服务团队。
+publishedAt: 2026-07-16T14:05:00-05:00
+updatedAt: 2026-07-16T14:05:00-05:00
+status: active
+category: 售后服务
+tech: [Vite, Vue 3, TypeScript, Go 1.25, Gin, MySQL 8.4, Redis 8, Docker Compose]
+cover: /images/projects/repairflow-platform/shot-1.png
+repoUrl: https://github.com/xrlnewman/repairflow-admin
+repositories:
+  - name: repairflow-miniapp
+    role: frontend
+    description: 客户与维修师傅移动端，支持报修描述、报价确认、上门签到和验收回访。
+    tech: [Vite, TypeScript, Responsive UI]
+    url: https://github.com/xrlnewman/repairflow-miniapp
+  - name: repairflow-admin
+    role: admin
+    description: 售后后台与 Go Gin API，覆盖工单、客户、配件、师傅、SLA 和服务评价。
+    tech: [Vite, Go, Gin, MySQL 8.4, Redis 8]
+    url: https://github.com/xrlnewman/repairflow-admin
+screenshots:
+  - src: /images/projects/repairflow-platform/shot-1.png
+    alt: RepairFlow 售后总览
+    title: 售后服务总览
+    caption: 服务请求、按时完成率、待报价工单和客户满意度形成一张运营脉搏图。
+    viewport: desktop
+    width: 1440
+    height: 960
+  - src: /images/projects/repairflow-platform/shot-2.png
+    alt: RepairFlow 维修工单列表
+    title: 工单与派工
+    caption: 故障类型、优先级、服务工程师和 SLA 同屏展示，调度动作清晰可追踪。
+    viewport: desktop
+    width: 1440
+    height: 960
+  - src: /images/projects/repairflow-platform/shot-3.png
+    alt: RepairFlow 移动报修页面
+    title: 移动报修
+    caption: 客户提交问题、上传描述并确认报价，整个售后过程不需要跳出产品。
+    viewport: mobile
+    width: 390
+    height: 844
+  - src: /images/projects/repairflow-platform/shot-4.png
+    alt: RepairFlow 移动维修验收
+    title: 维修验收与回访
+    caption: 师傅提交维修结果后，客户直接验收并评分，服务数据回流到团队分析。
+    viewport: mobile
+    width: 390
+    height: 844
+featured: false
+draft: false
+---
+
+## 完整闭环
+
+客户报修 → 客服诊断 → 报价确认 → 派工上门 → 维修记录 → 客户验收 → 回访评价；配件与人工费用全部保留可审计节点。
+
+## 仓库关联与免费边界
+
+`repairflow-miniapp` 面向客户和一线师傅，`repairflow-admin` 负责售后运营、Go API、MySQL 8.4 与 Redis 8。源码免费公开，设备、工单和费用均为虚构演示数据。

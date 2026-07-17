@@ -185,6 +185,96 @@ const publicProjects = [
       'https://github.com/xrlnewman/energyflow-admin',
     ],
   },
+  {
+    slug: 'invoiceflow-platform',
+    title: 'InvoiceFlow 企业开票与收款平台',
+    cover: 'invoiceflow-platform/shot-1.png',
+    repositories: [
+      'https://github.com/xrlnewman/invoiceflow-miniapp',
+      'https://github.com/xrlnewman/invoiceflow-admin',
+    ],
+  },
+  {
+    slug: 'repairflow-platform',
+    title: 'RepairFlow 售后维修协同平台',
+    cover: 'repairflow-platform/shot-1.png',
+    repositories: [
+      'https://github.com/xrlnewman/repairflow-miniapp',
+      'https://github.com/xrlnewman/repairflow-admin',
+    ],
+  },
+  {
+    slug: 'supplyflow-platform',
+    title: 'SupplyFlow 采购供应链平台',
+    cover: 'supplyflow-platform/shot-1.png',
+    repositories: [
+      'https://github.com/xrlnewman/supplyflow-miniapp',
+      'https://github.com/xrlnewman/supplyflow-admin',
+    ],
+  },
+  {
+    slug: 'payrollflow-platform',
+    title: 'PayrollFlow 薪酬绩效管理平台',
+    cover: 'payrollflow-platform/shot-1.png',
+    repositories: [
+      'https://github.com/xrlnewman/payrollflow-miniapp',
+      'https://github.com/xrlnewman/payrollflow-admin',
+    ],
+  },
+  {
+    slug: 'bookingflow-platform',
+    title: 'BookingFlow 预约排班平台',
+    cover: 'bookingflow-platform/shot-1.png',
+    repositories: [
+      'https://github.com/xrlnewman/bookingflow-miniapp',
+      'https://github.com/xrlnewman/bookingflow-admin',
+    ],
+  },
+  {
+    slug: 'labflow-platform',
+    title: 'LabFlow 医疗样本管理平台',
+    cover: 'labflow-platform/shot-1.png',
+    repositories: [
+      'https://github.com/xrlnewman/labflow-miniapp',
+      'https://github.com/xrlnewman/labflow-admin',
+    ],
+  },
+  {
+    slug: 'travelflow-platform',
+    title: 'TravelFlow 旅行酒店预订平台',
+    cover: 'travelflow-platform/shot-1.png',
+    repositories: [
+      'https://github.com/xrlnewman/travelflow-miniapp',
+      'https://github.com/xrlnewman/travelflow-admin',
+    ],
+  },
+  {
+    slug: 'creatorflow-platform',
+    title: 'CreatorFlow 内容排期与数据平台',
+    cover: 'creatorflow-platform/shot-1.png',
+    repositories: [
+      'https://github.com/xrlnewman/creatorflow-miniapp',
+      'https://github.com/xrlnewman/creatorflow-admin',
+    ],
+  },
+  {
+    slug: 'legalflow-platform',
+    title: 'LegalFlow 法务案件协同平台',
+    cover: 'legalflow-platform/shot-1.png',
+    repositories: [
+      'https://github.com/xrlnewman/legalflow-miniapp',
+      'https://github.com/xrlnewman/legalflow-admin',
+    ],
+  },
+  {
+    slug: 'venueflow-platform',
+    title: 'VenueFlow 场馆运营平台',
+    cover: 'venueflow-platform/shot-1.png',
+    repositories: [
+      'https://github.com/xrlnewman/venueflow-miniapp',
+      'https://github.com/xrlnewman/venueflow-admin',
+    ],
+  },
 ] as const;
 
 const obsoleteProjectSlugs = [
@@ -319,8 +409,8 @@ describe('static site build', () => {
     });
   });
 
-  it('builds the expected 35 HTML pages', () => {
-    expect(listHtmlFiles('dist')).toHaveLength(35);
+  it('builds the expected 45 HTML pages', () => {
+    expect(listHtmlFiles('dist')).toHaveLength(45);
   });
 
   it('builds article details and tag indexes', () => {
@@ -360,21 +450,22 @@ describe('static site build', () => {
     }
   });
 
-  it('builds the nineteen product category filters on the projects page', () => {
+  it('builds the twenty-five product category filters on the projects page', () => {
     const home = readFileSync('dist/index.html', 'utf8');
     const projects = readFileSync('dist/projects/index.html', 'utf8');
     const categories = [
       '个人品牌', '电商平台', '社区服务', '企业官网', '门店经营', '供应链管理', '教育培训',
       '物流运输', '医疗健康', '人力资源', '财务管理', '销售管理', '合同管理', '物业服务',
-      '客户服务', '文体活动', '零售餐饮', '生活服务', '工业能源',
+      '客户服务', '文体活动', '零售餐饮', '生活服务', '工业能源', '售后服务', '采购供应链',
+      '旅游住宿', '内容创作', '法律服务', '场馆运营',
     ];
 
-    expect(home).toMatch(/data-project-count="20"[^>]*>20<\/strong>[\s\S]*?个网站产品/);
+    expect(home).toMatch(/data-project-count="30"[^>]*>30<\/strong>[\s\S]*?个网站产品/);
     expect(projects).toContain('data-project-catalog');
-    expect(projects).toContain('二十个可运行的网站产品');
+    expect(projects).toContain('三十个可运行的网站产品');
     expect(projects).toContain('<h1');
-    expect(projects.match(/data-project-filter=/g)).toHaveLength(20);
-    const filterCounts = [20, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+    expect(projects.match(/data-project-filter=/g)).toHaveLength(26);
+    const filterCounts = [30, 1, 1, 2, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1];
     ['全部', ...categories].forEach((category, index) => {
       const buttonStart = projects.indexOf(`data-project-filter="${category}"`);
       const filterButton = projects.slice(buttonStart, projects.indexOf('</button>', buttonStart));

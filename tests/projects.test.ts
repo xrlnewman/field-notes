@@ -293,13 +293,19 @@ describe('project category helpers', () => {
       '零售餐饮',
       '生活服务',
       '工业能源',
+      '售后服务',
+      '采购供应链',
+      '旅游住宿',
+      '内容创作',
+      '法律服务',
+      '场馆运营',
     ]);
   });
 
   it('introduces the directory as a constellation of complete products', () => {
     const projectsPage = readFileSync('src/pages/projects/index.astro', 'utf8');
 
-    expect(projectsPage).toContain('二十个可运行的网站产品');
+    expect(projectsPage).toContain('三十个可运行的网站产品');
     expect(projectsPage).toContain('前台、运营后台与服务端之间的关联');
   });
 
@@ -336,6 +342,12 @@ describe('project category helpers', () => {
       { category: '零售餐饮', count: 0 },
       { category: '生活服务', count: 0 },
       { category: '工业能源', count: 0 },
+      { category: '售后服务', count: 0 },
+      { category: '采购供应链', count: 0 },
+      { category: '旅游住宿', count: 0 },
+      { category: '内容创作', count: 0 },
+      { category: '法律服务', count: 0 },
+      { category: '场馆运营', count: 0 },
     ]);
   });
 

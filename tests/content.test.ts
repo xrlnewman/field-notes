@@ -83,7 +83,7 @@ describe('published project content', () => {
     })).toThrow();
   });
 
-  it('publishes exactly the twenty website products', () => {
+  it('publishes exactly the thirty website products', () => {
     const projectIds = readdirSync('src/content/projects', { withFileTypes: true })
       .filter((entry) => entry.isFile() && ['.md', '.mdx'].includes(extname(entry.name)))
       .filter((entry) => {
@@ -97,8 +97,10 @@ describe('published project content', () => {
       .toSorted();
 
     expect(projectIds).toEqual([
+      'bookingflow-platform',
       'careflow-platform',
       'contractflow-platform',
+      'creatorflow-platform',
       'crmflow-platform',
       'eduflow-platform',
       'energyflow-platform',
@@ -109,14 +111,22 @@ describe('published project content', () => {
       'helpdeskflow-platform',
       'hireflow-platform',
       'homeflow-platform',
+      'invoiceflow-platform',
+      'labflow-platform',
+      'legalflow-platform',
       'linli-community',
       'multi-merchant-mall',
+      'payrollflow-platform',
       'petflow-platform',
       'propertyflow-platform',
+      'repairflow-platform',
       'retailflow-platform',
       'skyboom-corporate',
       'stockflow-platform',
       'storeflow-platform',
+      'supplyflow-platform',
+      'travelflow-platform',
+      'venueflow-platform',
     ]);
   });
 
