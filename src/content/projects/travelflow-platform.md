@@ -52,10 +52,12 @@ featured: false
 draft: false
 ---
 
-## 预订流程
+## 预订与售后流程
 
-旅行产品上架 → 询价预订 → 库存锁定 → 确认出行 → 入住服务 → 评价售后 → 供应商结算；订单状态与库存变更可审计。
+旅行产品上架后，运营可以按目的地、出发日期和库存筛选产品。旅客提交 `/bookings` 会在 MySQL 事务中锁定库存并生成事件时间线，订单状态严格按照 `待确认 → 已预订 → 已支付 → 出行中 → 已完成` 推进；已支付或已完成订单可以通过 `/bookings/:id/after-sale` 进入 `售后中`，售后原因、操作人和每一步时间都会落入事件时间线。重复写请求必须携带 `Idempotency-Key`，重复提交只回放第一次结果。
+
+核心 API：`GET /travel-products`、`GET /travel-products/:id`、`POST /travel-products`、`GET /bookings`、`GET /bookings/:id/events`、`POST /bookings`、`POST /bookings/:id/confirm`、`POST /bookings/:id/pay`、`POST /bookings/:id/complete`、`POST /bookings/:id/after-sale`。日期范围、金额（分）、数量和库存均由后端校验，超卖、越级支付和无售后原因会被拒绝。
 
 ## 仓库关联与运行范围
 
-`travelflow-miniapp` 面向旅客与前台，`travelflow-admin` 负责旅行运营、Go API、MySQL 8.4 与 Redis 8。两端共享行程、房型、预订、售后和结算状态；行程、房型和订单均为虚构演示数据。
+`travelflow-miniapp` 面向旅客与前台，提供产品浏览、库存余量、预订、支付状态、行程完成和售后入口；`travelflow-admin` 负责旅行运营、Go Gin API、MySQL 8.4 与 Redis 8，提供产品/预订列表筛选、详情事件时间线和售后动作。两端共享行程、房型、预订、售后和结算状态；行程、房型和订单均为虚构演示数据。
