@@ -30,6 +30,9 @@ describe('project screenshot gallery', () => {
     expect(gallery).toContain("stage.style.setProperty('--screenshot-ratio'");
     expect(gallery).toContain(".project-screenshots__stage[data-viewport='mobile'] .project-screenshots__media::before");
     expect(gallery).toContain(".project-screenshots__stage[data-viewport='mobile'] .project-screenshots__media::after");
+    expect(gallery).toContain('max-height: min(68vh, 680px);');
+    expect(gallery).toContain('max-height: min(76vh, 720px);');
+    expect(gallery).toContain("window.matchMedia('(max-width: 700px)')");
     expect(gallery).toContain('grid-template-columns: repeat(auto-fit, minmax(108px, 1fr));');
   });
 
