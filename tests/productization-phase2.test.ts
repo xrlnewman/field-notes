@@ -37,3 +37,21 @@ describe('TravelFlow 第二阶段旅行预订与售后闭环', () => {
     expect(source).toContain('https://github.com/xrlnewman/travelflow-miniapp');
   });
 });
+
+describe('CreatorFlow 第三阶段内容排期与发布复盘闭环', () => {
+  it('documents the six-state pipeline and API actions', () => {
+    const source = read('src/content/projects/creatorflow-platform.md');
+    for (const status of ['待选题', '写作中', '制作中', '待审核', '已发布', '已复盘']) expect(source).toContain(status);
+    for (const endpoint of ['/content-items', 'submit-review', '/publish', '/metrics']) expect(source).toContain(endpoint);
+    for (const metric of ['views', 'likes', 'comments', 'shares']) expect(source).toContain(metric);
+    expect(source).toContain('事件时间线');
+    expect(source).toContain('Idempotency-Key');
+  });
+
+  it('links both repositories and four viewport screenshots', () => {
+    const source = read('src/content/projects/creatorflow-platform.md');
+    expect(source).toContain('https://github.com/xrlnewman/creatorflow-admin');
+    expect(source).toContain('https://github.com/xrlnewman/creatorflow-miniapp');
+    for (const shot of ['shot-1.png', 'shot-2.png', 'shot-3.png', 'shot-4.png']) expect(source).toContain(shot);
+  });
+});
