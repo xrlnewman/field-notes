@@ -48,6 +48,48 @@ screenshots:
     viewport: mobile
     width: 390
     height: 844
+modules:
+  - name: 服务与时段
+    description: 配置服务、价格、员工和可预约资源，避免时段冲突。
+    features: [服务目录, 时段库存, 冲突锁定]
+  - name: 预约与排班
+    description: 将客户预约与员工日历、改期和候补名单关联。
+    features: [在线预约, 改期取消, 员工排班]
+  - name: 到店与复购
+    description: 从签到进入服务记录，沉淀评价、优惠和复购提醒。
+    features: [扫码签到, 服务记录, 评价回访]
+roles:
+  - name: 客户
+    scope: 选择服务时段、支付定金和管理预约
+  - name: 门店前台
+    scope: 签到核销、改约处理和现场排班
+  - name: 服务人员
+    scope: 查看日历、开始服务和提交评价结果
+workflow:
+  - label: 选择服务时段
+    status: 待确认
+  - label: 支付定金
+    status: 已预约
+  - label: 到店签到
+    status: 已签到
+  - label: 服务执行
+    status: 服务中
+  - label: 完成评价
+    status: 已完成
+metrics:
+  - label: 今日预约
+    value: '86'
+    trend: 较昨日 +14.6%
+  - label: 时段利用率
+    value: 78.4%
+    trend: 本周平均
+  - label: 到店率
+    value: 93.1%
+    trend: 较上月 +2.8%
+  - label: 复购提醒
+    value: 42条
+    trend: 今日待发送
+integrations: [MySQL 8.4, Redis 8, Docker Compose, 日历导出]
 featured: false
 draft: false
 ---

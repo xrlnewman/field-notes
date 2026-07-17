@@ -48,6 +48,50 @@ screenshots:
     viewport: mobile
     width: 390
     height: 844
+modules:
+  - name: 薪资周期
+    description: 以月份为单位汇总员工、考勤和绩效输入。
+    features: [周期锁定, 考勤导入, 绩效汇总]
+  - name: 核算与复核
+    description: 展示逐员应发、扣款、个税和社保差异。
+    features: [规则计算, 差异校验, 复核批注]
+  - name: 发放与工资条
+    description: 管理发放批次、失败重试和员工工资条可见范围。
+    features: [批次发放, 失败重试, 工资条下载]
+roles:
+  - name: HR 专员
+    scope: 导入考勤绩效、运行核算和处理差异
+  - name: 部门主管
+    scope: 复核本部门员工明细并提交审批
+  - name: 财务主管
+    scope: 锁定周期、发起发放和查看审计记录
+workflow:
+  - label: 创建薪资周期
+    status: 草稿
+  - label: 导入考勤绩效
+    status: 计算中
+  - label: 差异复核
+    status: 待复核
+  - label: 发放审批
+    status: 待发放
+  - label: 银行批次演示
+    status: 发放中
+  - label: 工资条归档
+    status: 已归档
+metrics:
+  - label: 本期员工数
+    value: '486'
+    trend: 覆盖 12 个部门
+  - label: 应发薪资
+    value: ¥428.6万
+    trend: 较上期 +2.4%
+  - label: 待复核差异
+    value: '7笔'
+    trend: 需主管确认
+  - label: 发放成功率
+    value: 99.2%
+    trend: 最近 6 个周期
+integrations: [MySQL 8.4, Redis 8, Docker Compose, CSV 导入]
 featured: false
 draft: false
 ---

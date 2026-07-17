@@ -1,0 +1,128 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+const { modules, roles, workflow, metrics, integrations } = project.data;
+const hasCapabilities = modules?.length || roles?.length || workflow?.length || metrics?.length || integrations?.length;
+---
+
+{hasCapabilities && (
+  <section class="project-capabilities container" data-project-capabilities aria-labelledby="project-capabilities-title" data-reveal>
+    <header class="project-capabilities__heading">
+      <div>
+        <p class="eyebrow">OPERATING MODEL</p>
+        <h2 id="project-capabilities-title">产品能力</h2>
+      </div>
+      <p>从角色分工到状态流转，把一个可运行产品需要的业务骨架展示清楚。</p>
+    </header>
+
+    {modules?.length && (
+      <section class="capability-block" aria-labelledby="capability-modules-title">
+        <div class="capability-block__title"><span>01</span><h3 id="capability-modules-title">产品模块</h3></div>
+        <div class="module-grid">
+          {modules.map((module) => (
+            <article class="module-card">
+              <h4>{module.name}</h4>
+              <p>{module.description}</p>
+              <ul>{module.features.map((feature) => <li>{feature}</li>)}</ul>
+            </article>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <div class="capability-columns">
+      {roles?.length && (
+        <section class="capability-block" aria-labelledby="capability-roles-title">
+          <div class="capability-block__title"><span>02</span><h3 id="capability-roles-title">角色与权限</h3></div>
+          <div class="role-list">
+            {roles.map((role) => <div class="role-row"><strong>{role.name}</strong><span>{role.scope}</span></div>)}
+          </div>
+        </section>
+      )}
+
+      {metrics?.length && (
+        <section class="capability-block" aria-labelledby="capability-metrics-title">
+          <div class="capability-block__title"><span>03</span><h3 id="capability-metrics-title">运营指标</h3></div>
+          <div class="metric-grid">
+            {metrics.map((metric) => <div class="metric-card"><span>{metric.label}</span><strong>{metric.value}</strong><small>{metric.trend}</small></div>)}
+          </div>
+        </section>
+      )}
+    </div>
+
+    {workflow?.length && (
+      <section class="capability-block" aria-labelledby="capability-workflow-title">
+        <div class="capability-block__title"><span>04</span><h3 id="capability-workflow-title">业务流程</h3></div>
+        <ol class="workflow-list">
+          {workflow.map((step, index) => <li><span>{String(index + 1).padStart(2, '0')}</span><strong>{step.label}</strong><small>{step.status}</small></li>)}
+        </ol>
+      </section>
+    )}
+
+    {integrations?.length && (
+      <section class="capability-integrations" aria-label="技术与集成边界">
+        <span>技术与集成边界</span>
+        <div>{integrations.map((integration) => <b>{integration}</b>)}</div>
+      </section>
+    )}
+  </section>
+)}
+
+<style>
+  .project-capabilities {
+    padding-block: clamp(64px, 8vw, 96px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .project-capabilities__heading {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 0.55fr);
+    gap: 40px;
+    align-items: end;
+    margin-bottom: 42px;
+  }
+
+  .project-capabilities h2 { margin: 0; font-size: clamp(2.3rem, 5vw, 4rem); line-height: 1.05; }
+  .project-capabilities__heading > p { margin: 0; color: var(--muted); line-height: 1.75; }
+  .capability-block { margin-top: 34px; }
+  .capability-block__title { display: flex; gap: 12px; align-items: baseline; margin-bottom: 18px; }
+  .capability-block__title span { color: var(--accent-strong); font: 700 0.76rem/1 var(--font-sans); letter-spacing: 0.12em; }
+  .capability-block h3 { margin: 0; font-size: 1.3rem; }
+  .module-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  .module-card, .metric-card { padding: 22px; border: 1px solid var(--border); border-radius: var(--radius-md); background: color-mix(in srgb, var(--surface) 88%, var(--space-1)); }
+  .module-card h4 { margin: 0; font-size: 1.1rem; }
+  .module-card p { margin: 10px 0 16px; color: var(--muted); line-height: 1.65; }
+  .module-card ul { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+  .module-card li { color: var(--ink); font-size: 0.88rem; }
+  .module-card li::before { margin-right: 8px; color: var(--accent-strong); content: '↗'; }
+  .capability-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px; }
+  .role-list { border-top: 1px solid var(--border); }
+  .role-row { display: flex; justify-content: space-between; gap: 20px; padding: 14px 0; border-bottom: 1px solid var(--border); }
+  .role-row span { color: var(--muted); text-align: right; }
+  .metric-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .metric-card { display: grid; gap: 8px; }
+  .metric-card span, .metric-card small { color: var(--muted); }
+  .metric-card strong { font-size: 1.8rem; }
+  .metric-card small { color: var(--accent-strong); }
+  .workflow-list { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin: 0; padding: 0; list-style: none; }
+  .workflow-list li { display: grid; gap: 12px; min-height: 116px; padding: 16px; border-top: 2px solid var(--accent); background: var(--surface-soft); }
+  .workflow-list li > span { color: var(--accent-strong); font: 700 0.72rem/1 var(--font-sans); }
+  .workflow-list strong { line-height: 1.35; }
+  .workflow-list small { color: var(--muted); }
+  .capability-integrations { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 20px; align-items: center; margin-top: 38px; padding-top: 22px; border-top: 1px solid var(--border); }
+  .capability-integrations > span { color: var(--muted); font-size: 0.82rem; }
+  .capability-integrations div { display: flex; flex-wrap: wrap; gap: 8px; }
+  .capability-integrations b { padding: 5px 10px; border: 1px solid var(--border); border-radius: 999px; color: var(--accent-strong); font-size: 0.76rem; }
+  @media (max-width: 760px) {
+    .project-capabilities__heading, .capability-columns { grid-template-columns: 1fr; gap: 24px; }
+    .module-grid { grid-template-columns: 1fr; }
+    .workflow-list { grid-template-columns: 1fr; }
+    .workflow-list li { min-height: auto; }
+    .capability-integrations { grid-template-columns: 1fr; gap: 12px; }
+  }
+</style>

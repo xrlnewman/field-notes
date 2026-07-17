@@ -2,6 +2,7 @@
 import type { CollectionEntry } from 'astro:content';
 
 import GiscusComments from '../components/GiscusComments.astro';
+import ProjectCapabilityPanel from '../components/ProjectCapabilityPanel.astro';
 import ProjectScreenshots from '../components/ProjectScreenshots.astro';
 import RepositoryConstellation from '../components/RepositoryConstellation.astro';
 import TagList from '../components/TagList.astro';
@@ -55,6 +56,8 @@ const projectScreenshotHeadingId = `project-${projectScreenshotSlug || 'detail'}
         headingId={projectScreenshotHeadingId}
       />
     )}
+
+    <ProjectCapabilityPanel project={project} />
 
     <section class="container project-panorama" aria-labelledby="product-panorama-title" data-reveal>
       <div class="project-panorama__heading">

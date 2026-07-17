@@ -48,6 +48,50 @@ screenshots:
     viewport: mobile
     width: 390
     height: 844
+modules:
+  - name: 采购申请
+    description: 把部门需求拆成可审批的 SKU 行项目和预算。
+    features: [SKU 明细, 预算校验, 申请合并]
+  - name: 询价比价
+    description: 记录多家供应商报价、交期和评分，支持选择理由留痕。
+    features: [供应商报价, 价格比较, 交期分析]
+  - name: 收货与库存
+    description: 从到货验收进入库存批次，并将异常回流给采购负责人。
+    features: [收货登记, 质检判定, 批次入库]
+roles:
+  - name: 申请人
+    scope: 创建采购申请并跟踪到货状态
+  - name: 采购专员
+    scope: 发起询价、比价下单和跟进供应商
+  - name: 仓库质检
+    scope: 收货、质检、处理不合格和确认入库
+workflow:
+  - label: 创建采购需求
+    status: 草稿
+  - label: 供应商询价
+    status: 询价中
+  - label: 采购审批
+    status: 待审批
+  - label: 生成采购单
+    status: 已下单
+  - label: 到货质检
+    status: 已质检
+  - label: 库存入账
+    status: 已入库
+metrics:
+  - label: 本月采购额
+    value: ¥184.7万
+    trend: 预算执行 72%
+  - label: 待审批申请
+    value: '23'
+    trend: 今日新增 5 条
+  - label: 准时交付率
+    value: 91.4%
+    trend: 较上季 +4.8%
+  - label: 质检合格率
+    value: 97.6%
+    trend: 本月 1,284 件
+integrations: [MySQL 8.4, Redis 8, Docker Compose, CSV 导出]
 featured: false
 draft: false
 ---

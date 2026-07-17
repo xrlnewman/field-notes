@@ -23,10 +23,10 @@
 ### Task 1: InvoiceFlow 发票与回款闭环
 
 **Files:**
-- Modify: `E:/project/invoiceflow-admin/server/types.go`, `service.go`, `store.go`, `main.go`
-- Modify: `E:/project/invoiceflow-admin/deploy/mysql/init.sql`
-- Modify: `E:/project/invoiceflow-admin/web/src/api.js`, `main.js`, `tests/api.test.js`, `tests/careflow.test.js`
-- Modify: `E:/project/invoiceflow-miniapp/src/api.js`, `main.js`, `tests/api.test.js`, `tests/careflow.test.js`
+- Modify: `invoiceflow-admin/server/types.go`, `service.go`, `store.go`, `main.go`
+- Modify: `invoiceflow-admin/deploy/mysql/init.sql`
+- Modify: `invoiceflow-admin/web/src/api.js`, `main.js`, `tests/api.test.js`, `tests/careflow.test.js`
+- Modify: `invoiceflow-miniapp/src/api.js`, `main.js`, `tests/api.test.js`, `tests/careflow.test.js`
 
 **Interfaces:**
 - `GET /invoices?page=1&pageSize=20&status=&keyword=` 返回分页发票。
@@ -47,9 +47,9 @@
 ### Task 2: RepairFlow 售后维修闭环
 
 **Files:**
-- Modify: `E:/project/repairflow-admin/server/types.go`, `service.go`, `store.go`, `main.go`, `deploy/mysql/init.sql`
-- Modify: `E:/project/repairflow-admin/web/src/api.js`, `main.js`, `tests/api.test.js`, `tests/careflow.test.js`
-- Modify: `E:/project/repairflow-miniapp/src/api.js`, `main.js`, `tests/api.test.js`, `tests/careflow.test.js`
+- Modify: `repairflow-admin/server/types.go`, `service.go`, `store.go`, `main.go`, `deploy/mysql/init.sql`
+- Modify: `repairflow-admin/web/src/api.js`, `main.js`, `tests/api.test.js`, `tests/careflow.test.js`
+- Modify: `repairflow-miniapp/src/api.js`, `main.js`, `tests/api.test.js`, `tests/careflow.test.js`
 
 **Interfaces:**
 - `GET /work-orders?page=1&pageSize=20&status=&keyword=`、`GET /work-orders/:id`、`GET /work-orders/:id/events`。
@@ -68,9 +68,9 @@
 ### Task 3: SupplyFlow 采购供应链闭环
 
 **Files:**
-- Modify: `E:/project/supplyflow-admin/server/types.go`, `service.go`, `store.go`, `main.go`, `deploy/mysql/init.sql`
-- Modify: `E:/project/supplyflow-admin/web/src/api.js`, `main.js`, `tests/api.test.js`, `tests/careflow.test.js`
-- Modify: `E:/project/supplyflow-miniapp/src/api.js`, `main.js`, `tests/api.test.js`, `tests/careflow.test.js`
+- Modify: `supplyflow-admin/server/types.go`, `service.go`, `store.go`, `main.go`, `deploy/mysql/init.sql`
+- Modify: `supplyflow-admin/web/src/api.js`, `main.js`, `tests/api.test.js`, `tests/careflow.test.js`
+- Modify: `supplyflow-miniapp/src/api.js`, `main.js`, `tests/api.test.js`, `tests/careflow.test.js`
 
 **Interfaces:**
 - `GET /purchase-requests`、`GET /purchase-requests/:id`、`GET /purchase-requests/:id/events`。
@@ -89,9 +89,9 @@
 ### Task 4: PayrollFlow 薪酬发放闭环
 
 **Files:**
-- Modify: `E:/project/payrollflow-admin/server/types.go`, `service.go`, `store.go`, `main.go`, `deploy/mysql/init.sql`
-- Modify: `E:/project/payrollflow-admin/web/src/api.js`, `main.js`, `tests/api.test.js`, `tests/careflow.test.js`
-- Modify: `E:/project/payrollflow-miniapp/src/api.js`, `main.js`, `tests/api.test.js`, `tests/careflow.test.js`
+- Modify: `payrollflow-admin/server/types.go`, `service.go`, `store.go`, `main.go`, `deploy/mysql/init.sql`
+- Modify: `payrollflow-admin/web/src/api.js`, `main.js`, `tests/api.test.js`, `tests/careflow.test.js`
+- Modify: `payrollflow-miniapp/src/api.js`, `main.js`, `tests/api.test.js`, `tests/careflow.test.js`
 
 **Interfaces:**
 - `GET /payroll-periods`、`GET /payroll-periods/:id`、`GET /payroll-periods/:id/items`、`GET /payroll-periods/:id/events`。
@@ -109,9 +109,9 @@
 ### Task 5: BookingFlow 预约排班闭环
 
 **Files:**
-- Modify: `E:/project/bookingflow-admin/server/types.go`, `service.go`, `store.go`, `main.go`, `deploy/mysql/init.sql`
-- Modify: `E:/project/bookingflow-admin/web/src/api.js`, `main.js`, `tests/api.test.js`, `tests/careflow.test.js`
-- Modify: `E:/project/bookingflow-miniapp/src/api.js`, `main.js`, `tests/api.test.js`, `tests/careflow.test.js`
+- Modify: `bookingflow-admin/server/types.go`, `service.go`, `store.go`, `main.go`, `deploy/mysql/init.sql`
+- Modify: `bookingflow-admin/web/src/api.js`, `main.js`, `tests/api.test.js`, `tests/careflow.test.js`
+- Modify: `bookingflow-miniapp/src/api.js`, `main.js`, `tests/api.test.js`, `tests/careflow.test.js`
 
 **Interfaces:**
 - `GET /services`、`GET /availability?serviceId=&date=`、`GET /bookings`、`GET /bookings/:id`、`GET /bookings/:id/events`。
@@ -128,15 +128,15 @@
 ### Task 6: 博客结构化产品能力展示
 
 **Files:**
-- Modify: `E:/project/field-notes/src/lib/project-schema.ts`
-- Modify: `E:/project/field-notes/src/layouts/ProjectLayout.astro`
-- Create: `E:/project/field-notes/src/components/ProjectCapabilityPanel.astro`
-- Modify: `E:/project/field-notes/src/content/projects/invoiceflow-platform.md`
-- Modify: `E:/project/field-notes/src/content/projects/repairflow-platform.md`
-- Modify: `E:/project/field-notes/src/content/projects/supplyflow-platform.md`
-- Modify: `E:/project/field-notes/src/content/projects/payrollflow-platform.md`
-- Modify: `E:/project/field-notes/src/content/projects/bookingflow-platform.md`
-- Test: `E:/project/field-notes/tests/project-capabilities.test.ts`
+- Modify: `field-notes/src/lib/project-schema.ts`
+- Modify: `field-notes/src/layouts/ProjectLayout.astro`
+- Create: `field-notes/src/components/ProjectCapabilityPanel.astro`
+- Modify: `field-notes/src/content/projects/invoiceflow-platform.md`
+- Modify: `field-notes/src/content/projects/repairflow-platform.md`
+- Modify: `field-notes/src/content/projects/supplyflow-platform.md`
+- Modify: `field-notes/src/content/projects/payrollflow-platform.md`
+- Modify: `field-notes/src/content/projects/bookingflow-platform.md`
+- Test: `field-notes/tests/project-capabilities.test.ts`
 
 **Interfaces:**
 - Frontmatter optional fields: `modules: [{name,description,features[]}]`, `roles: [{name,scope}]`, `workflow: [{label,status}]`, `metrics: [{label,value,trend}]`, `integrations: string[]`.
@@ -152,8 +152,8 @@
 ### Task 7: Cross-project browser verification and screenshots
 
 **Files:**
-- Create: `E:/project/.audit/productization-phase1-browser-check.mjs`
-- Modify: `E:/project/field-notes/public/images/projects/*` only with verified screenshots
+- Create: `.audit/productization-phase1-browser-check.mjs`
+- Modify: `field-notes/public/images/projects/*` only with verified screenshots
 
 - [ ] **Step 1: Start each of the five admin web builds and five miniapp builds on unique ports.**
 - [ ] **Step 2: Run Playwright checks for each product**: load home, switch list, create demo record, open detail, advance status, trigger one invalid action, assert visible error and no console errors.
@@ -166,4 +166,3 @@
 - [ ] **Step 2: Run the full command matrix from the design spec and record pass/fail counts.**
 - [ ] **Step 3: Review API compatibility, migration safety, error paths, and visual screenshots; fix Critical/Important findings before merging.**
 - [ ] **Step 4: Push each repository branch and deploy the blog only after the fixed-domain smoke check returns 200 and exposes 30 projects plus the new capability panel.**
-

@@ -25,6 +25,28 @@ const projectScreenshotSchema = z.object({
   height: z.number().int().positive(),
 });
 
+const projectCapabilitySchema = z.object({
+  modules: z.array(z.object({
+    name: z.string().min(1),
+    description: z.string().min(1),
+    features: z.array(z.string().min(1)).min(1),
+  })).min(1).optional(),
+  roles: z.array(z.object({
+    name: z.string().min(1),
+    scope: z.string().min(1),
+  })).min(1).optional(),
+  workflow: z.array(z.object({
+    label: z.string().min(1),
+    status: z.string().min(1),
+  })).min(1).optional(),
+  metrics: z.array(z.object({
+    label: z.string().min(1),
+    value: z.string().min(1),
+    trend: z.string().min(1),
+  })).min(1).optional(),
+  integrations: z.array(z.string().min(1)).min(1).optional(),
+});
+
 export const projectSchema = z.object({
   ...baseFields,
   status: z.enum(['active', 'completed', 'archived']),
@@ -32,6 +54,7 @@ export const projectSchema = z.object({
   tech: z.array(z.string().min(1)).default([]),
   cover: z.string().startsWith('/').optional(),
   screenshots: z.array(projectScreenshotSchema).min(4).max(6).optional(),
+  ...projectCapabilitySchema.shape,
   demoUrl: z.url().optional(),
   repoUrl: z.url().optional(),
   repositories: z.array(z.object({

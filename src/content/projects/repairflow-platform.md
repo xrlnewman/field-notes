@@ -48,6 +48,50 @@ screenshots:
     viewport: mobile
     width: 390
     height: 844
+modules:
+  - name: 工单中心
+    description: 汇总报修、设备信息、服务地址和 SLA 倒计时。
+    features: [故障描述, 图片附件, SLA 预警]
+  - name: 派工与报价
+    description: 让调度员分派技师，并在上门前完成透明报价。
+    features: [技师排班, 路线 ETA, 配件报价]
+  - name: 验收与保修
+    description: 记录客户验收、支付结果和后续保修责任。
+    features: [服务报告, 客户签字, 保修登记]
+roles:
+  - name: 客户
+    scope: 发起报修、确认报价和完成服务评价
+  - name: 调度员
+    scope: 分派技师、调整时段和处理超时工单
+  - name: 技师
+    scope: 接单上门、记录维修过程和提交服务报告
+workflow:
+  - label: 发起报修
+    status: 待受理
+  - label: 远程诊断
+    status: 已诊断
+  - label: 客户确认报价
+    status: 待派工
+  - label: 技师上门
+    status: 上门中
+  - label: 客户验收
+    status: 待验收
+  - label: 保修归档
+    status: 已结案
+metrics:
+  - label: 今日工单
+    value: '128'
+    trend: 较昨日 +9.2%
+  - label: SLA 达成率
+    value: 94.6%
+    trend: 本周 +3.4%
+  - label: 平均响应
+    value: 18分钟
+    trend: 较上月 -6分钟
+  - label: 客户好评率
+    value: 98.1%
+    trend: 最近 30 天
+integrations: [MySQL 8.4, Redis 8, Docker Compose, 图片附件]
 featured: false
 draft: false
 ---
