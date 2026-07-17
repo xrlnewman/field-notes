@@ -30,6 +30,15 @@ const featuredProjects = [...projects].sort((left, right) =>
           <a class="button button--primary" href="/projects/">查看项目 <span aria-hidden="true">→</span></a>
           <a class="button" href="/articles/">阅读文章</a>
         </div>
+        <nav class="hero-projects" aria-label="精选项目">
+          <span class="hero-projects__label">精选项目</span>
+          <div class="hero-projects__links">
+            {featuredProjects.slice(0, 3).map((project) => (
+              <a href={`/projects/${project.id}/`}>{project.data.title}</a>
+            ))}
+            <a class="hero-projects__all" href="/projects/">查看全部 {projects.length} 个 →</a>
+          </div>
+        </nav>
       </div>
       <ul class="hero-studio__stats" aria-label="工作室数据">
         <li><strong>7 年经验</strong><span>持续交付真实业务</span></li>
@@ -137,6 +146,52 @@ const featuredProjects = [...projects].sort((left, right) =>
     color: var(--muted);
     font-size: clamp(1.05rem, 1.7vw, 1.24rem);
     line-height: 1.8;
+  }
+
+  .hero-projects {
+    display: grid;
+    gap: 12px;
+    margin-top: 30px;
+  }
+
+  .hero-projects__label {
+    color: var(--muted);
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .hero-projects__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .hero-projects__links a {
+    display: inline-flex;
+    min-height: 36px;
+    align-items: center;
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--ink);
+    background: color-mix(in srgb, var(--surface) 76%, transparent);
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: border-color 180ms ease, color 180ms ease, background 180ms ease;
+  }
+
+  .hero-projects__links a:hover {
+    color: var(--accent-strong);
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+  }
+
+  .hero-projects__links .hero-projects__all {
+    color: var(--accent-strong);
+    border-color: color-mix(in srgb, var(--accent) 46%, var(--border));
   }
 
   .hero-studio__stats {
