@@ -97,6 +97,14 @@ const createHarness = () => {
 };
 
 describe('cosmic card interaction lifecycle', () => {
+  it('keeps reveal content visible while it waits for the observer', () => {
+    const source = readFileSync('src/components/CosmicInteractions.astro', 'utf8');
+    const pendingRevealRule = source.match(/html\.cosmic-interactions-ready \[data-reveal\] \{([^}]*)\}/)?.[1] ?? '';
+
+    expect(pendingRevealRule).toContain('opacity: 1;');
+    expect(pendingRevealRule).not.toContain('opacity: 0;');
+  });
+
   it('unbinds tilt and resets every visual variable as soon as reduced motion turns on', () => {
     const harness = createHarness();
     harness.run();
