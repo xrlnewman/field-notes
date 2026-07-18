@@ -6,7 +6,7 @@ updatedAt: 2026-07-18T20:00:00+08:00
 status: active
 category: 企业官网
 tech: [Go 1.25, Gin, MySQL 8.4, Redis 8, RediSearch, ClickHouse, Vue 3, TypeScript, Element Plus, Docker Compose]
-cover: /images/projects/knowflow-platform/shot-5.png
+cover: /images/projects/knowflow-platform/shot-8.png
 repoUrl: https://github.com/xrlnewman/knowflow
 repositories:
   - name: knowflow
@@ -15,45 +15,80 @@ repositories:
     tech: [Go 1.25, Gin, MySQL 8.4, Redis 8, ClickHouse, Vue 3, TypeScript, Element Plus]
     url: https://github.com/xrlnewman/knowflow
 screenshots:
-  - src: /images/projects/knowflow-platform/shot-1.png
-    alt: KnowFlow 文档中心列表与生命周期状态
-    title: 文档中心
-    caption: 草稿、审核、发布、归档状态与版本入口同屏展示，审批动作紧邻状态标签，一眼看清每篇文档所处阶段。
-    viewport: desktop
-    width: 1440
-    height: 900
-  - src: /images/projects/knowflow-platform/shot-2.png
-    alt: KnowFlow 混合搜索结果页
-    title: 混合搜索
-    caption: BM25 全文与向量召回经 RRF 融合统一排序，左侧标签过滤，输入框实时联想，热词榜引导高频查询。
-    viewport: desktop
-    width: 1440
-    height: 900
-  - src: /images/projects/knowflow-platform/shot-4.png
-    alt: KnowFlow 行为数据看板
-    title: 数据看板
-    caption: 浏览、搜索、AI 调用流水写入 ClickHouse 按天分区大表，聚合下推后展示趋势、热词与活跃文档排行。
-    viewport: desktop
-    width: 1440
-    height: 900
-  - src: /images/projects/knowflow-platform/shot-5.png
+  - src: /images/projects/knowflow-platform/shot-8.png
     alt: KnowFlow AI 提供商后台配置页
     title: AI 提供商配置
-    caption: 预置 15 家主流大模型，OpenAI 兼容与 Anthropic 原生双协议，后台填 Key 即用；启停、设默认、连通测试与密钥脱敏全在一页完成。
-    viewport: desktop
-    width: 1440
-    height: 900
-  - src: /images/projects/knowflow-platform/shot-6.png
-    alt: KnowFlow ClickHouse 行为分析看板真数据
-    title: 行为分析看板
-    caption: ClickHouse 真实聚合：行为事件、活跃用户、每日趋势、事件类型与热门文档排行，写入走批量缓冲不阻塞业务。
+    caption: 预置 15 家主流大模型（OpenAI/Claude/Gemini/Grok/通义/DeepSeek/Kimi/GLM/豆包/混元/文心/MiniMax/OpenRouter/Ollama），OpenAI 兼容与 Anthropic 原生双协议，后台填 Key 即用；启停、设默认、连通测试与密钥脱敏全在一页。
     viewport: desktop
     width: 1440
     height: 900
   - src: /images/projects/knowflow-platform/shot-7.png
     alt: KnowFlow AI 问答引用来源与模型选择
-    title: 问答引用溯源
-    caption: RAG 回答逐条列出引用文档并可回跳原文，右上角提供商→模型二级选择，会话记录带模型徽标。
+    title: RAG 智能问答
+    caption: 基于混合检索召回的流式问答，答案逐条列出引用文档可回跳原文；右上角提供商→模型二级选择，多轮会话左侧留存。
+    viewport: desktop
+    width: 1440
+    height: 900
+  - src: /images/projects/knowflow-platform/shot-6.png
+    alt: KnowFlow 全文混合搜索结果
+    title: 混合搜索
+    caption: RediSearch 同一索引 BM25 全文与向量 KNN 双路召回、RRF 融合排序，命中词高亮、相关度评分、热词榜与语义开关一屏可见。
+    viewport: desktop
+    width: 1440
+    height: 900
+  - src: /images/projects/knowflow-platform/shot-9.png
+    alt: KnowFlow 知识图谱关联网络
+    title: 知识图谱
+    caption: MySQL 边表存文档-分类-标签关系，Go BFS 取 N 度子图，从一篇文档 2 跳展开 29 个节点 44 条边，附最短路径查询与边数据浏览。
+    viewport: desktop
+    width: 1440
+    height: 900
+  - src: /images/projects/knowflow-platform/shot-10.png
+    alt: KnowFlow ClickHouse 行为分析看板
+    title: 行为分析看板
+    caption: 浏览、搜索、AI 调用逐条写入 ClickHouse 按天分区大表，看板真实聚合行为事件、活跃用户、每日趋势、事件类型与热门文档。
+    viewport: desktop
+    width: 1440
+    height: 900
+  - src: /images/projects/knowflow-platform/shot-2.png
+    alt: KnowFlow 文档中心列表与生命周期状态
+    title: 文档中心
+    caption: 草稿、审核、发布、归档状态与版本、可见范围同屏展示，分类树与标签筛选、导入入口，一眼看清每篇文档所处阶段。
+    viewport: desktop
+    width: 1440
+    height: 900
+  - src: /images/projects/knowflow-platform/shot-4.png
+    alt: KnowFlow 文档详情与版本
+    title: 文档详情
+    caption: Markdown 正文渲染、状态与标签、发布/更新时间，配版本时间线与评论区，支持导出与在线预览入口。
+    viewport: desktop
+    width: 1440
+    height: 900
+  - src: /images/projects/knowflow-platform/shot-3.png
+    alt: KnowFlow Markdown 文档编辑器
+    title: Markdown 编辑
+    caption: 标题、分类、标签、摘要与 Markdown 正文分区录入，底部内置 AI 写作助手（生成摘要/大纲、润色、扩写），存草稿或直接提交审核。
+    viewport: desktop
+    width: 1440
+    height: 900
+  - src: /images/projects/knowflow-platform/shot-5.png
+    alt: KnowFlow 文档审批中心
+    title: 审批中心
+    caption: 待审核 / 已通过 / 已驳回分页管理，展示提交人、提交时间与审核意见，审批动作直接落审计并通知文档作者。
+    viewport: desktop
+    width: 1440
+    height: 900
+  - src: /images/projects/knowflow-platform/shot-11.png
+    alt: KnowFlow 角色与权限管理
+    title: RBAC 权限
+    caption: 超级管理员 / 编辑 / 审核员 / 访客四类角色，每个写接口独立权限点，可按角色分配到操作按钮级。
+    viewport: desktop
+    width: 1440
+    height: 900
+  - src: /images/projects/knowflow-platform/shot-12.png
+    alt: KnowFlow 操作审计日志
+    title: 操作审计
+    caption: 所有写操作留痕——操作人、动作、资源、资源 ID 与时间，行可展开看前后值 JSON，支持按动作与资源检索。
     viewport: desktop
     width: 1440
     height: 900
@@ -69,8 +104,6 @@ draft: false
 - **两种协议全覆盖**：Claude 走 Anthropic 原生、其余 13 家走 OpenAI 兼容，统一到一个 ChatClient 工厂；再多一家新模型基本只加一行配置。
 - **密钥安全 + 连通测试**：API Key 只存数据库，列表 / 详情 / 审计日志一律脱敏为 `前4****后4`；每行"连通测试"按钮真实发起一次对话请求，回报耗时与上游原始错误，填错 Key 一眼可辨。
 - **ClickHouse 真实接入**：浏览、搜索、AI 调用（带 provider 与耗时）逐条进按天分区大表，行为看板从占位切换为真实聚合，写入走批量缓冲、失败只降级看板绝不阻塞业务。
-
-> 详细的设计取舍见文章：《把 15 家大模型做成后台可配置：一个 ChatClient 接口的两种方言》。
 
 ## 功能亮点
 

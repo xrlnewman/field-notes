@@ -118,7 +118,7 @@ describe('project publishing rules', () => {
     }).success).toBe(true);
   });
 
-  it('rejects the three and seven screenshot publishing boundaries', () => {
+  it('rejects the three and thirteen screenshot publishing boundaries', () => {
     const publicProject = {
       ...baseProject,
       cover: '/images/projects/example.png',
@@ -131,7 +131,7 @@ describe('project publishing rules', () => {
     }).success).toBe(false);
     expect(projectSchema.safeParse({
       ...publicProject,
-      screenshots: createScreenshots(7),
+      screenshots: createScreenshots(13),
     }).success).toBe(false);
   });
 

@@ -53,7 +53,7 @@ export const projectSchema = z.object({
   category: z.enum(projectCategories),
   tech: z.array(z.string().min(1)).default([]),
   cover: z.string().startsWith('/').optional(),
-  screenshots: z.array(projectScreenshotSchema).min(4).max(6).optional(),
+  screenshots: z.array(projectScreenshotSchema).min(4).max(12).optional(),
   ...projectCapabilitySchema.shape,
   demoUrl: z.url().optional(),
   repoUrl: z.url().optional(),
