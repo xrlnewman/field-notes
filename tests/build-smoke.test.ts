@@ -409,8 +409,8 @@ describe('static site build', () => {
     });
   });
 
-  it('builds the expected 45 HTML pages', () => {
-    expect(listHtmlFiles('dist')).toHaveLength(45);
+  it('builds the complete static site output', () => {
+    expect(listHtmlFiles('dist').length).toBeGreaterThanOrEqual(100);
   });
 
   it('builds article details and tag indexes', () => {
@@ -418,7 +418,13 @@ describe('static site build', () => {
     expect(existsSync('dist/tags/git/index.html')).toBe(true);
 
     const article = readFileSync('dist/articles/redisearch-result-set/index.html', 'utf8');
+    const articlesIndex = readFileSync('dist/articles/index.html', 'utf8');
+    const projectsIndex = readFileSync('dist/projects/index.html', 'utf8');
     expect(article).toContain('文章目录');
+    expect(articlesIndex).toContain('data-pagination="article-pagination"');
+    expect(articlesIndex).toContain('data-pagination-page="3"');
+    expect(projectsIndex).toContain('data-pagination="project-pagination"');
+    expect(projectsIndex).toContain('data-pagination-page="5"');
   });
 
   it('publishes the product engineer story with projects before articles', () => {

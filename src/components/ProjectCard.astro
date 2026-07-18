@@ -15,6 +15,7 @@ interface Props {
   repoUrl: string;
   repositories?: ProjectData['repositories'];
   coverViewport?: 'desktop' | 'mobile';
+  page?: number;
   featured?: boolean;
 }
 
@@ -29,6 +30,7 @@ const {
   repoUrl,
   repositories,
   coverViewport = 'desktop',
+  page = 1,
   featured = false,
 } = Astro.props;
 const repositoryCount = repositories?.length || 1;
@@ -42,6 +44,7 @@ const statusLabels = {
 <article
   class:list={['project-card', { 'project-card--featured': featured }]}
   data-project-category={category}
+  data-project-page={page}
   data-cosmic-card
   data-reveal
 >

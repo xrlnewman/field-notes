@@ -2,6 +2,7 @@
 import type { CollectionEntry } from 'astro:content';
 
 import { getProjectCategoryStats } from '../lib/projects';
+import Pagination from './Pagination.astro';
 import ProjectCard from './ProjectCard.astro';
 
 interface Props {
@@ -9,6 +10,13 @@ interface Props {
 }
 
 const { projects } = Astro.props;
+const pageSize = 6;
+const totalPages = Math.max(1, Math.ceil(projects.length / pageSize));
+const requestedPage = Number(Astro.url.searchParams.get('page') ?? '1');
+const currentPage = Number.isInteger(requestedPage)
+  ? Math.min(Math.max(requestedPage, 1), totalPages)
+  : 1;
+const requestedCategory = Astro.url.searchParams.get('category');
 const filters = [
   { category: '全部' as const, count: projects.length },
   ...getProjectCategoryStats(projects),
@@ -35,7 +43,7 @@ const orderedProjects = [...projects].sort((left, right) =>
   </div>
 
   <div id="project-gallery" class="project-gallery" data-project-gallery>
-    {orderedProjects.map((project) => (
+    {orderedProjects.map((project, index) => (
       <ProjectCard
         href={`/projects/${project.id}/`}
         title={project.data.title}
@@ -47,12 +55,21 @@ const orderedProjects = [...projects].sort((left, right) =>
         repoUrl={project.data.repoUrl!}
         repositories={project.data.repositories}
         coverViewport={project.data.screenshots?.[0]?.viewport ?? 'desktop'}
+        page={Math.floor(index / pageSize) + 1}
         featured={project.id === 'field-notes'}
       />
     ))}
   </div>
 
   <p class="project-empty" data-project-empty hidden>这个分类还没有公开项目。</p>
+  <Pagination
+    currentPage={currentPage}
+    totalPages={totalPages}
+    basePath="/projects/"
+    query={requestedCategory ? { category: requestedCategory } : {}}
+    ariaLabel="项目分页"
+    dataAttribute="project-pagination"
+  />
 </section>
 
 <script>
@@ -61,31 +78,99 @@ const orderedProjects = [...projects].sort((left, right) =>
   const gallery = document.querySelector<HTMLElement>('[data-project-gallery]');
   const buttons = document.querySelectorAll<HTMLButtonElement>('[data-project-filter]');
   const empty = document.querySelector<HTMLElement>('[data-project-empty]');
+  const pagination = document.querySelector<HTMLElement>('[data-pagination="project-pagination"]');
+  const pageLinks = pagination?.querySelectorAll<HTMLAnchorElement>('[data-pagination-page]') ?? [];
+  const previous = pagination?.querySelector<HTMLAnchorElement>('[data-pagination-prev]');
+  const next = pagination?.querySelector<HTMLAnchorElement>('[data-pagination-next]');
+  const pageSize = 6;
+  let activeFilter = '全部';
+  let activePage = Number(new URLSearchParams(window.location.search).get('page') ?? '1');
+  if (!Number.isInteger(activePage) || activePage < 1) activePage = 1;
 
-  const applyFilter = (filter: string) => {
+  const updateLink = (link: HTMLAnchorElement | null, page: number, filter: string) => {
+    if (!link) return;
+    const url = new URL(window.location.href);
+    if (filter === '全部') url.searchParams.delete('category');
+    else url.searchParams.set('category', filter);
+    if (page <= 1) url.searchParams.delete('page');
+    else url.searchParams.set('page', String(page));
+    link.href = url.toString();
+  };
+
+  const setDisabled = (link: HTMLAnchorElement | null, disabled: boolean) => {
+    if (!link) return;
+    link.classList.toggle('pagination__arrow--disabled', disabled);
+    link.setAttribute('aria-disabled', String(disabled));
+  };
+
+  const applyFilter = (filter: string, requestedPage = activePage) => {
     let visible = 0;
+    const cards = Array.from(gallery?.querySelectorAll<HTMLElement>('[data-project-category]') ?? []);
+    const matches = cards.filter((card) => filter === '全部' || card.dataset.projectCategory === filter);
+    const totalPages = Math.max(1, Math.ceil(matches.length / pageSize));
+    activeFilter = filter;
+    activePage = Math.min(Math.max(requestedPage, 1), totalPages);
 
     buttons.forEach((button) => {
       button.setAttribute('aria-pressed', String(button.dataset.projectFilter === filter));
     });
-    gallery?.querySelectorAll<HTMLElement>('[data-project-category]').forEach((card) => {
-      const matches = filter === '全部' || card.dataset.projectCategory === filter;
-      card.hidden = !matches;
-      if (matches) visible += 1;
+    cards.forEach((card) => {
+      const categoryMatch = filter === '全部' || card.dataset.projectCategory === filter;
+      const index = matches.indexOf(card);
+      const pageMatch = index >= 0 && Math.floor(index / pageSize) + 1 === activePage;
+      card.hidden = !categoryMatch || !pageMatch;
+      if (!card.hidden) visible += 1;
     });
 
     if (empty) empty.hidden = visible > 0;
+    pageLinks.forEach((link) => {
+      const page = Number(link.dataset.paginationPage);
+      const isCurrent = page === activePage;
+      link.hidden = page > totalPages;
+      link.classList.toggle('pagination__page--current', isCurrent);
+      if (isCurrent) link.setAttribute('aria-current', 'page');
+      else link.removeAttribute('aria-current');
+      updateLink(link, page, activeFilter);
+    });
+    updateLink(previous ?? null, Math.max(1, activePage - 1), activeFilter);
+    updateLink(next ?? null, Math.min(totalPages, activePage + 1), activeFilter);
+    setDisabled(previous ?? null, activePage <= 1);
+    setDisabled(next ?? null, activePage >= totalPages);
   };
 
   const initialFilter = parseProjectCategory(new URLSearchParams(window.location.search).get('category'));
-  applyFilter(initialFilter);
+  applyFilter(initialFilter, activePage);
 
   buttons.forEach((button) => {
     button.addEventListener('click', () => {
       const filter = parseProjectCategory(button.dataset.projectFilter ?? null);
 
-      applyFilter(filter);
-      window.history.replaceState({}, '', getProjectCategoryUrl(window.location.href, filter));
+      applyFilter(filter, 1);
+      const url = new URL(getProjectCategoryUrl(window.location.href, filter));
+      url.searchParams.delete('page');
+      window.history.replaceState({}, '', url);
+    });
+  });
+
+  pageLinks.forEach((link) => {
+    link.addEventListener('click', (event) => {
+      event.preventDefault();
+      applyFilter(activeFilter, Number(link.dataset.paginationPage));
+      const url = new URL(link.href);
+      window.history.replaceState({}, '', url);
+    });
+  });
+
+  [previous, next].forEach((link) => {
+    link?.addEventListener('click', (event) => {
+      if (link.getAttribute('aria-disabled') === 'true') {
+        event.preventDefault();
+        return;
+      }
+      event.preventDefault();
+      const target = new URL(link.href);
+      applyFilter(activeFilter, Number(target.searchParams.get('page') ?? '1'));
+      window.history.replaceState({}, '', target);
     });
   });
 </script>

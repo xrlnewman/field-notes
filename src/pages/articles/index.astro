@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 
 import ContentCard from '../../components/ContentCard.astro';
+import Pagination from '../../components/Pagination.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
 import { estimateReadingTime, isVisibleEntry, sortByPublishedAt } from '../../lib/content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
@@ -9,6 +10,12 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 const articles = sortByPublishedAt(
   (await getCollection('articles')).filter((entry) => isVisibleEntry(entry, import.meta.env.PROD)),
 );
+const pageSize = 8;
+const totalPages = Math.max(1, Math.ceil(articles.length / pageSize));
+const requestedPage = Number(Astro.url.searchParams.get('page') ?? '1');
+const currentPage = Number.isInteger(requestedPage)
+  ? Math.min(Math.max(requestedPage, 1), totalPages)
+  : 1;
 ---
 
 <BaseLayout title="文章" description="关于开发、产品和互联网实验的长期记录。">
@@ -22,24 +29,65 @@ const articles = sortByPublishedAt(
     />
 
     <div class="article-list">
-      {articles.map((article) => (
-        <ContentCard
-          type="article"
-          href={`/articles/${article.id}/`}
-          title={article.data.title}
-          description={article.data.description}
-          publishedAt={article.data.publishedAt}
-          meta={`${estimateReadingTime(article.body ?? '')} 分钟阅读`}
-          tags={article.data.tags}
-        />
+      {articles.map((article, index) => (
+        <div class="article-list__item" data-article-page={Math.floor(index / pageSize) + 1}>
+          <ContentCard
+            type="article"
+            href={`/articles/${article.id}/`}
+            title={article.data.title}
+            description={article.data.description}
+            publishedAt={article.data.publishedAt}
+            meta={`${estimateReadingTime(article.body ?? '')} 分钟阅读`}
+            tags={article.data.tags}
+          />
+        </div>
       ))}
     </div>
+    <Pagination
+      currentPage={currentPage}
+      totalPages={totalPages}
+      basePath="/articles/"
+      ariaLabel="文章分页"
+      dataAttribute="article-pagination"
+    />
   </div>
 </BaseLayout>
 
 <style>
   .page-shell { padding-block: clamp(72px, 10vw, 124px) 110px; }
   .article-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+  .article-list__item { min-width: 0; }
   @media (max-width: 760px) { .article-list { grid-template-columns: 1fr; } }
 </style>
+
+<script>
+  const pageItems = document.querySelectorAll<HTMLElement>('[data-article-page]');
+  const pageLinks = document.querySelectorAll<HTMLAnchorElement>('[data-pagination="article-pagination"] [data-pagination-page]');
+  const previous = document.querySelector<HTMLAnchorElement>('[data-pagination="article-pagination"] [data-pagination-prev]');
+  const next = document.querySelector<HTMLAnchorElement>('[data-pagination="article-pagination"] [data-pagination-next]');
+  const requestedPage = Number(new URLSearchParams(window.location.search).get('page') ?? '1');
+  const current = Number.isInteger(requestedPage) && requestedPage > 0
+    ? Math.min(requestedPage, pageLinks.length)
+    : 1;
+
+  pageItems.forEach((item) => {
+    item.hidden = Number(item.dataset.articlePage) !== current;
+  });
+
+  pageLinks.forEach((link) => {
+    const isCurrent = Number(link.dataset.paginationPage) === current;
+    link.classList.toggle('pagination__page--current', isCurrent);
+    if (isCurrent) link.setAttribute('aria-current', 'page');
+    else link.removeAttribute('aria-current');
+  });
+
+  const setDisabled = (link: HTMLAnchorElement | null, disabled: boolean) => {
+    if (!link) return;
+    link.classList.toggle('pagination__arrow--disabled', disabled);
+    link.setAttribute('aria-disabled', String(disabled));
+  };
+
+  setDisabled(previous, current <= 1);
+  setDisabled(next, current >= pageLinks.length);
+</script>
 

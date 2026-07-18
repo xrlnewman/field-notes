@@ -1,0 +1,130 @@
+---
+interface Props {
+  currentPage: number;
+  totalPages: number;
+  basePath: string;
+  query?: Record<string, string>;
+  ariaLabel: string;
+  dataAttribute?: string;
+}
+
+const {
+  currentPage,
+  totalPages,
+  basePath,
+  query = {},
+  ariaLabel,
+  dataAttribute = 'pagination',
+} = Astro.props;
+
+const buildHref = (page: number) => {
+  const params = new URLSearchParams(query);
+  if (page > 1) params.set('page', String(page));
+  else params.delete('page');
+  const queryString = params.toString();
+  return basePath + (queryString ? '?' + queryString : '');
+};
+---
+
+<nav class="pagination" aria-label={ariaLabel} data-pagination={dataAttribute}>
+  <a
+    class:list={['pagination__arrow', { 'pagination__arrow--disabled': currentPage <= 1 }]}
+    href={buildHref(Math.max(1, currentPage - 1))}
+    data-pagination-prev
+    aria-label="上一页"
+    aria-disabled={currentPage <= 1 ? 'true' : undefined}
+  >
+    ← <span>上一页</span>
+  </a>
+  <div class="pagination__pages">
+    {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+      <a
+        class:list={['pagination__page', { 'pagination__page--current': page === currentPage }]}
+        href={buildHref(page)}
+        data-pagination-page={page}
+        aria-current={page === currentPage ? 'page' : undefined}
+      >
+        {page}
+      </a>
+    ))}
+  </div>
+  <a
+    class:list={['pagination__arrow', { 'pagination__arrow--disabled': currentPage >= totalPages }]}
+    href={buildHref(Math.min(totalPages, currentPage + 1))}
+    data-pagination-next
+    aria-label="下一页"
+    aria-disabled={currentPage >= totalPages ? 'true' : undefined}
+  >
+    <span>下一页</span> →
+  </a>
+</nav>
+
+<style>
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 42px;
+  }
+
+  .pagination__pages {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .pagination a {
+    display: inline-flex;
+    min-width: 42px;
+    min-height: 42px;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--muted);
+    background: var(--surface);
+    font-size: 0.84rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: color 180ms ease, border-color 180ms ease, background 180ms ease;
+  }
+
+  .pagination a:hover,
+  .pagination a:focus-visible {
+    color: var(--ink);
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 9%, var(--surface));
+  }
+
+  .pagination__page--current {
+    color: var(--accent-ink) !important;
+    border-color: var(--accent) !important;
+    background: var(--accent) !important;
+  }
+
+  .pagination__arrow {
+    gap: 7px;
+  }
+
+  .pagination__arrow--disabled {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+
+  @media (max-width: 520px) {
+    .pagination {
+      gap: 8px;
+    }
+
+    .pagination__arrow {
+      min-width: 42px;
+      padding-inline: 9px !important;
+    }
+
+    .pagination__arrow span {
+      display: none;
+    }
+  }
+</style>
