@@ -1,6 +1,7 @@
 ---
 title: 搜索索引、结果集缓存与海量数据检索
 description: 从倒排索引、分页、聚合和缓存失效出发，设计可扩展的搜索服务。
+category: 大数据
 publishedAt: 2026-07-02
 tags: [大数据, 搜索, RediSearch, Elasticsearch]
 featured: false

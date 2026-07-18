@@ -1,6 +1,7 @@
 ---
 title: ODS、DWD、DWS、ADS 数据分层与建模
 description: 用数据分层、粒度和指标口径解决重复加工、口径不一致和报表难以回溯的问题。
+category: 大数据
 publishedAt: 2026-07-08
 tags: [大数据, 数仓, 数据建模, 数据治理]
 featured: false

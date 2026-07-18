@@ -4,6 +4,7 @@ import { getCollection } from 'astro:content';
 import ContentCard from '../../components/ContentCard.astro';
 import Pagination from '../../components/Pagination.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
+import { getArticleCategoryStats, parseArticleCategory } from '../../lib/articles';
 import { estimateReadingTime, isVisibleEntry, sortByPublishedAt } from '../../lib/content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
@@ -16,6 +17,11 @@ const requestedPage = Number(Astro.url.searchParams.get('page') ?? '1');
 const currentPage = Number.isInteger(requestedPage)
   ? Math.min(Math.max(requestedPage, 1), totalPages)
   : 1;
+const requestedCategory = parseArticleCategory(Astro.url.searchParams.get('category'));
+const filters = [
+  { category: '全部' as const, count: articles.length },
+  ...getArticleCategoryStats(articles).filter(({ count }) => count > 0),
+];
 ---
 
 <BaseLayout title="文章" description="关于开发、产品和互联网实验的长期记录。">
@@ -28,15 +34,34 @@ const currentPage = Number.isInteger(requestedPage)
       linkLabel="搜索文章"
     />
 
+    <nav class="article-filters" role="group" aria-label="按文章分类筛选">
+      {filters.map(({ category, count }) => (
+        <button
+          type="button"
+          data-article-filter={category}
+          data-article-filter-count={count}
+          aria-pressed={category === requestedCategory ? 'true' : 'false'}
+        >
+          <span>{category}</span>
+          <span class="article-filter__count">{count}</span>
+        </button>
+      ))}
+    </nav>
+
     <div class="article-list">
       {articles.map((article, index) => (
-        <div class="article-list__item" data-article-page={Math.floor(index / pageSize) + 1}>
+        <div
+          class="article-list__item"
+          data-article-page={Math.floor(index / pageSize) + 1}
+          data-article-category={article.data.category}
+        >
           <ContentCard
             type="article"
             href={`/articles/${article.id}/`}
             title={article.data.title}
             description={article.data.description}
             publishedAt={article.data.publishedAt}
+            category={article.data.category}
             meta={`${estimateReadingTime(article.body ?? '')} 分钟阅读`}
             tags={article.data.tags}
           />
@@ -47,6 +72,7 @@ const currentPage = Number.isInteger(requestedPage)
       currentPage={currentPage}
       totalPages={totalPages}
       basePath="/articles/"
+      query={requestedCategory !== '全部' ? { category: requestedCategory } : {}}
       ariaLabel="文章分页"
       dataAttribute="article-pagination"
     />
@@ -55,31 +81,75 @@ const currentPage = Number.isInteger(requestedPage)
 
 <style>
   .page-shell { padding-block: clamp(72px, 10vw, 124px) 110px; }
+  .article-filters {
+    display: flex;
+    overflow-x: auto;
+    gap: 4px;
+    margin: -4px 0 24px;
+    padding: 0 0 8px;
+    border-bottom: 1px solid var(--border);
+    scrollbar-width: thin;
+  }
+  .article-filters button {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    gap: 8px;
+    flex: none;
+    padding: 9px 14px;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    color: var(--muted);
+    background: transparent;
+    font: inherit;
+    font-size: 0.86rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .article-filter__count {
+    color: var(--muted);
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+  }
+  .article-filters button:hover,
+  .article-filters button[aria-pressed='true'] {
+    color: var(--ink);
+    border-bottom-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 7%, transparent);
+  }
+  .article-filters button[aria-pressed='true'] .article-filter__count {
+    color: var(--accent-strong);
+  }
   .article-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
   .article-list__item { min-width: 0; }
   @media (max-width: 760px) { .article-list { grid-template-columns: 1fr; } }
 </style>
 
 <script>
-  const pageItems = document.querySelectorAll<HTMLElement>('[data-article-page]');
-  const pageLinks = document.querySelectorAll<HTMLAnchorElement>('[data-pagination="article-pagination"] [data-pagination-page]');
-  const previous = document.querySelector<HTMLAnchorElement>('[data-pagination="article-pagination"] [data-pagination-prev]');
-  const next = document.querySelector<HTMLAnchorElement>('[data-pagination="article-pagination"] [data-pagination-next]');
-  const requestedPage = Number(new URLSearchParams(window.location.search).get('page') ?? '1');
-  const current = Number.isInteger(requestedPage) && requestedPage > 0
-    ? Math.min(requestedPage, pageLinks.length)
-    : 1;
+  import { parseArticleCategory } from '../../lib/articles';
 
-  pageItems.forEach((item) => {
-    item.hidden = Number(item.dataset.articlePage) !== current;
-  });
+  const pageItems = Array.from(document.querySelectorAll<HTMLElement>('[data-article-page]'));
+  const filterButtons = document.querySelectorAll<HTMLButtonElement>('[data-article-filter]');
+  const pagination = document.querySelector<HTMLElement>('[data-pagination="article-pagination"]');
+  const pageLinks = pagination?.querySelectorAll<HTMLAnchorElement>('[data-pagination-page]') ?? [];
+  const previous = pagination?.querySelector<HTMLAnchorElement>('[data-pagination-prev]');
+  const next = pagination?.querySelector<HTMLAnchorElement>('[data-pagination-next]');
+  const searchParams = new URLSearchParams(window.location.search);
+  type ArticleFilter = ReturnType<typeof parseArticleCategory>;
+  let activeFilter: ArticleFilter = parseArticleCategory(searchParams.get('category'));
+  let activePage = Number(searchParams.get('page') ?? '1');
+  if (!Number.isInteger(activePage) || activePage < 1) activePage = 1;
 
-  pageLinks.forEach((link) => {
-    const isCurrent = Number(link.dataset.paginationPage) === current;
-    link.classList.toggle('pagination__page--current', isCurrent);
-    if (isCurrent) link.setAttribute('aria-current', 'page');
-    else link.removeAttribute('aria-current');
-  });
+  const updateLink = (link: HTMLAnchorElement | null, page: number, filter: string) => {
+    if (!link) return;
+    const url = new URL(window.location.href);
+    if (filter === '全部') url.searchParams.delete('category');
+    else url.searchParams.set('category', filter);
+    if (page <= 1) url.searchParams.delete('page');
+    else url.searchParams.set('page', String(page));
+    link.href = url.toString();
+  };
 
   const setDisabled = (link: HTMLAnchorElement | null, disabled: boolean) => {
     if (!link) return;
@@ -87,7 +157,70 @@ const currentPage = Number.isInteger(requestedPage)
     link.setAttribute('aria-disabled', String(disabled));
   };
 
-  setDisabled(previous, current <= 1);
-  setDisabled(next, current >= pageLinks.length);
+  const applyFilter = (filter: ArticleFilter, requestedPage = activePage) => {
+    const matches = pageItems.filter((item) => filter === '全部' || item.dataset.articleCategory === filter);
+    const totalPages = Math.max(1, Math.ceil(matches.length / 8));
+    activeFilter = filter;
+    activePage = Math.min(Math.max(requestedPage, 1), totalPages);
+
+    filterButtons.forEach((button) => {
+      button.setAttribute('aria-pressed', String(button.dataset.articleFilter === filter));
+    });
+
+    pageItems.forEach((item) => {
+      const index = matches.indexOf(item);
+      const pageMatch = index >= 0 && Math.floor(index / 8) + 1 === activePage;
+      item.hidden = index < 0 || !pageMatch;
+    });
+
+    pageLinks.forEach((link) => {
+      const page = Number(link.dataset.paginationPage);
+      const isCurrent = page === activePage;
+      link.hidden = page > totalPages;
+      link.classList.toggle('pagination__page--current', isCurrent);
+      if (isCurrent) link.setAttribute('aria-current', 'page');
+      else link.removeAttribute('aria-current');
+      updateLink(link, page, activeFilter);
+    });
+    updateLink(previous ?? null, Math.max(1, activePage - 1), activeFilter);
+    updateLink(next ?? null, Math.min(totalPages, activePage + 1), activeFilter);
+    setDisabled(previous ?? null, activePage <= 1);
+    setDisabled(next ?? null, activePage >= totalPages);
+  };
+
+  applyFilter(activeFilter, activePage);
+
+  filterButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const filter = parseArticleCategory(button.dataset.articleFilter ?? null);
+      applyFilter(filter, 1);
+      const url = new URL(window.location.href);
+      if (filter === '全部') url.searchParams.delete('category');
+      else url.searchParams.set('category', filter);
+      url.searchParams.delete('page');
+      window.history.replaceState({}, '', url);
+    });
+  });
+
+  pageLinks.forEach((link) => {
+    link.addEventListener('click', (event) => {
+      event.preventDefault();
+      applyFilter(activeFilter, Number(link.dataset.paginationPage));
+      window.history.replaceState({}, '', link.href);
+    });
+  });
+
+  [previous, next].forEach((link) => {
+    link?.addEventListener('click', (event) => {
+      if (link.getAttribute('aria-disabled') === 'true') {
+        event.preventDefault();
+        return;
+      }
+      event.preventDefault();
+      const url = new URL(link.href);
+      applyFilter(activeFilter, Number(url.searchParams.get('page') ?? '1'));
+      window.history.replaceState({}, '', url);
+    });
+  });
 </script>
 

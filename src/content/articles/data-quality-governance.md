@@ -1,6 +1,7 @@
 ---
 title: 大数据平台的数据质量与可回补设计
 description: 把完整性、唯一性、及时性和对账变成每个批次都能执行的质量门禁。
+category: 大数据
 publishedAt: 2026-07-01
 tags: [大数据, 数据质量, 数据治理, CDC]
 featured: false

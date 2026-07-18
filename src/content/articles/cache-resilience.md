@@ -1,6 +1,7 @@
 ---
 title: 高并发缓存设计的四个故障陷阱
 description: 通过缓存穿透、击穿、雪崩和热点 Key 的实战策略，建立可恢复的缓存层。
+category: 高并发
 publishedAt: 2026-07-16
 tags: [高并发, Redis, 缓存设计]
 featured: false

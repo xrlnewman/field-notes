@@ -1,6 +1,7 @@
 ---
 title: 高并发接口的限流熔断降级与隔离
 description: 用稳定性预算设计超时、重试、熔断、舱壁和降级，避免级联故障。
+category: 高并发
 publishedAt: 2026-07-11
 tags: [高并发, 稳定性, 熔断, 降级]
 featured: false

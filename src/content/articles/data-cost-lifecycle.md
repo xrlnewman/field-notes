@@ -1,6 +1,7 @@
 ---
 title: 海量数据的冷热分层、压缩与生命周期管理
 description: 从存储成本、查询热度、保留期限和恢复目标出发，设计可持续的大数据存储策略。
+category: 大数据
 publishedAt: 2026-06-30
 tags: [大数据, 存储, 成本优化, 备份]
 featured: false

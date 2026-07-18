@@ -1,6 +1,7 @@
 ---
 title: Spark 与 Hive 批处理如何控制小文件和数据倾斜
 description: 从分区规划、文件格式、Shuffle 和 AQE 讲解离线任务的性能与稳定性。
+category: 大数据
 publishedAt: 2026-07-05
 tags: [大数据, Spark, Hive, 批处理]
 featured: false

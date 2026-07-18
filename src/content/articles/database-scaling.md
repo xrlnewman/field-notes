@@ -1,6 +1,7 @@
 ---
 title: 数据库在高并发下的连接池、读写分离与分片
 description: 从慢查询和连接耗尽出发，给出关系型数据库逐级扩展的判断标准与迁移步骤。
+category: 高并发
 publishedAt: 2026-07-14
 tags: [高并发, MySQL, 数据库, 分库分表]
 featured: false

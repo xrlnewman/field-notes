@@ -1,6 +1,7 @@
 ---
 title: 消息队列如何给高并发链路削峰
 description: 以订单通知和库存同步为例，说明分区、确认、重试、死信与重复消费应该如何组合。
+category: 高并发
 publishedAt: 2026-07-13
 tags: [高并发, 消息队列, Kafka, 可靠性]
 featured: false

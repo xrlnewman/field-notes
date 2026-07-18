@@ -1,6 +1,7 @@
 ---
 title: API 网关的高并发路由与连接管理
 description: 从连接复用、鉴权缓存、限流和路由灰度出发，搭建承接流量的第一道稳定边界。
+category: 高并发
 publishedAt: 2026-06-29
 tags: [高并发, API 网关, HTTP, 性能工程]
 featured: false

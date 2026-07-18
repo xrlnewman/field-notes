@@ -1,6 +1,7 @@
 ---
 title: Kafka 加 Flink 构建实时数仓的关键细节
 description: 讲清事件时间、窗口、状态、乱序和 Exactly-once，避免实时指标看似及时却无法对账。
+category: 大数据
 publishedAt: 2026-07-07
 tags: [大数据, Flink, Kafka, 实时计算]
 featured: true

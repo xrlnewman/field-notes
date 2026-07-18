@@ -1,6 +1,7 @@
 ---
 title: 对象存储数据湖的文件格式与表格式选择
 description: 讲解 Parquet、ORC、Iceberg、Hudi 和 Delta 在压缩、Schema 演进与更新场景中的取舍。
+category: 大数据
 publishedAt: 2026-07-03
 tags: [大数据, 数据湖, Parquet, Iceberg]
 featured: true

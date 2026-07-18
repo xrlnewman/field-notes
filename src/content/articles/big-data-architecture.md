@@ -1,6 +1,7 @@
 ---
 title: 大数据系统如何选择 OLTP、OLAP 与湖仓
 description: 从数据访问模式、延迟和成本出发，梳理业务库、分析库、数据湖和湖仓的职责边界。
+category: 大数据
 publishedAt: 2026-07-09
 tags: [大数据, 数据架构, OLTP, OLAP]
 featured: true

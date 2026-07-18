@@ -3,6 +3,7 @@ import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
 import { projectSchema } from './lib/project-schema';
+import { articleCategories } from './lib/articles';
 
 const baseFields = {
   title: z.string().min(1),
@@ -15,6 +16,7 @@ const baseFields = {
 
 export const articleSchema = z.object({
   ...baseFields,
+  category: z.enum(articleCategories),
   tags: z.array(z.string().min(1)).default([]),
   cover: z.string().optional(),
 });

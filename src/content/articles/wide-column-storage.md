@@ -1,6 +1,7 @@
 ---
 title: 宽表存储如何承载高写入与海量明细
 description: 对比 HBase、Cassandra 一类宽列存储的行键、列族、热点和查询建模方法。
+category: 大数据
 publishedAt: 2026-07-04
 tags: [大数据, HBase, Cassandra, 存储设计]
 featured: false

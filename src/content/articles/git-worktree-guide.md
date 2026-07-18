@@ -1,6 +1,7 @@
 ---
 title: Git Worktree 和复制项目文件夹有什么区别？
 description: 两种多分支并行方式看起来相似，但在对象复用、分支安全和维护成本上完全不同。
+category: 工程实践
 publishedAt: 2026-07-08
 tags: [Git, Worktree, 工程实践]
 featured: true

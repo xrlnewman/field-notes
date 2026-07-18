@@ -1,6 +1,7 @@
 ---
 title: QPS、并发数与响应时间的容量估算方法
 description: 用 Little 定律和分层容量表，把“系统能扛多少流量”变成可以验证的数字。
+category: 高并发
 publishedAt: 2026-07-17
 tags: [高并发, 容量规划, 性能工程]
 featured: true

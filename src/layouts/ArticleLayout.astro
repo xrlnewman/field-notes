@@ -34,6 +34,7 @@ const readingTime = estimateReadingTime(article.body ?? '');
       <div class="article-meta">
         <time datetime={data.publishedAt.toISOString()}>{date}</time>
         {data.updatedAt && <span>更新于 {new Intl.DateTimeFormat('zh-CN').format(data.updatedAt)}</span>}
+        <span class="article-category">{data.category}</span>
         <TagList tags={data.tags} linked />
       </div>
     </header>
@@ -58,6 +59,7 @@ const readingTime = estimateReadingTime(article.body ?? '');
               title={entry.data.title}
               description={entry.data.description}
               publishedAt={entry.data.publishedAt}
+              category={entry.data.category}
               tags={entry.data.tags}
             />
           ))}

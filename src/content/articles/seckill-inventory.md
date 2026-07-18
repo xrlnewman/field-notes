@@ -1,6 +1,7 @@
 ---
 title: 秒杀系统如何防止超卖与重复下单
 description: 从预热、限流、库存扣减到异步下单，拆解高峰抢购链路的关键状态和一致性边界。
+category: 高并发
 publishedAt: 2026-07-12
 tags: [高并发, 秒杀, 库存, 订单]
 featured: true

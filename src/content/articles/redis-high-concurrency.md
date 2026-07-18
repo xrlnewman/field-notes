@@ -1,6 +1,7 @@
 ---
 title: Redis 在高并发系统中的锁、限流与幂等
 description: 以订单接口为例，梳理 Redis 分布式锁、滑动窗口限流、幂等键和延迟任务的边界。
+category: 高并发
 publishedAt: 2026-07-15
 tags: [高并发, Redis, 分布式锁, 幂等]
 featured: true

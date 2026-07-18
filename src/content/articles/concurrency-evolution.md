@@ -1,6 +1,7 @@
 ---
 title: 高并发系统从单体到分层的演进路线
 description: 用容量模型、流量分层和故障边界拆解一个业务如何从单体应用平稳走向高并发架构。
+category: 高并发
 publishedAt: 2026-07-18
 tags: [高并发, 系统设计, 架构演进]
 featured: true

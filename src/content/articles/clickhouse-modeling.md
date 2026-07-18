@@ -1,6 +1,7 @@
 ---
 title: ClickHouse 明细表与聚合表的建模实践
 description: 从分区、排序键、索引粒度和物化视图出发，设计高吞吐写入与低延迟分析查询。
+category: 大数据
 publishedAt: 2026-07-06
 tags: [大数据, ClickHouse, OLAP, 数据库]
 featured: false

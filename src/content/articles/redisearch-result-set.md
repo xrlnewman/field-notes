@@ -1,6 +1,7 @@
 ---
 title: RediSearch 会不会保存结果集？
 description: 从索引、查询执行和游标三个层面，解释 RediSearch 到底保存了什么。
+category: 数据工程
 publishedAt: 2026-07-10
 tags: [Redis, RediSearch, 搜索]
 featured: true

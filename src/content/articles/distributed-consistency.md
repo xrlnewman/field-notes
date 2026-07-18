@@ -1,6 +1,7 @@
 ---
 title: 订单支付库存的一致性如何落地
 description: 用状态机、Outbox 和补偿任务处理跨服务写入，避免把分布式事务变成不可调试的黑盒。
+category: 高并发
 publishedAt: 2026-07-10
 tags: [高并发, 分布式事务, 一致性, 订单]
 featured: false
