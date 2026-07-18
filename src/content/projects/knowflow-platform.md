@@ -1,8 +1,8 @@
 ---
 title: KnowFlow 企业智能知识库
-description: 文档全生命周期、RediSearch 混合检索、可切换大模型的 RAG 问答、知识图谱与 ClickHouse 行为看板一体化的开源企业知识库。
+description: 文档全生命周期、RediSearch 混合检索、15 家大模型后台可配的 RAG 问答、知识图谱与 ClickHouse 行为看板一体化的开源企业知识库。
 publishedAt: 2026-07-18T12:00:00+08:00
-updatedAt: 2026-07-18T12:00:00+08:00
+updatedAt: 2026-07-18T20:00:00+08:00
 status: active
 category: 企业官网
 tech: [Go 1.25, Gin, MySQL 8.4, Redis 8, RediSearch, ClickHouse, Vue 3, TypeScript, Element Plus, Docker Compose]
@@ -43,6 +43,27 @@ screenshots:
     viewport: desktop
     width: 1440
     height: 900
+  - src: /images/projects/knowflow-platform/shot-5.png
+    alt: KnowFlow AI 提供商后台配置页
+    title: AI 提供商配置
+    caption: 预置 15 家主流大模型，OpenAI 兼容与 Anthropic 原生双协议，后台填 Key 即用；启停、设默认、连通测试与密钥脱敏全在一页完成。
+    viewport: desktop
+    width: 1440
+    height: 900
+  - src: /images/projects/knowflow-platform/shot-6.png
+    alt: KnowFlow ClickHouse 行为分析看板真数据
+    title: 行为分析看板
+    caption: ClickHouse 真实聚合：行为事件、活跃用户、每日趋势、事件类型与热门文档排行，写入走批量缓冲不阻塞业务。
+    viewport: desktop
+    width: 1440
+    height: 900
+  - src: /images/projects/knowflow-platform/shot-7.png
+    alt: KnowFlow AI 问答引用来源与模型选择
+    title: 问答引用溯源
+    caption: RAG 回答逐条列出引用文档并可回跳原文，右上角提供商→模型二级选择，会话记录带模型徽标。
+    viewport: desktop
+    width: 1440
+    height: 900
 featured: true
 draft: false
 ---
@@ -51,7 +72,8 @@ draft: false
 
 - **文档全生命周期**：草稿、审核、发布、归档、版本对比与审批流，全程操作留痕，发布即可被检索。
 - **混合检索**：RediSearch 同一索引跑 BM25 全文与 HNSW 向量（1024 维）双路召回，Go 应用层 RRF 融合排序；FT.SUGGET 前缀联想，ZSET 热词榜。
-- **RAG 问答**：召回片段带权限过滤进入上下文，通义千问 / DeepSeek 模型可切换，答案附引用来源可回跳原文。
+- **RAG 问答**：召回片段带权限过滤进入上下文，答案附引用来源可回跳原文，会话与消息记录使用的提供商与模型。
+- **AI 提供商后台配置**：预置 OpenAI / Claude / Gemini / Grok / 通义千问 / DeepSeek / Kimi / 智谱 GLM / 豆包 / 混元 / 文心 / MiniMax / OpenRouter / Ollama 共 15 家（含演示 Mock），后台填 Key 即用无需重启；OpenAI 兼容与 Anthropic 原生双协议统一到一个 ChatClient 工厂，密钥全链路脱敏，连通测试真发请求回报耗时与上游错误。
 - **知识图谱**：MySQL 边表保存文档关系，Go BFS 取子图，前端以节点网络与边列表探索关联关系。
 - **行为看板**：浏览、搜索、AI 调用流水进 ClickHouse 大表，按月分区；看板聚合全部下推，ClickHouse 不承载业务事实。
 
