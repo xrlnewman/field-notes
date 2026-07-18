@@ -112,6 +112,7 @@ describe('published project content', () => {
       'hireflow-platform',
       'homeflow-platform',
       'invoiceflow-platform',
+      'knowflow-platform',
       'labflow-platform',
       'legalflow-platform',
       'linli-community',

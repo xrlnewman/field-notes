@@ -305,7 +305,7 @@ describe('project category helpers', () => {
   it('introduces the directory as a constellation of complete products', () => {
     const projectsPage = readFileSync('src/pages/projects/index.astro', 'utf8');
 
-    expect(projectsPage).toContain('三十个可运行的网站产品');
+    expect(projectsPage).toContain(' 个可运行的网站产品');
     expect(projectsPage).toContain('前台、运营后台与服务端之间的关联');
   });
 

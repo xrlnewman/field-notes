@@ -21,6 +21,12 @@ const publicProjects = [
     repositories: ['https://github.com/xrlnewman/field-notes'],
   },
   {
+    slug: 'knowflow-platform',
+    title: 'KnowFlow 企业智能知识库',
+    cover: 'knowflow-platform/shot-1.png',
+    repositories: ['https://github.com/xrlnewman/knowflow'],
+  },
+  {
     slug: 'multi-merchant-mall',
     title: '多商户商城',
     cover: 'multi-merchant-mall.png',
@@ -476,12 +482,12 @@ describe('static site build', () => {
       '旅游住宿', '内容创作', '法律服务', '场馆运营',
     ];
 
-    expect(home).toMatch(/data-project-count="30"[^>]*>30<\/strong>[\s\S]*?个网站产品/);
+    expect(home).toMatch(/data-project-count="31"[^>]*>31<\/strong>[\s\S]*?个网站产品/);
     expect(projects).toContain('data-project-catalog');
-    expect(projects).toContain('三十个可运行的网站产品');
+    expect(projects).toContain('31 个可运行的网站产品');
     expect(projects).toContain('<h1');
     expect(projects.match(/data-project-filter=/g)).toHaveLength(26);
-    const filterCounts = [30, 1, 1, 2, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1];
+    const filterCounts = [31, 1, 1, 2, 2, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1];
     ['全部', ...categories].forEach((category, index) => {
       const buttonStart = projects.indexOf(`data-project-filter="${category}"`);
       const filterButton = projects.slice(buttonStart, projects.indexOf('</button>', buttonStart));
