@@ -23,7 +23,7 @@ const publicProjects = [
   {
     slug: 'knowflow-platform',
     title: 'KnowFlow 企业智能知识库',
-    cover: 'knowflow-platform/shot-1.png',
+    cover: 'knowflow-platform/shot-5.png',
     repositories: ['https://github.com/xrlnewman/knowflow'],
   },
   {
