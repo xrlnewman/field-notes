@@ -456,6 +456,16 @@ describe('static site build', () => {
     }
   });
 
+  it('builds pagination controls for the home project catalog', () => {
+    const home = readFileSync('dist/index.html', 'utf8');
+    const paginationSource = readFileSync('src/components/Pagination.astro', 'utf8');
+
+    expect(home).toContain('data-home-project-pagination');
+    expect(home).toContain('data-pagination="home-project-pagination"');
+    expect(home).toContain('data-pagination-page="5"');
+    expect(paginationSource).toContain('.pagination[hidden]');
+  });
+
   it('builds the twenty-five product category filters on the projects page', () => {
     const home = readFileSync('dist/index.html', 'utf8');
     const projects = readFileSync('dist/projects/index.html', 'utf8');

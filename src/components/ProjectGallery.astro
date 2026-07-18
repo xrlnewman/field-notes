@@ -110,6 +110,7 @@ const orderedProjects = [...projects].sort((left, right) =>
     const totalPages = Math.max(1, Math.ceil(matches.length / pageSize));
     activeFilter = filter;
     activePage = Math.min(Math.max(requestedPage, 1), totalPages);
+    if (pagination) pagination.hidden = totalPages <= 1;
 
     buttons.forEach((button) => {
       button.setAttribute('aria-pressed', String(button.dataset.projectFilter === filter));

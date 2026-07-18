@@ -26,7 +26,12 @@ const buildHref = (page: number) => {
 };
 ---
 
-<nav class="pagination" aria-label={ariaLabel} data-pagination={dataAttribute}>
+<nav
+  class="pagination"
+  aria-label={ariaLabel}
+  data-pagination={dataAttribute}
+  hidden={totalPages <= 1 ? true : undefined}
+>
   <a
     class:list={['pagination__arrow', { 'pagination__arrow--disabled': currentPage <= 1 }]}
     href={buildHref(Math.max(1, currentPage - 1))}
@@ -111,6 +116,14 @@ const buildHref = (page: number) => {
   .pagination__arrow--disabled {
     opacity: 0.45;
     pointer-events: none;
+  }
+
+  .pagination[hidden] {
+    display: none !important;
+  }
+
+  .pagination [hidden] {
+    display: none !important;
   }
 
   @media (max-width: 520px) {

@@ -162,6 +162,7 @@ const filters = [
     const totalPages = Math.max(1, Math.ceil(matches.length / 8));
     activeFilter = filter;
     activePage = Math.min(Math.max(requestedPage, 1), totalPages);
+    if (pagination) pagination.hidden = totalPages <= 1;
 
     filterButtons.forEach((button) => {
       button.setAttribute('aria-pressed', String(button.dataset.articleFilter === filter));

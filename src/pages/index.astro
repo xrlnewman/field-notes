@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 
 import ContentCard from '../components/ContentCard.astro';
+import Pagination from '../components/Pagination.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -17,6 +18,12 @@ const articles = sortByPublishedAt(
 const featuredProjects = [...projects].sort((left, right) =>
   Number(right.id === 'field-notes') - Number(left.id === 'field-notes'),
 );
+const projectPageSize = 6;
+const projectTotalPages = Math.max(1, Math.ceil(featuredProjects.length / projectPageSize));
+const requestedProjectPage = Number(Astro.url.searchParams.get('page') ?? '1');
+const projectCurrentPage = Number.isInteger(requestedProjectPage)
+  ? Math.min(Math.max(requestedProjectPage, 1), projectTotalPages)
+  : 1;
 ---
 
 <BaseLayout title={siteConfig.title}>
@@ -64,7 +71,7 @@ const featuredProjects = [...projects].sort((left, right) =>
         href="/projects/"
       />
       <div class="home-grid home-grid--projects">
-        {featuredProjects.map((project) => (
+        {featuredProjects.map((project, index) => (
           <ProjectCard
             href={`/projects/${project.id}/`}
             title={project.data.title}
@@ -76,9 +83,19 @@ const featuredProjects = [...projects].sort((left, right) =>
             repoUrl={project.data.repoUrl!}
             repositories={project.data.repositories}
             coverViewport={project.data.screenshots?.[0]?.viewport ?? 'desktop'}
+            page={Math.floor(index / projectPageSize) + 1}
             featured={project.id === 'field-notes'}
           />
         ))}
+      </div>
+      <div data-home-project-pagination>
+        <Pagination
+          currentPage={projectCurrentPage}
+          totalPages={projectTotalPages}
+          basePath="/"
+          ariaLabel="首页项目分页"
+          dataAttribute="home-project-pagination"
+        />
       </div>
     </section>
 
@@ -100,6 +117,79 @@ const featuredProjects = [...projects].sort((left, right) =>
     </section>
   </div>
 </BaseLayout>
+
+<script>
+  const catalog = document.querySelector<HTMLElement>('[data-home-project-catalog]');
+  const cards = Array.from(catalog?.querySelectorAll<HTMLElement>('[data-project-page]') ?? []);
+  const pagination = document.querySelector<HTMLElement>('[data-pagination="home-project-pagination"]');
+  const pageLinks = pagination?.querySelectorAll<HTMLAnchorElement>('[data-pagination-page]') ?? [];
+  const previous = pagination?.querySelector<HTMLAnchorElement>('[data-pagination-prev]');
+  const next = pagination?.querySelector<HTMLAnchorElement>('[data-pagination-next]');
+  const pageSize = 6;
+  const totalPages = Math.max(1, Math.ceil(cards.length / pageSize));
+  let activePage = Number(new URLSearchParams(window.location.search).get('page') ?? '1');
+  if (!Number.isInteger(activePage) || activePage < 1) activePage = 1;
+
+  const updateLink = (link: HTMLAnchorElement | null, page: number) => {
+    if (!link) return;
+    const url = new URL(window.location.href);
+    if (page <= 1) url.searchParams.delete('page');
+    else url.searchParams.set('page', String(page));
+    link.href = url.toString();
+  };
+
+  const setDisabled = (link: HTMLAnchorElement | null, disabled: boolean) => {
+    if (!link) return;
+    link.classList.toggle('pagination__arrow--disabled', disabled);
+    link.setAttribute('aria-disabled', String(disabled));
+  };
+
+  const applyPage = (requestedPage: number) => {
+    activePage = Math.min(Math.max(requestedPage, 1), totalPages);
+    if (pagination) pagination.hidden = totalPages <= 1;
+
+    cards.forEach((card) => {
+      card.hidden = Number(card.dataset.projectPage) !== activePage;
+    });
+
+    pageLinks.forEach((link) => {
+      const page = Number(link.dataset.paginationPage);
+      const isCurrent = page === activePage;
+      link.hidden = page > totalPages;
+      link.classList.toggle('pagination__page--current', isCurrent);
+      if (isCurrent) link.setAttribute('aria-current', 'page');
+      else link.removeAttribute('aria-current');
+      updateLink(link, page);
+    });
+    updateLink(previous ?? null, Math.max(1, activePage - 1));
+    updateLink(next ?? null, Math.min(totalPages, activePage + 1));
+    setDisabled(previous ?? null, activePage <= 1);
+    setDisabled(next ?? null, activePage >= totalPages);
+  };
+
+  applyPage(activePage);
+
+  pageLinks.forEach((link) => {
+    link.addEventListener('click', (event) => {
+      event.preventDefault();
+      applyPage(Number(link.dataset.paginationPage));
+      window.history.replaceState({}, '', link.href);
+    });
+  });
+
+  [previous, next].forEach((link) => {
+    link?.addEventListener('click', (event) => {
+      if (link.getAttribute('aria-disabled') === 'true') {
+        event.preventDefault();
+        return;
+      }
+      event.preventDefault();
+      const url = new URL(link.href);
+      applyPage(Number(url.searchParams.get('page') ?? '1'));
+      window.history.replaceState({}, '', url);
+    });
+  });
+</script>
 
 <style>
   .hero-studio {
@@ -288,6 +378,10 @@ const featuredProjects = [...projects].sort((left, right) =>
   .home-grid--projects {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 24px;
+  }
+
+  [data-home-project-pagination] {
+    min-height: 84px;
   }
 
   @media (max-width: 960px) {
