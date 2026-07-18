@@ -29,13 +29,6 @@ screenshots:
     viewport: desktop
     width: 1440
     height: 900
-  - src: /images/projects/knowflow-platform/shot-3.png
-    alt: KnowFlow AI 问答界面与引用来源
-    title: AI 问答
-    caption: 基于混合检索召回的 RAG 问答，答案附引用文档可跳转原文，通义千问与 DeepSeek 可在会话内切换。
-    viewport: desktop
-    width: 1440
-    height: 900
   - src: /images/projects/knowflow-platform/shot-4.png
     alt: KnowFlow 行为数据看板
     title: 数据看板
