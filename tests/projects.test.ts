@@ -400,7 +400,7 @@ describe('project category helpers', () => {
     expect(card).toMatch(/\.project-card\[hidden\] \{[^}]*display: none;/);
   });
 
-  it('renders every project image at the real 1440 by 900 ratio without cropping', () => {
+  it('keeps project covers stable while preserving mobile screenshot previews', () => {
     const card = readFileSync('src/components/ProjectCard.astro', 'utf8');
     const layout = readFileSync('src/layouts/ProjectLayout.astro', 'utf8');
 
@@ -409,6 +409,8 @@ describe('project category helpers', () => {
       expect(source).toContain('aspect-ratio: 16 / 10;');
       expect(source).toContain('object-fit: contain;');
     }
+    expect(card).toContain('object-fit: cover;');
+    expect(card).toContain('project-cover--mobile');
     expect(card).not.toContain('aspect-ratio: auto;');
   });
 

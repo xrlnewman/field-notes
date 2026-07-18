@@ -14,6 +14,7 @@ interface Props {
   tech: readonly string[];
   repoUrl: string;
   repositories?: ProjectData['repositories'];
+  coverViewport?: 'desktop' | 'mobile';
   featured?: boolean;
 }
 
@@ -27,6 +28,7 @@ const {
   tech,
   repoUrl,
   repositories,
+  coverViewport = 'desktop',
   featured = false,
 } = Astro.props;
 const repositoryCount = repositories?.length || 1;
@@ -44,7 +46,7 @@ const statusLabels = {
   data-reveal
 >
   <span class="project-card__highlight" aria-hidden="true"></span>
-  <a class="project-cover" href={href} aria-label={`查看项目：${title}`}>
+  <a class:list={['project-cover', { 'project-cover--mobile': coverViewport === 'mobile' }]} href={href} aria-label={`查看项目：${title}`}>
     <img src={cover} alt={`${title} 界面截图`} width="1440" height="900" loading="lazy" />
   </a>
   <div class="project-card__body">
@@ -132,8 +134,19 @@ const statusLabels = {
   .project-cover img {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
+    object-position: top center;
     transition: transform 280ms ease;
+  }
+
+  .project-cover--mobile {
+    background: #101d32;
+  }
+
+  .project-cover--mobile img {
+    object-fit: contain;
+    object-position: center;
+    padding: 18px 24px;
   }
 
   .project-card:hover .project-cover img {

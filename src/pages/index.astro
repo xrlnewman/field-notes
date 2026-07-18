@@ -75,6 +75,7 @@ const featuredProjects = [...projects].sort((left, right) =>
             tech={project.data.tech}
             repoUrl={project.data.repoUrl!}
             repositories={project.data.repositories}
+            coverViewport={project.data.screenshots?.[0]?.viewport ?? 'desktop'}
             featured={project.id === 'field-notes'}
           />
         ))}
