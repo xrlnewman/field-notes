@@ -25,7 +25,13 @@ const date = new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: 'long', 
 const readingTime = estimateReadingTime(article.body ?? '');
 ---
 
-<BaseLayout title={data.title} description={data.description} image={data.cover} type="article">
+<BaseLayout
+  title={data.title}
+  description={data.description}
+  image={data.cover}
+  type="article"
+  article={{ datePublished: data.publishedAt.toISOString(), tags: data.tags }}
+>
   <article>
     <header class="container article-hero" data-pagefind-body>
       <p class="eyebrow">ARTICLE / {readingTime} MIN READ</p>

@@ -14,6 +14,7 @@ interface Props {
   description?: string;
   image?: string | undefined;
   type?: 'website' | 'article';
+  article?: { datePublished?: string; tags?: readonly string[] } | undefined;
 }
 
 const {
@@ -21,10 +22,47 @@ const {
   description = siteConfig.description,
   image,
   type = 'website',
+  article,
 } = Astro.props;
 const pageTitle = title.includes(siteConfig.name) ? title : `${title} · ${siteConfig.name}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const socialImage = image ? new URL(image, Astro.site) : undefined;
+const socialImage = new URL(image ?? '/og.png', Astro.site);
+const siteUrl = new URL('/', Astro.site).href;
+const jsonLdGraph: Record<string, unknown>[] = [
+  {
+    '@type': 'Person',
+    name: siteConfig.author.name,
+    jobTitle: siteConfig.author.role,
+    url: siteUrl,
+    description: siteConfig.author.bio,
+    sameAs: [siteConfig.social.github].filter(Boolean),
+  },
+  {
+    '@type': 'WebSite',
+    name: siteConfig.name,
+    url: siteUrl,
+    description: siteConfig.description,
+    inLanguage: 'zh-CN',
+  },
+];
+if (type === 'article' && article) {
+  jsonLdGraph.push({
+    '@type': 'BlogPosting',
+    headline: title,
+    description,
+    image: socialImage.href,
+    url: canonical.href,
+    mainEntityOfPage: canonical.href,
+    inLanguage: 'zh-CN',
+    ...(article.datePublished
+      ? { datePublished: article.datePublished, dateModified: article.datePublished }
+      : {}),
+    ...(article.tags && article.tags.length ? { keywords: article.tags.join(', ') } : {}),
+    author: { '@type': 'Person', name: siteConfig.author.name, url: siteUrl },
+    publisher: { '@type': 'Person', name: siteConfig.author.name },
+  });
+}
+const jsonLd = { '@context': 'https://schema.org', '@graph': jsonLdGraph };
 ---
 
 <!doctype html>
@@ -43,9 +81,14 @@ const socialImage = image ? new URL(image, Astro.site) : undefined;
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:site_name" content={siteConfig.name} />
-    {socialImage && <meta property="og:image" content={socialImage} />}
-    <meta name="twitter:card" content={socialImage ? 'summary_large_image' : 'summary'} />
+    <meta property="og:image" content={socialImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={socialImage} />
     <title>{pageTitle}</title>
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <script is:inline>
       (() => {
         let stored = null;
