@@ -35,9 +35,9 @@ describe('personal brand configuration', () => {
     });
   });
 
-  it('publishes the authenticated GitHub profile without exposing email', () => {
+  it('publishes the authenticated GitHub profile and a public contact email', () => {
     expect(siteConfig.social.github).toBe('https://github.com/xrlnewman');
-    expect(siteConfig.social.email).toBe('');
+    expect(siteConfig.social.email).toBe('1156479985@qq.com');
   });
 
   it('uses the three-theme cosmic visual contract with local Chinese-ready fonts', () => {
