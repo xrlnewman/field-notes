@@ -51,7 +51,12 @@ import { siteConfig } from '../config/site';
       <p class="eyebrow">BUILD · WRITE · CONNECT</p>
       <h2>有产品想法，或者复杂问题，可以聊聊。</h2>
       <p>欢迎讨论产品、系统设计和工程实践，也欢迎指出文章中的错误。</p>
-      <a class="button button--primary" href="/guestbook/">前往留言板 →</a>
+      <div class="button-row">
+        <a class="button button--primary" href="/guestbook/">前往留言板 →</a>
+        {siteConfig.social.email && (
+          <a class="button" href={`mailto:${siteConfig.social.email}`}>发邮件 {siteConfig.social.email}</a>
+        )}
+      </div>
     </aside>
   </div>
 </BaseLayout>

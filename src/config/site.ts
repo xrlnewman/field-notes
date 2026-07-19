@@ -13,7 +13,7 @@ export const siteConfig = {
   },
   social: {
     github: 'https://github.com/xrlnewman',
-    email: '',
+    email: '1156479985@qq.com',
   },
   nav: [
     { href: '/', label: '首页' },
