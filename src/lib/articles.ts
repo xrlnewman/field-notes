@@ -2,6 +2,7 @@ export const articleCategories = [
   '高并发',
   '大数据',
   'AI 应用',
+  'Agent 架构',
   '云原生',
   '安全工程',
   '数据工程',
